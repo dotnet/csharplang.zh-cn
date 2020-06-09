@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 82f68e2e2703f1d78c191d1120781ab7306b327a
-ms.sourcegitcommit: 100d3f7f04ba1e4f666c188fbd73762f2c3b8716
+ms.openlocfilehash: ffa34ad55752197bc2d8fb6cac7759602a2672c9
+ms.sourcegitcommit: 5c9b8f27bd8299c70e2f4205a46079a10cffce76
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 06/04/2020
-ms.locfileid: "84421864"
+ms.lasthandoff: 06/08/2020
+ms.locfileid: "84533341"
 ---
 
 # <a name="records"></a>记录
@@ -71,6 +71,8 @@ override Equals(object o) => Equals(o as T);
 受保护的构造函数称为 "复制构造函数"，合成体将输入类型中所有可访问的实例字段的值复制到对应的字段 `this` 。
 
 "Clone" 方法返回对构造函数的调用结果，该构造函数与复制构造函数具有相同的签名。 Clone 方法的返回类型为包含类型，除非基类中存在虚拟克隆方法。 在这种情况下，如果支持 "协变返回" 功能和重写返回类型，则返回类型为当前的包含类型。 合成克隆方法是基类型克隆方法（如果存在）的重写。 如果基类型克隆方法是密封的，则会生成错误。
+
+如果包含的记录是抽象的，合成克隆方法也是抽象的。
 
 ## <a name="positional-record-members"></a>位置记录成员
 
