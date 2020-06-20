@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 35f6836e20776450ce5f776e7fdb66ca634d04a0
-ms.sourcegitcommit: 0f56445e250ddf82b88848b94c59870f13ab8ffc
+ms.openlocfilehash: 7901748edc95322275fb6a5f3fa7d336ee51a3f0
+ms.sourcegitcommit: d48f35e584faa741f610350003d8ea6a5bc1958d
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 06/10/2020
-ms.locfileid: "84663262"
+ms.lasthandoff: 06/19/2020
+ms.locfileid: "85111346"
 ---
 
 # <a name="records"></a>记录
@@ -43,40 +43,114 @@ record_body
 
 ### <a name="equality-members"></a>相等成员
 
-记录类型生成以下方法的合成实现，其中 `T` 是包含类型：
+记录类型包括合成 `EqualityContract` readonly 虚拟属性。 此属性在每个派生的记录类型中被重写。
+可以显式声明属性。
+如果显式声明与预期的签名或辅助功能不匹配，或者如果显式声明不是并且记录类型不匹配，则是错误的 `virtual` `sealed` 。
+合成属性返回 `typeof(R)` ，其中 `R` 是记录类型。
+```C#
+protected virtual Type EqualityContract { get; };
+```
+_`EqualityContract`如果记录类型为 `sealed` 且派生自，是否可以忽略 `System.Object` ？_
+
+记录类型实现 `System.IEquatable<R>` 并包含合成型强类型重载， `Equals(R? other)` 其中 `R` 是记录类型。
+方法为 `public` ，并且方法为， `virtual` 除非记录类型为 `sealed` 。
+可以显式声明方法。
+如果显式声明与预期的签名或辅助功能不匹配，或显式声明不是 `virtual` ，并且记录类型不匹配，则是错误的 `sealed` 。
+```C#
+public virtual bool Equals(R? other);
+```
+`Equals(R?)` `true` 当且仅当以下各项都为时，合成返回 `true` ：
+- `other`不是 `null` ，并且
+- 对于 `fieldN` 记录类型中不是继承的每个实例字段，其中的值 `System.Collections.Generic.EqualityComparer<TN>.Default.Equals(fieldN, other.fieldN)` `TN` 为字段类型，而
+- 如果有基本记录类型，则的值 `base.Equals(other)` （对的非虚拟调用 `public virtual bool Equals(Base? other)` ）; 否则为的值 `EqualityContract == other.EqualityContract` 。
+
+如果记录类型派生自基本记录类型 `Base` ，则记录类型包括强类型的合成重写 `Equals(Base other)` 。
+合成替代为 `sealed` 。
+如果显式声明了重写，则是错误的。
+合成重写返回 `Equals((object?)other)` 。
+
+记录类型包括的合成重写 `object.Equals(object? obj)` 。
+如果显式声明了重写，则是错误的。
+合成重写返回， `Equals(other as R)` 其中 `R` 是记录类型。
+```C#
+public override bool Equals(object? obj);
+```
+
+记录类型包括的合成重写 `object.GetHashCode()` 。
+可以显式声明方法。
+如果显式声明为，则为错误， `sealed` 除非记录类型为 `sealed` 。
 ```C#
 public override int GetHashCode();
-public override bool Equals(object other);
-public virtual bool Equals(T other);
 ```
-`GetHashCode()`和 `Equals(object other)` 是中的虚方法的重写 `System.Object` 。
-重写时，将忽略中间基类上隐藏这些方法的任何方法。
+如果 `Equals(R?)` 和中 `GetHashCode()` 的一个是显式声明的，而另一个方法不是显式的，则会报告警告。
 
-派生记录类型还会重写 `Equals(TBase other)` 每个基本记录类型中的方法。
-
-记录类型合成 `System.IEquatable<T>` 由隐式实现的实现， `Equals(T other)` 其中 `T` 是包含类型。
-记录类型不会合成 `System.IEquatable<TBase>` 任何基类型的实现 `TBase` ，即使这些接口是由基本记录类型实现的。
-
-基本记录类合成 `EqualityContract` 属性。 属性在派生的记录类中被重写。 合成实现返回 `typeof(T)` ，其中 `T` 包含类型。
-```C#
-protected virtual Type EqualityContract { get; }
-```
-
-如果任何重写的成员的基实现是密封的或非虚拟的，或者不符合预期的签名和可访问性，则是错误的。
-
-`Equals(T other)`当且仅当以下每个条件都为 true 时，返回 true：
-- `other`不是 `null` ，并且
-- 对于在记录类型中声明的每个字段，的 `System.Collections.Generic.EqualityComparer<TN>.Default.Equals(fieldN, other.fieldN)` 值 `TN` 为，其中为字段类型，
-- 如果有基本记录类型，则的值 `base.Equals(other)` 为; 否则为的值 `EqualityContract.Equals(other.EqualityContract)` 。
-
-`Equals(T other)`基本方法（包括）的的重写 `object.Equals(object other)` 执行的等效操作：
-```C#
-public override bool Equals(object other) => Equals(other as T);
-```
-
-`GetHashCode()`返回 `int` 采用以下值的确定性函数的结果：
-- 对于在记录类型中声明的每个字段，的 `System.Collections.Generic.EqualityComparer<TN>.Default.GetHashCode(fieldN)` 值 `TN` 为，其中为字段类型，
+的合成重写 `GetHashCode()` 返回将 `int` 以下值组合在一起的确定性函数的结果：
+- 对于 `fieldN` 记录类型中不是继承的每个实例字段，其中的值 `System.Collections.Generic.EqualityComparer<TN>.Default.GetHashCode(fieldN)` `TN` 为字段类型，而
 - 如果有基本记录类型，则的值 `base.GetHashCode()` 为; 否则为的值 `System.Collections.Generic.EqualityComparer<System.Type>.Default.GetHashCode(EqualityContract)` 。
+
+例如，请考虑以下记录类型：
+```C#
+record R1(T1 P1);
+record R2(T1 P1, T2 P2) : R1(P1);
+record R2(T1 P1, T2 P2, T3 P3) : R2(P1, P2);
+```
+
+对于这些记录类型，合成成员将如下所示：
+```C#
+class R1 : IEquatable<R1>
+{
+    public T1 P1 { get; set; }
+    protected virtual Type EqualityContract => typeof(R1);
+    public override bool Equals(object? obj) => Equals(obj as R1);
+    public virtual bool Equals(R1? other)
+    {
+        return !(other is null) &&
+            EqualityContract == other.EqualityContract &&
+            EqualityComparer<T1>.Default.Equals(P1, other.P1);
+    }
+    public override int GetHashCode()
+    {
+        return Combine(EqualityComparer<Type>.Default.GetHashCode(EqualityContract),
+            EqualityComparer<T1>.Default.GetHashCode(P1));
+    }
+}
+
+class R2 : R1, IEquatable<R2>
+{
+    public T2 P2 { get; set; }
+    protected override Type EqualityContract => typeof(R2);
+    public override bool Equals(object? obj) => Equals(obj as R2);
+    public sealed override bool Equals(R1? other) => Equals((object?)other);
+    public virtual bool Equals(R2? other)
+    {
+        return base.Equals((R1?)other) &&
+            EqualityComparer<T2>.Default.Equals(P2, other.P2);
+    }
+    public override int GetHashCode()
+    {
+        return Combine(base.GetHashCode(),
+            EqualityComparer<T2>.Default.GetHashCode(P2));
+    }
+}
+
+class R3 : R2, IEquatable<R3>
+{
+    public T3 P3 { get; set; }
+    protected override Type EqualityContract => typeof(R3);
+    public override bool Equals(object? obj) => Equals(obj as R3);
+    public sealed override bool Equals(R2? other) => Equals((object?)other);
+    public virtual bool Equals(R3? other)
+    {
+        return base.Equals((R2?)other) &&
+            EqualityComparer<T3>.Default.Equals(P3, other.P3);
+    }
+    public override int GetHashCode()
+    {
+        return Combine(base.GetHashCode(),
+            EqualityComparer<T3>.Default.GetHashCode(P3));
+    }
+}
+```
 
 ### <a name="copy-and-clone-members"></a>复制和克隆成员
 
