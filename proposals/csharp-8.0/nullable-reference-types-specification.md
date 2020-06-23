@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 060d3af7d06033b524e9e967a7f43c7577bc7965
-ms.sourcegitcommit: 538df2e3c334d94cac1fac6a382ddfe15452ad96
+ms.openlocfilehash: 3fc0f7d8db936d81a9419af15c495e9eeb456dd2
+ms.sourcegitcommit: 7c44a62f9a639b8eb8ad8621d8577e90ea6f2afb
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 06/17/2020
-ms.locfileid: "84908312"
+ms.lasthandoff: 06/22/2020
+ms.locfileid: "85196186"
 ---
 # <a name="nullable-reference-types-specification"></a>可以为 null 的引用类型规范
 
@@ -169,6 +169,11 @@ Null 生成类型的*默认 null 状态*为 "可能为 null"。 非 null 生成�
     - 在*启用*的批注上下文中*为 null*
 
 对于类型参数 `T` ， `T?` 仅当 `T` 已知为值类型或已知为引用类型时，才允许。
+
+### <a name="nested-functions"></a>嵌套函数
+
+嵌套函数（lambda 和局部函数）的处理方式类似于方法，但其捕获变量除外。
+Lambda 或本地函数中捕获的变量的默认状态是该嵌套函数的所有 "使用" 中的变量的可以为 null 的状态的交集。 函数的使用是对该函数的调用或将其转换为委托的位置。
 
 ### <a name="oblivious-vs-nonnullable"></a>在意 vs 不可 null
 
