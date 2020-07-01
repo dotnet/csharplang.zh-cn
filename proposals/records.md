@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 7901748edc95322275fb6a5f3fa7d336ee51a3f0
-ms.sourcegitcommit: d48f35e584faa741f610350003d8ea6a5bc1958d
+ms.openlocfilehash: d4fc057e4bd56562d1b861200cf6e9f2b4e8d0ff
+ms.sourcegitcommit: dd3261cfde7cfefc4e50fd79b21ec2d38b84e27e
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 06/19/2020
-ms.locfileid: "85111346"
+ms.lasthandoff: 07/01/2020
+ms.locfileid: "85766250"
 ---
 
 # <a name="records"></a>记录
@@ -194,7 +194,9 @@ class R3 : R2, IEquatable<R3>
 对于 a 记录：
 
 * 创建公共 `get` 和 `init` 自动属性（请参阅单独的 `init` 访问器规范）。
-  将重写每个 "匹配" 继承抽象访问器。 自动属性初始化为相应主构造函数参数的值。
+  `abstract`具有匹配类型的继承属性被重写。
+  如果继承的属性没有可 `public` 重写的 `get` 和 `init` 访问器，则是错误的。
+  自动属性初始化为相应主构造函数参数的值。
 
 ### <a name="deconstruct"></a>析构
 
