@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: d4fc057e4bd56562d1b861200cf6e9f2b4e8d0ff
-ms.sourcegitcommit: dd3261cfde7cfefc4e50fd79b21ec2d38b84e27e
+ms.openlocfilehash: 42d2b5f1c9bb58ed3d849f5a2e4d0d1e281c5bf4
+ms.sourcegitcommit: ce26928a60a4b57e4174ec630c2dd6df99904feb
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/01/2020
-ms.locfileid: "85766250"
+ms.lasthandoff: 07/02/2020
+ms.locfileid: "85914123"
 ---
 
 # <a name="records"></a>记录
@@ -33,6 +33,10 @@ record_body
 
 记录类型是引用类型，类似于类声明。 如果不包含，记录将提供一个错误 `record_base` `argument_list` `record_declaration` `parameter_list` 。
 
+## <a name="inheritance"></a>继承
+
+除非类为 `object` ，且类不能从记录继承，否则记录不能从类继承。
+
 ## <a name="members-of-a-record-type"></a>记录类型的成员
 
 除了记录体中声明的成员，记录类型还具有附加的合成成员。
@@ -43,13 +47,20 @@ record_body
 
 ### <a name="equality-members"></a>相等成员
 
-记录类型包括合成 `EqualityContract` readonly 虚拟属性。 此属性在每个派生的记录类型中被重写。
-可以显式声明属性。
-如果显式声明与预期的签名或辅助功能不匹配，或者如果显式声明不是并且记录类型不匹配，则是错误的 `virtual` `sealed` 。
-合成属性返回 `typeof(R)` ，其中 `R` 是记录类型。
+如果记录是从派生的 `object` ，则记录类型包含合成 readonly 属性
 ```C#
 protected virtual Type EqualityContract { get; };
 ```
+可以显式声明属性。 如果显式声明与预期的签名或辅助功能不匹配，或者如果显式声明不是并且记录类型不匹配，则是错误的 `virtual` `sealed` 。
+
+如果记录类型派生自基本记录类型 `Base` ，则记录类型包含合成 readonly 属性
+```C#
+protected override Type EqualityContract { get; };
+```
+
+可以显式声明属性。 如果显式声明与预期的签名或辅助功能不匹配，或者如果显式声明为 `sealed` 且记录类型不匹配，则是错误的 `sealed` 。 如果合成的或显式声明的属性不能在记录类型中重写具有此签名的属性 `Base` （例如，如果中缺少该属性，或者该属性在 `Base` 密封的或不是虚拟的等），则是错误的。
+合成属性返回 `typeof(R)` ，其中 `R` 是记录类型。
+
 _`EqualityContract`如果记录类型为 `sealed` 且派生自，是否可以忽略 `System.Object` ？_
 
 记录类型实现 `System.IEquatable<R>` 并包含合成型强类型重载， `Equals(R? other)` 其中 `R` 是记录类型。
@@ -64,24 +75,27 @@ public virtual bool Equals(R? other);
 - 对于 `fieldN` 记录类型中不是继承的每个实例字段，其中的值 `System.Collections.Generic.EqualityComparer<TN>.Default.Equals(fieldN, other.fieldN)` `TN` 为字段类型，而
 - 如果有基本记录类型，则的值 `base.Equals(other)` （对的非虚拟调用 `public virtual bool Equals(Base? other)` ）; 否则为的值 `EqualityContract == other.EqualityContract` 。
 
-如果记录类型派生自基本记录类型 `Base` ，则记录类型包括强类型的合成重写 `Equals(Base other)` 。
-合成替代为 `sealed` 。
-如果显式声明了重写，则是错误的。
+如果记录类型是从基本记录类型派生的 `Base` ，则记录类型包括合成替代 
+```C#
+public sealed override bool Equals(Base? other);
+```
+如果显式声明了重写，则是错误的。 如果该方法不能重写记录类型中具有相同签名的方法 `Base` （例如，如果中缺少该方法， `Base` 或者密封了或不是虚拟的，等等），则是错误的。
 合成重写返回 `Equals((object?)other)` 。
 
-记录类型包括的合成重写 `object.Equals(object? obj)` 。
-如果显式声明了重写，则是错误的。
-合成重写返回， `Equals(other as R)` 其中 `R` 是记录类型。
+记录类型包括合成替代
 ```C#
 public override bool Equals(object? obj);
 ```
+如果显式声明了重写，则是错误的。 如果该方法不能重写 `object.Equals(object? obj)` （例如，由于中间基类型中的隐藏，等等），则是错误的。
+合成重写返回， `Equals(other as R)` 其中 `R` 是记录类型。
 
-记录类型包括的合成重写 `object.GetHashCode()` 。
-可以显式声明方法。
-如果显式声明为，则为错误， `sealed` 除非记录类型为 `sealed` 。
+记录类型包括合成替代
 ```C#
 public override int GetHashCode();
 ```
+可以显式声明方法。
+如果显式声明为，则为错误， `sealed` 除非记录类型为 `sealed` 。 如果合成或显式声明方法未重写 `object.GetHashCode()` （例如，由于中间基类型中的隐藏，等等），则是错误的。
+ 
 如果 `Equals(R?)` 和中 `GetHashCode()` 的一个是显式声明的，而另一个方法不是显式的，则会报告警告。
 
 的合成重写 `GetHashCode()` 返回将 `int` 以下值组合在一起的确定性函数的结果：
