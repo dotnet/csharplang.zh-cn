@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: a26af810ced3fe5a7d7108f38a22d40aa64543f5
-ms.sourcegitcommit: cc68af0b2a6e2ef5780eeb43935600b5927ee720
+ms.openlocfilehash: c40d143a933969b80f8902938a6243c33ca09432
+ms.sourcegitcommit: 9cf2f666477775bacc56ed5915bc00081d4fcb8e
 ms.translationtype: MT
 ms.contentlocale: zh-CN
 ms.lasthandoff: 07/09/2020
-ms.locfileid: "86157164"
+ms.locfileid: "86208406"
 ---
 # <a name="repeated-attributes-in-partial-members"></a>分部成员中重复的属性
 
@@ -45,7 +45,7 @@ public partial bool TryGetValue(out object? value) { ... }
 
 ## <a name="solution"></a>解决方案
 
-只要属性参数相同，就允许在每个分部声明中使用一次非 AllowMultiple 属性。 由于属性参数都是常量，因此，在编译时验证这一点不是很困难。 当跨声明与属性时，每个非 AllowMultiple 属性都将被消除重复，并且将只发出一个属性实例。
+只要特性参数相同，就允许对每个分部声明中的每个符号 (member、return、parameter 等 ) 使用一次非 AllowMultiple 属性。 由于属性参数都是常量，因此编译器可以对此进行验证。 当跨声明与属性时，每个非 AllowMultiple 属性都将被消除重复，并且将只发出一个属性实例。
 
 ```cs
 public partial bool TryGetValue([NotNullWhen(true)] out object? value);
@@ -61,11 +61,11 @@ public partial bool TryGetValue([NotNullWhen(false)] out object? value) { ... } 
 
 ### <a name="open-questions"></a>打开问题
 
-1. 此类重复是否应允许在 "partial" 类型声明上或仅对非类型成员（例如方法）使用？
+1. 是否应在 "partial" 类型声明上允许此类重复，或只允许在非类型成员上使用 (例如) 方法？
 2. 允许符号上的多个*用法允许 "* 选择启用" 以消除特性的等效用法的特性？
 
 ### <a name="design-meetings"></a>设计会议
 #### <a name="6th-july-2020"></a>[2020年7月6日](/meetings/2020/LDM-2020-07-06.md#repeated-attributes-on-partial-members)
 已接受该建议。
-  - 允许跨分部类型声明（开放式问题1）重复执行非 AllowMultiple 属性。
-  - 重复应用 AllowMultiple 属性的行为不会更改，并且可能会在将来的建议中考虑 "选择加入" 机制以消除重复。
+  - 对于分部类型声明，将允许重复非 AllowMultiple 属性， (打开问题 1) 。
+  - 重复应用 AllowMultiple 属性的行为不会改变，并且可能会在将来的建议中考虑使用 "选择加入" 机制来消除重复， (打开问题 2) 。
