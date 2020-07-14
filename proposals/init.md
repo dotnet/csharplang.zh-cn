@@ -1,15 +1,15 @@
 ---
-ms.openlocfilehash: a3821a1867f1616be84615944748a8b559402771
-ms.sourcegitcommit: c2df2ee72f4b36fca2e07c701a90a0dba8d1fc20
+ms.openlocfilehash: 0642f28e921ea224a157394226d43df2f3f81a10
+ms.sourcegitcommit: 09c67fbf78565622781e74cda971b16121eb3f04
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 05/17/2020
-ms.locfileid: "83443845"
+ms.lasthandoff: 07/14/2020
+ms.locfileid: "86307706"
 ---
 <a name="init-only-setters"></a>仅 Init 资源库
 =====
 
-## <a name="summary"></a>摘要
+## <a name="summary"></a>总结
 此建议将仅 init 属性和索引器的概念添加到 c #。 这些属性和索引器可以在创建对象时设置，但 `get` 仅在对象创建完成后才会有效。
 这允许在 c # 中使用更灵活的不可变模型。 
 
@@ -66,7 +66,7 @@ class Student
 }
 ```
 
-`init`在以下情况下，包含访问器的实例属性被认为是可设置的：
+`init`在以下情况下，包含访问器的实例属性被视为可设置，但在本地函数或 lambda 中除外：
 
 - 在对象初始值设定项期间
 - `with`表达式初始值设定项期间
@@ -308,7 +308,7 @@ int Property1 { get; init set; }
 在 `init` 属性访问器列表中，决定以独立访问器的形式继续。
 
 ### <a name="warn-on-failed-init"></a>初始化失败时发出警告
-请考虑以下场景。 类型声明的 `init` 唯一成员未在构造函数中设置。 如果构造对象的代码未能初始化值，是否应收到警告？
+请考虑以下情形。 类型声明的 `init` 唯一成员未在构造函数中设置。 如果构造对象的代码未能初始化值，是否应收到警告？
 
 此时，该字段将永远不会被设置，因此，可能会有许多相似之处和有关无法初始化数据的警告 `private` 。 那么，在这种情况下面会出现一个警告，
 
