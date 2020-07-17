@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 53b45320bfacd0c683a3845430d939ca6648f995
-ms.sourcegitcommit: 3402ccd0e032179502eec7a67970d212a8d3e7e0
+ms.openlocfilehash: 8a888c789909c3e818328e5521e47f4dcbbd5a88
+ms.sourcegitcommit: a5899d45d11476de3b6010cb64f302b81ad6fe5d
 ms.translationtype: MT
 ms.contentlocale: zh-CN
 ms.lasthandoff: 07/16/2020
-ms.locfileid: "86408488"
+ms.locfileid: "86433775"
 ---
 
 # <a name="records"></a>记录
@@ -52,9 +52,9 @@ record_body
 
 如果记录是从派生的 `object` ，则记录类型包括合成的 readonly 属性，该属性等效于声明的属性，如下所示：
 ```C#
-protected Type EqualityContract { get; };
+Type EqualityContract { get; };
 ```
-`virtual`除非记录类型为，否则属性为 `sealed` 。
+`private`如果记录类型为，则属性为 `sealed` 。 否则，属性为 `virtual` 和 `protected` 。
 可以显式声明属性。 如果显式声明与预期的签名或辅助功能不匹配，或者如果显式声明不允许在派生类型中 overiding 它且记录类型不匹配，则是错误的 `sealed` 。
 
 如果记录类型是从基本记录类型派生的 `Base` ，则记录类型包括合成 readonly 属性，该属性等效于声明为的属性，如下所示：
