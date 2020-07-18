@@ -1,26 +1,26 @@
 ---
-ms.openlocfilehash: dbea611280a644adc25247b9887986e129c59b68
-ms.sourcegitcommit: a5e393b018b04dfa55aae0000290ca087b508495
+ms.openlocfilehash: 01ebf5caf071467496d4ac1c2664f64b790525cf
+ms.sourcegitcommit: 8087d27db178039c2dc5fbfa6b3ac9cde8cd2ad2
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 10/14/2019
-ms.locfileid: "72310360"
+ms.lasthandoff: 07/17/2020
+ms.locfileid: "86451315"
 ---
 # <a name="unsafe-code"></a>不安全代码
 
-上述章节C#中定义的核心语言与 C 和C++将指针省略为数据类型的方式不同。 相反， C#提供引用和创建由垃圾回收器管理的对象的功能。 此设计与其他功能C#结合使用比 C 或C++更安全。 在核心C#语言中，不能使用未初始化的变量、"无关联的" 指针或索引超出其界限的数组的表达式。 这样就消除了日常灾难 C 和C++程序的各种 bug。
+根据上述章节中定义的核心 c # 语言，在将指针省略为数据类型时，它的不同之处在于 C 和 c + +。 相反，c # 提供了引用和创建由垃圾回收器管理的对象的功能。 此设计与其他功能结合使用，使 c # 比 C 或 c + + 更安全。 在核心 c # 语言中，不能使用未初始化的变量、"无关联的" 指针或索引超出其界限的数组的表达式。 这样就消除了经常灾难 C 和 c + + 程序的各种 bug。
 
-尽管实际上每个指针类型都是在C++ C 中构造的，或是C#在中具有对应的引用类型，但在某些情况下，访问指针类型是必需的。 例如，在不访问指针的情况下，与基础操作系统、访问内存映射设备或实现时间关键算法之间的交互可能是不可能的或不切实际的。 为了满足这一需求C# ，提供了编写***不安全代码***的功能。
+尽管 C 或 c + + 中的每个指针类型构造实际上都具有与 c # 对应的引用类型，但在某些情况下，访问指针类型是必需的。 例如，在不访问指针的情况下，与基础操作系统、访问内存映射设备或实现时间关键算法之间的交互可能是不可能的或不切实际的。 为了满足这一需要，c # 提供了编写***不安全代码***的功能。
 
-在不安全代码中，可以声明和操作指针、在指针和整型之间执行转换，以获取变量的地址等。 在某种意义上，编写不安全代码非常类似于在C#程序内编写 C 代码。
+在不安全代码中，可以声明和操作指针、在指针和整型之间执行转换，以获取变量的地址等。 在某种意义上，编写不安全代码非常类似于在 c # 程序中编写 C 代码。
 
-从开发人员和用户的角度来看，不安全代码实际上是一项 "安全" 功能。 必须使用修饰符 `unsafe`清楚地标记不安全代码，因此开发人员不可能意外地使用不安全的功能，并且执行引擎可以确保不受信任的环境中不能执行不安全的代码。
+从开发人员和用户的角度来看，不安全代码实际上是一项 "安全" 功能。 必须使用修饰符清楚地标记不安全的代码 `unsafe` ，因此开发人员不可能意外地使用不安全的功能，并且执行引擎可以确保不受信任的环境中不能执行不安全的代码。
 
 ## <a name="unsafe-contexts"></a>不安全上下文
 
-的不安全功能C#仅在不安全的上下文中可用。 通过在类型或成员的声明中包含 `unsafe` 修饰符或使用*unsafe_statement*，引入了不安全的上下文：
+C # 的 unsafe 功能只能在不安全的上下文中使用。 通过 `unsafe` 在类型或成员的声明中包含修饰符或使用*unsafe_statement*，引入了不安全的上下文：
 
-*  类、结构、接口或委托的声明可能包含 `unsafe` 修饰符，在这种情况下，该类型声明的整个文本范围（包括类、结构或接口的正文）被视为不安全的上下文。
+*  类、结构、接口或委托的声明可能包括 `unsafe` 修饰符，在这种情况下，该类型声明的整个文本范围（包括类、结构或接口的正文）被视为不安全的上下文。
 *  字段、方法、属性、事件、索引器、运算符、实例构造函数、析构函数或静态构造函数的声明可能包含 `unsafe` 修饰符，在这种情况下，该成员声明的整个文本范围被视为不安全的上下文。
 *  *Unsafe_statement*允许在*块*内使用不安全的上下文。 相关*块*的整个文本范围被视为不安全的上下文。
 
@@ -106,7 +106,7 @@ public unsafe struct Node
 }
 ```
 
-结构声明中指定的 `unsafe` 修饰符导致结构声明的整个文本区成为不安全的上下文。 因此，可以将 `Left` 和 `Right` 字段声明为指针类型。 上面的示例也可以编写
+`unsafe`结构声明中指定的修饰符导致结构声明的整个文本区成为不安全的上下文。 因此，可以将 `Left` 和 `Right` 字段声明为指针类型。 上面的示例也可以编写
 
 ```csharp
 public struct Node
@@ -117,9 +117,9 @@ public struct Node
 }
 ```
 
-此处，字段声明中的 `unsafe` 修饰符将导致这些声明被视为不安全的上下文。
+此处， `unsafe` 字段声明中的修饰符将导致这些声明被视为不安全的上下文。
 
-除了建立不安全的上下文，因而允许使用指针类型外，`unsafe` 修饰符对类型或成员不起作用。 示例中
+除了建立不安全的上下文，因而允许使用指针类型外，修饰符对 `unsafe` 类型或成员不起作用。 示例中
 
 ```csharp
 public class A
@@ -139,7 +139,7 @@ public class B: A
 }
 ```
 
-`A` 的 `F` 方法上的 `unsafe` 修饰符只是导致 `F` 的文本范围成为不安全的上下文，在此上下文中，可以使用该语言的不安全功能。 在 `B`中的 `F` 重写中，无需重新指定 `unsafe` 修饰符--除非当然，`B` 中的 `F` 方法本身需要访问不安全功能。
+`unsafe`中的方法的修饰符 `F` `A` 只是导致的文本范围 `F` 成为不安全的上下文，在此上下文中，可以使用该语言的不安全功能。 在的重写 `F` 中 `B` ，无需重新指定 `unsafe` 修饰符--除非当然， `F` 方法 `B` 本身需要访问不安全功能。
 
 当指针类型是方法签名的一部分时，情况会略有不同。
 
@@ -155,11 +155,11 @@ public class B: A
 }
 ```
 
-此处，因为 `F`的签名包含指针类型，所以只能在不安全的上下文中写入。 但是，不安全上下文可通过以下方式引入：使整个类不安全（如 `A`中的情况），或在方法声明中包含 `unsafe` 修饰符，如 `B`中的情况。
+此处，由于 `F` 的签名包含指针类型，因此只能在不安全的上下文中写入。 但是，通过使整个类不安全（如中的情况） `A` 或在 `unsafe` 方法声明中包含修饰符（如中的情况），可以引入 unsafe 上下文 `B` 。
 
 ## <a name="pointer-types"></a>指针类型
 
-在不安全的上下文中，*类型*（[类型](types.md)）可能是*pointer_type*以及*value_type*或*reference_type*。 但是，还可以在不安全的上下文之外的 `typeof` 表达式（[匿名对象创建表达式](expressions.md#anonymous-object-creation-expressions)）中使用*pointer_type* ，因为这种用法是不安全的。
+在不安全的上下文中，*类型*（[类型](types.md)）可能是*pointer_type*以及*value_type*或*reference_type*。 但是，也*pointer_type*可以在 `typeof` 不安全的上下文之外的表达式（[匿名对象创建表达式](expressions.md#anonymous-object-creation-expressions)）中使用 pointer_type。
 
 ```antlr
 type_unsafe
@@ -167,7 +167,7 @@ type_unsafe
     ;
 ```
 
-*Pointer_type*以*unmanaged_type*或关键字 `void`形式编写，后跟 `*` 标记：
+*Pointer_type*以*unmanaged_type*或关键字形式编写 `void` ，后跟一个 `*` 令牌：
 
 ```antlr
 pointer_type
@@ -180,13 +180,13 @@ unmanaged_type
     ;
 ```
 
-在指针类型中 `*` 之前指定的类型称为指针类型的***引用类型***。 它表示指针类型值指向的变量的类型。
+`*`在指针类型中之前指定的类型称为指针类型的***引用类型***。 它表示指针类型值指向的变量的类型。
 
 不同于引用（引用类型的值）时，不会由垃圾回收器跟踪指针-垃圾回收器不知道指针及其指向的数据。 出于此原因，不允许指针指向引用或包含引用的结构，并且指针的引用类型必须是*unmanaged_type*。
 
 *Unmanaged_type*是*reference_type*或构造类型之外的任何类型，并且在任何嵌套级别都不包含*reference_type*或构造类型字段。 换句话说， *unmanaged_type*是以下项之一：
 
-*  `sbyte`、`byte`、`short`、`ushort`、`int`、`uint`、`long`、`ulong`、`char`、`float`、`double`、`decimal`或 `bool`。
+*  `sbyte`、 `byte` 、 `short` 、 `ushort` 、 `int` 、 `uint` 、 `long` 、 `ulong` `char` `float` `double` `decimal` 、、、、或 `bool` 。
 *  任何*enum_type*。
 *  任何*pointer_type*。
 *  任何不是构造类型并且只包含*unmanaged_type*的字段的用户定义的*struct_type* 。
@@ -197,33 +197,33 @@ unmanaged_type
 
 | __示例__ | __描述__                               |
 |-------------|-----------------------------------------------|
-| `byte*`     | 指向 `byte` 的指针                             |
-| `char*`     | 指向 `char` 的指针                             |
-| `int**`     | 指向 `int` 指针的指针                   |
-| `int*[]`    | 指向 `int` 的指针的一维数组 |
+| `byte*`     | 指向`byte`                             |
+| `char*`     | 指向`char`                             |
+| `int**`     | 指向指向的指针的指针`int`                   |
+| `int*[]`    | 指向的指针的一维数组`int` |
 | `void*`     | 指向未知类型的指针                       |
 
 对于给定的实现，所有指针类型都必须具有相同的大小和表示形式。
 
-与 C 和C++不同，在同一声明中声明多个指针时， C#在 `*` 中仅与基础类型一起编写，而不作为每个指针名称的前缀标点符号。 例如
+与 C 和 c + + 不同，在 c # 中声明多个指针时， `*` 仅与基础类型一起编写，而不是作为每个指针名称的前缀标点符号。 例如：
 
 ```csharp
 int* pi, pj;    // NOT as int *pi, *pj;
 ```
 
-具有类型 `T*` 的指针的值表示 `T`类型的变量的地址。 指针间接寻址运算符 `*` （[指针间接寻址](unsafe-code.md#pointer-indirection)）可用于访问此变量。 例如，给定 `int*`类型的变量 `P`，expression `*P` 表示在 `P`中包含的地址处找到的 `int` 变量。
+具有 type 的指针的值 `T*` 表示类型的变量的地址 `T` 。 指针间接寻址运算符 `*` （[指针间接寻址](unsafe-code.md#pointer-indirection)）可用于访问此变量。 例如，给定一个 `P` 类型为的变量 `int*` ，该表达式 `*P` 表示在 `int` 中包含的地址处找到的变量 `P` 。
 
-与对象引用类似，指针可能 `null`。 将间接寻址运算符应用于 `null` 指针将导致实现定义的行为。 具有值 `null` 的指针由所有位均为零表示。
+与对象引用类似，指针可以为 `null` 。 将间接寻址运算符应用于 `null` 指针将导致实现定义的行为。 具有值的指针用 `null` 全部位0表示。
 
-`void*` 类型表示指向未知类型的指针。 由于引用类型未知，因此间接寻址运算符不能应用于类型 `void*`的指针，也不能对此类指针执行任何算术运算。 但是，类型 `void*` 的指针可以转换为任何其他指针类型（反之亦然）。
+`void*`类型表示指向未知类型的指针。 由于引用类型未知，因此间接寻址运算符不能应用于类型的指针 `void*` ，也不能对此类指针执行任何算术运算。 但类型的指针 `void*` 可以转换为任何其他指针类型（反之亦然）。
 
-指针类型是一种单独的类型类别。 与引用类型和值类型不同，指针类型不从 `object` 继承，并且指针类型和 `object`之间不存在转换。 特别是，指针不支持装箱和取消装箱（[装箱和取消](types.md#boxing-and-unboxing)装箱）。 但允许在不同指针类型之间以及指针类型和整型之间进行转换。 [指针转换](unsafe-code.md#pointer-conversions)中对此进行了说明。
+指针类型是一种单独的类型类别。 与引用类型和值类型不同，指针类型不从继承， `object` 并且指针类型与之间不存在转换 `object` 。 特别是，指针不支持装箱和取消装箱（[装箱和取消](types.md#boxing-and-unboxing)装箱）。 但允许在不同指针类型之间以及指针类型和整型之间进行转换。 [指针转换](unsafe-code.md#pointer-conversions)中对此进行了说明。
 
 *Pointer_type*不能用作类型参数（[构造类型](types.md#constructed-types)），并且类型推理（[类型推理](expressions.md#type-inference)）对泛型方法调用失败，而这种方法调用会将类型参数推断为指针类型。
 
 *Pointer_type*可以用作可变字段（[可变字段](classes.md#volatile-fields)）的类型。
 
-尽管指针可以作为 `ref` 或 `out` 参数传递，但这样做可能会导致未定义的行为，因为在调用的方法返回时，指针可能设置为指向某个局部变量，而在调用的方法返回时，或其所指向的固定对象不再是固定的。 例如：
+尽管指针可以作为 `ref` 或参数传递 `out` ，但这样做可能会导致未定义的行为，因为在调用的方法返回时，指针可能设置为指向某个局部变量，而在被调用的方法返回时，或其所指向的固定对象不再是固定的。 例如：
 
 ```csharp
 using System;
@@ -257,7 +257,7 @@ class Test
 }
 ```
 
-方法可以返回某种类型的值，并且该类型可以是指针。 例如，当给定指向连续 `int`s 序列的指针、序列的元素计数以及其他 `int` 值时，如果发生匹配，以下方法将返回该序列中该值的地址;否则，它将返回 `null`：
+方法可以返回某种类型的值，并且该类型可以是指针。 例如，当给定一个指向连续序列的指针 `int` 、序列的元素计数和其他某个 `int` 值时，如果发生匹配，以下方法将返回该序列中的该值的地址; 否则返回 `null` ：
 
 ```csharp
 unsafe static int* Find(int* pi, int size, int value) {
@@ -272,15 +272,15 @@ unsafe static int* Find(int* pi, int size, int value) {
 
 在不安全的上下文中，有多个构造可用于对指针进行操作：
 
-*  `*` 运算符可用于执行指针间接寻址（[指针间接](unsafe-code.md#pointer-indirection)寻址）。
-*  `->` 运算符可用于通过指针（[指针成员访问](unsafe-code.md#pointer-member-access)）访问结构的成员。
-*  `[]` 运算符可用于对指针（[指针元素访问](unsafe-code.md#pointer-element-access)）进行索引。
-*  `&` 运算符可用于获取变量的地址（[运算符的地址](unsafe-code.md#the-address-of-operator)）。
-*  `++` 和 `--` 运算符可用来递增和递减指针（[指针递增和递减](unsafe-code.md#pointer-increment-and-decrement)）。
-*  `+` 和 `-` 运算符可用于执行指针算法（[指针算法](unsafe-code.md#pointer-arithmetic)）。
-*  可以使用 `==`、`!=`、`<`、`>`、`<=`和 `=>` 运算符来比较指针（[指针比较](unsafe-code.md#pointer-comparison)）。
-*  `stackalloc` 运算符可用于从调用堆栈（[固定大小缓冲区](unsafe-code.md#fixed-size-buffers)）分配内存。
-*  可以使用 `fixed` 语句来暂时修复变量，以便可以获取其地址（[fixed 语句](unsafe-code.md#the-fixed-statement)）。
+*  `*`运算符可用于执行指针间接寻址（[指针间接](unsafe-code.md#pointer-indirection)寻址）。
+*  `->`运算符可用于通过指针（[指针成员访问](unsafe-code.md#pointer-member-access)）访问结构的成员。
+*  `[]`运算符可用于对指针（[指针元素访问](unsafe-code.md#pointer-element-access)）进行索引。
+*  `&`运算符可用于获取变量的地址（[运算符的地址](unsafe-code.md#the-address-of-operator)）。
+*  `++`和 `--` 运算符可用来递增和递减指针（[指针递增和递减](unsafe-code.md#pointer-increment-and-decrement)）。
+*  `+`和 `-` 运算符可用于执行指针算法（[指针算法](unsafe-code.md#pointer-arithmetic)）。
+*  、、、、 `==` `!=` `<` `>` `<=` 和运算符可 `>=` 用于比较指针（[指针比较](unsafe-code.md#pointer-comparison)）。
+*  `stackalloc`运算符可用于从调用堆栈（[固定大小缓冲区](unsafe-code.md#fixed-size-buffers)）分配内存。
+*  `fixed`语句可用于暂时修复变量，以便可以获取其地址（[fixed 语句](unsafe-code.md#the-fixed-statement)）。
 
 ## <a name="fixed-and-moveable-variables"></a>固定和可移动变量
 
@@ -288,38 +288,38 @@ Address 运算符（[address 运算符](unsafe-code.md#the-address-of-operator)�
 
 固定变量驻留在不受垃圾回收器操作影响的存储位置中。 （固定变量的示例包括局部变量、值参数和通过取消引用指针而创建的变量。）另一方面，可移动变量驻留在由垃圾回收器进行重定位或处置的存储位置。 （可移动变量的示例包括对象中的字段和数组的元素。）
 
-`&` 运算符（[地址运算符](unsafe-code.md#the-address-of-operator)）允许在不限制的情况下获取固定变量的地址。 但是，由于可移动变量可能会由垃圾回收器重定位或处置，因此只能使用 `fixed` 语句（[fixed 语句](unsafe-code.md#the-fixed-statement)）获取可移动变量的地址，并且该地址在 `fixed` 语句的持续时间内保持有效。
+`&`运算符（[地址为 "运算符"](unsafe-code.md#the-address-of-operator)）允许在不限制的情况下获取固定变量的地址。 但是，由于可移动变量可能会由垃圾回收器重定位或处置，因此只能使用 `fixed` 语句（[fixed 语句](unsafe-code.md#the-fixed-statement)）获取可移动变量的地址，并且该地址在该语句的持续时间内保持有效 `fixed` 。
 
 确切地说，固定变量是以下项之一：
 
 *  由引用本地变量或值参数的*simple_name* （[简单名称](expressions.md#simple-names)）产生的变量，除非该变量是由匿名函数捕获的。
-*  由 `V.I`格式的*member_access* （[成员访问](expressions.md#member-access)）产生的变量，其中 `V` 是*struct_type*的固定变量。
-*  由 `*P`的窗体的*pointer_indirection_expression* （[指针间接寻址](unsafe-code.md#pointer-indirection)）、`P->I`形式的*pointer_member_access* （[指针成员访问](unsafe-code.md#pointer-member-access)）或 pointer_element_access 形式的 *`P[E]`* （[指针元素访问](unsafe-code.md#pointer-element-access)）生成的变量。
+*  由形式的*member_access* （[成员访问](expressions.md#member-access)）产生的变量 `V.I` ，其中 `V` 是*struct_type*的固定变量。
+*  由窗体的*pointer_indirection_expression* （[指针间接寻址](unsafe-code.md#pointer-indirection)） `*P` 、窗体的*pointer_member_access* （[指针成员访问](unsafe-code.md#pointer-member-access)） `P->I` 或窗体的*pointer_element_access* （[指针元素访问](unsafe-code.md#pointer-element-access)）生成的变量 `P[E]` 。
 
 所有其他变量归类为可移动变量。
 
-请注意，静态字段归类为可移动变量。 另请注意，`ref` 或 `out` 参数归类为可移动变量，即使为参数提供的参数是固定变量。 最后请注意，通过取消引用指针生成的变量始终归类为固定变量。
+请注意，静态字段归类为可移动变量。 另请注意， `ref` 或 `out` 参数归类为可移动变量，即使为参数提供的参数是固定变量。 最后请注意，通过取消引用指针生成的变量始终归类为固定变量。
 
 ## <a name="pointer-conversions"></a>指针转换
 
 在不安全的上下文中，可以使用隐式转换集（[隐式转换](conversions.md#implicit-conversions)）进行扩展，以包括以下隐式指针转换：
 
-*  从任何*pointer_type*到类型的 `void*`。
+*  从任何*pointer_type*到类型 `void*` 。
 *  从 `null` 文本到任何*pointer_type*。
 
 此外，在不安全的上下文中，可使用的显式转换集（[显式转换](conversions.md#explicit-conversions)）进行扩展，以包括以下显式指针转换：
 
 *  从任何*pointer_type*到任何其他*pointer_type*。
-*  从 `sbyte`、`byte`、`short`、`ushort`、`int`、`uint`、`long`或 `ulong` 到任何*pointer_type*。
-*  从任何*pointer_type*到 `sbyte`、`byte`、`short`、`ushort`、`int`、`uint`、`long`或 `ulong`。
+*  从 `sbyte` 、 `byte` 、、、、、 `short` `ushort` `int` `uint` `long` 或 `ulong` 到任何*pointer_type*。
+*  从任何*pointer_type*到、、、、、、 `sbyte` `byte` `short` `ushort` `int` `uint` `long` 或 `ulong` 。
 
 最后，在不安全的上下文中，标准隐式转换集（[标准隐式转换](conversions.md#standard-implicit-conversions)）包括以下指针转换：
 
-*  从任何*pointer_type*到类型的 `void*`。
+*  从任何*pointer_type*到类型 `void*` 。
 
 两个指针类型之间的转换决不会更改实际指针的值。 换句话说，从一种指针类型到另一种类型的转换不会影响由指针提供的基础地址。
 
-当一种指针类型转换为另一种类型时，如果结果指针没有正确对齐所引用的类型，则该行为是不确定的。 通常，"正确对齐" 这一概念是可传递的：如果指向类型 `A` 的指针为指向类型 `B`的指针正确对齐，而后者又为指向类型 `C`的指针正确对齐，则指向类型 `A` 的指针将正确对齐到类型 `C`的指针。
+当一种指针类型转换为另一种类型时，如果结果指针没有正确对齐所引用的类型，则该行为是不确定的。 通常，"正确对齐" 这一概念是可传递的：如果指向类型的指针 `A` 正确地对齐了指向类型的指针，而后者又为指向类型的指针正确对齐，则指向该 `B` 类型的 `C` 指针 `A` 会正确对齐指向类型的指针 `C` 。
 
 请考虑以下情况：通过指向其他类型的指针访问具有一种类型的变量：
 
@@ -353,24 +353,24 @@ class Test
 
 当然，生成的输出取决于 endian。
 
-指针和整数之间的映射是实现定义的。 但是，在带有线性地址空间的 32 * 和64位 CPU 体系结构上，转换到整数类型或从整型转换到整数类型的方式通常与 `uint` 或 `ulong` 值的转换方式完全相同。
+指针和整数之间的映射是实现定义的。 但是，在带有线性地址空间的 32 * 和64位 CPU 体系结构上，转换到整数类型或从整型转换到整数类型的方式通常与 `uint` `ulong` 在这些整型类型之间的转换或值完全相同。
 
 ### <a name="pointer-arrays"></a>指针数组
 
 在不安全的上下文中，可以构造指针的数组。 对于指针数组，只允许使用某些适用于其他数组类型的转换：
 
-*  从任何*array_type*到 `System.Array` 以及它所实现的接口的隐[式引用转换](conversions.md#implicit-reference-conversions)也适用于指针数组。 但是，通过 `System.Array` 或它实现的接口访问数组元素的任何尝试都将导致运行时异常，因为指针类型无法转换为 `object`。
-*  从一维数组类型 `S[]` 隐式和显式引用转换（[隐式](conversions.md#implicit-reference-conversions)引用转换、[显式引用转换](conversions.md#explicit-reference-conversions)）到 `System.Collections.Generic.IList<T>` 及其泛型基接口从不应用于指针数组，因为指针类型不能用作类型参数，并且不能从指针类型转换为非指针类型。
-*  从 `System.Array` 显式引用转换（[显式引用](conversions.md#explicit-reference-conversions)转换）以及它为任何*array_type*实现的接口适用于指针数组。
-*  从 `System.Collections.Generic.IList<S>` 将显式引用转换（[显式引用转换](conversions.md#explicit-reference-conversions)）及其基接口转换为一维数组类型 `T[]` 从不适用于指针数组，因为指针类型不能用作类型参数，并且不能从指针类型转换为非指针类型。
+*  从任何*array_type*到的隐式引用转换（[隐式引用](conversions.md#implicit-reference-conversions)转换） `System.Array` 以及它实现的接口也适用于指针数组。 但是，只要尝试通过或其实现的接口访问数组元素，就 `System.Array` 会导致运行时出现异常，因为指针类型不能转换为 `object` 。
+*  隐式和显式引用转换（[隐式](conversions.md#implicit-reference-conversions)引用转换、[显式引用转换](conversions.md#explicit-reference-conversions)）（从一维数组类型 `S[]` 到 `System.Collections.Generic.IList<T>` 它的泛型基接口）从不适用于指针数组，因为指针类型不能用作类型参数，并且不能从指针类型转换为非指针类型。
+*  显式引用转换（[显式引用](conversions.md#explicit-reference-conversions)转换） `System.Array` 和它为任何*array_type*实现的接口都适用于指针数组。
+*  从的显式引用转换（[显式引用转换](conversions.md#explicit-reference-conversions)） `System.Collections.Generic.IList<S>` 和其基接口到一维数组类型 `T[]` 永远不会应用于指针数组，因为指针类型不能用作类型参数，并且不能从指针类型转换为非指针类型。
 
-这些限制意味着对[foreach 语句](statements.md#the-foreach-statement)中所述数组的 `foreach` 语句的扩展不能应用于指针数组。 相反，窗体的 foreach 语句
+这些限制意味着 `foreach` [foreach 语句](statements.md#the-foreach-statement)中所述的对数组的语句扩展不能应用于指针数组。 相反，窗体的 foreach 语句
 
 ```csharp
 foreach (V v in x) embedded_statement
 ```
 
-其中，`x` 的类型为 `T[,,...,]`形式的数组类型，`N` 为维数减1，`T` 或 `V` 是指针类型，使用嵌套的 for 循环进行扩展，如下所示：
+其中，的类型 `x` 为形式的数组类型 `T[,,...,]` ， `N` 为维数减1， `T` 或 `V` 为指针类型，使用嵌套的 for 循环展开，如下所示：
 
 ```csharp
 {
@@ -385,7 +385,7 @@ foreach (V v in x) embedded_statement
 }
 ```
 
-`a`、`i0`、`i1`、...、`iN` 的变量对 `x` 或*程序的任何*其他源代码都不可见或不可访问。 变量 `v` 在嵌入语句中是只读的。 如果没有从 `T` （元素类型）到 `V`的显式转换（[指针转换](unsafe-code.md#pointer-conversions)），则会生成错误，并且不会执行任何其他步骤。 如果 `x` 的值 `null`，则在运行时将引发 `System.NullReferenceException`。
+变量 `a` （ `i0` ，， `i1` ...）对 `iN` `x` 或*embedded_statement*或程序的任何其他源代码都不可见或可访问。 此变量 `v` 在嵌入语句中是只读的。 如果没有从（元素类型）到的显式转换（[指针转换](unsafe-code.md#pointer-conversions)） `T` `V` ，则会生成错误，并且不会执行任何其他步骤。 如果 `x` 具有值 `null` ， `System.NullReferenceException` 则会在运行时引发。
 
 ## <a name="pointers-in-expressions"></a>表达式中的指针
 
@@ -408,9 +408,9 @@ unary_expression_unsafe
 
 以下各节介绍了这些构造。 语法暗示了 unsafe 运算符的优先级和关联性。
 
-### <a name="pointer-indirection"></a>指针间接寻址
+### <a name="pointer-indirection"></a>指针间接
 
-*Pointer_indirection_expression*包含一个星号（`*`），后跟一个*unary_expression*。
+*Pointer_indirection_expression*包含一个星号（）， `*` 后跟一个*unary_expression*。
 
 ```antlr
 pointer_indirection_expression
@@ -418,17 +418,17 @@ pointer_indirection_expression
     ;
 ```
 
-一元 `*` 运算符表示指针间接寻址，用于获取指针所指向的变量。 计算 `*P`的结果（其中 `P` 是指针类型 `T*`的表达式）是 `T`类型的变量。 将一元 `*` 运算符应用到 `void*` 类型的表达式或不是指针类型的表达式时，会发生编译时错误。
+一元 `*` 运算符表示指针间接寻址，用于获取指针所指向的变量。 计算结果 `*P` （其中 `P` 是指针类型的表达式） `T*` 是类型的变量 `T` 。 将一元 `*` 运算符应用到类型的表达式 `void*` 或不是指针类型的表达式时，会发生编译时错误。
 
-向 `null` 指针应用一元 `*` 运算符的效果是实现定义的。 特别是，不能保证此操作引发 `System.NullReferenceException`。
+向指针应用一元运算符的效果 `*` `null` 是实现定义的。 特别是，不能保证此操作引发 `System.NullReferenceException` 。
 
-如果向指针分配了无效的值，则一元 `*` 运算符的行为是不确定的。 用于通过一元 `*` 运算符取消对指针的引用的无效值是为指向的类型（请参阅[指针转换](unsafe-code.md#pointer-conversions)中的示例）的不一致的地址，以及变量生存期结束后的变量地址。
+如果向指针分配了无效的值，则一元运算符的行为 `*` 是不确定的。 用于通过一元运算符取消引用指针的无效值中的 `*` 地址不能为所指向的类型（请参阅[指针转换](unsafe-code.md#pointer-conversions)中的示例）和变量在生存期结束后的地址进行不当调整。
 
-出于明确的赋值分析目的，通过计算形式 `*P` 的表达式所生成的变量被视为初始赋值（[最初分配的变量](variables.md#initially-assigned-variables)）。
+出于明确赋值分析的目的，通过对窗体的表达式进行计算而生成的变量 `*P` 被视为初始赋值（[最初分配的变量](variables.md#initially-assigned-variables)）。
 
 ### <a name="pointer-member-access"></a>指针成员访问
 
-*Pointer_member_access*包含一个*primary_expression*，后跟一个 "`->`" 标记，后跟一个*标识符*和一个可选的*type_argument_list*。
+*Pointer_member_access*包含一个*primary_expression*，后跟一个 " `->` " 标记，后跟一个*标识符*和一个可选的*type_argument_list*。
 
 ```antlr
 pointer_member_access
@@ -436,9 +436,9 @@ pointer_member_access
     ;
 ```
 
-在形式 `P->I`的指针成员访问中，`P` 必须是除 `void*`之外的指针类型的表达式，并且 `I` 必须表示 `P` 点的类型的可访问成员。
+在窗体的指针成员访问中 `P->I` ， `P` 必须是指针类型的表达式，而不是 `void*` ，并且 `I` 必须表示指向的类型的可访问成员 `P` 。
 
-形式 `P->I` 的指针成员访问权限完全按 `(*P).I`进行计算。 有关指针间接寻址运算符（`*`）的说明，请参阅[指针间接寻址](unsafe-code.md#pointer-indirection)。 有关成员访问运算符（`.`）的说明，请参阅[成员访问](expressions.md#member-access)。
+窗体的指针成员访问权限 `P->I` 完全相同 `(*P).I` 。 有关指针间接寻址运算符（）的说明 `*` ，请参阅[指针间接寻址](unsafe-code.md#pointer-indirection)。 有关成员访问运算符（）的说明 `.` ，请参阅[成员访问](expressions.md#member-access)。
 
 示例中
 
@@ -469,7 +469,7 @@ class Test
 }
 ```
 
-`->` 运算符用于访问字段并通过指针调用结构的方法。 由于 `P->I` 的操作完全等同于 `(*P).I`，因此，`Main` 方法的编写方式同样好：
+`->`运算符用于通过指针访问字段和调用结构的方法。 由于此操作 `P->I` 完全等效于 `(*P).I` ，因此，该 `Main` 方法的编写方法可能同样适用：
 
 ```csharp
 class Test
@@ -488,7 +488,7 @@ class Test
 
 ### <a name="pointer-element-access"></a>指针元素访问
 
-*Pointer_element_access*包含一个*primary_no_array_creation_expression*后跟一个括在 "`[`" 和 "`]`" 的表达式。
+*Pointer_element_access*包含一个*primary_no_array_creation_expression*后跟一个括在 " `[` " 和 "" 中的表达式 `]` 。
 
 ```antlr
 pointer_element_access
@@ -496,9 +496,9 @@ pointer_element_access
     ;
 ```
 
-在 `P[E]`形式的指针元素访问中，`P` 必须是 `void*`的指针类型的表达式，而 `E` 必须是可以隐式转换为 `int`、`uint`、`long`或 `ulong`的表达式。
+在窗体的指针元素访问中 `P[E]` ， `P` 必须是指针类型的表达式，而不是 `void*` ，并且 `E` 必须是可隐式转换为 `int` 、 `uint` 、或的表达式 `long` `ulong` 。
 
-`P[E]` 的窗体的指针元素访问都精确地按 `*(P + E)`进行计算。 有关指针间接寻址运算符（`*`）的说明，请参阅[指针间接寻址](unsafe-code.md#pointer-indirection)。 有关指针加法运算符（`+`）的说明，请参阅[指针算法](unsafe-code.md#pointer-arithmetic)。
+对窗体的指针元素的访问权限 `P[E]` 完全相同 `*(P + E)` 。 有关指针间接寻址运算符（）的说明 `*` ，请参阅[指针间接寻址](unsafe-code.md#pointer-indirection)。 有关指针加法运算符（）的说明 `+` ，请参阅[指针算法](unsafe-code.md#pointer-arithmetic)。
 
 示例中
 
@@ -514,7 +514,7 @@ class Test
 }
 ```
 
-指针元素访问用于在 `for` 循环中初始化字符缓冲区。 由于 `P[E]` 的操作完全等同于 `*(P + E)`，因此，该示例可能同样已写入：
+指针元素访问用于在循环中初始化字符缓冲区 `for` 。 由于此操作 `P[E]` 完全等效于 `*(P + E)` ，因此，该示例也可以正确编写：
 
 ```csharp
 class Test
@@ -528,11 +528,11 @@ class Test
 }
 ```
 
-指针元素访问运算符不会检查超出界限的错误，并且在访问超出界限的元素时的行为不确定。 这与 C 和C++相同。
+指针元素访问运算符不会检查超出界限的错误，并且在访问超出界限的元素时的行为不确定。 这与 C 和 c + + 相同。
 
-### <a name="the-address-of-operator"></a>Address 运算符
+### <a name="the-address-of-operator"></a>address-of 运算符
 
-*Addressof_expression*由 "and" 符（`&`） *unary_expression*开头。
+*Addressof_expression*由 "and" 符（ `&` ）开头，后跟一个*unary_expression*。
 
 ```antlr
 addressof_expression
@@ -540,9 +540,9 @@ addressof_expression
     ;
 ```
 
-给定 `T` 类型为的表达式 `E`，并将其归类为固定变量（固定变量[和可移动变量](unsafe-code.md#fixed-and-moveable-variables)），构造 `&E` 计算 `E`指定的变量的地址。 结果的类型为 `T*`，并归类为值。 如果 `E` 未分类为变量，则会发生编译时错误，如果 `E` 归类为只读局部变量，则会发生编译时错误; 如果 `E` 表示可移动的变量，则会发生编译时错误。 在最后一种情况下，可以使用 fixed 语句（[fixed 语句](unsafe-code.md#the-fixed-statement)）来暂时 "修复" 该变量，然后获取其地址。 如[成员访问](expressions.md#member-access)中所述，在定义 `readonly` 字段的结构或类的实例构造函数或静态构造函数之外，该字段被视为值而非变量。 因此无法采用其地址。 同样，不能采用常量的地址。
+给定一个类型为的表达式，该表达式 `E` `T` 归类为固定变量（固定变量[和可移动变量](unsafe-code.md#fixed-and-moveable-variables)），该构造 `&E` 计算给出的变量的地址 `E` 。 结果的类型为 `T*` ，并归类为值。 如果未分类为变量，则会发生编译时错误 `E` ，如果归类为只读局部变量，则会发生编译时错误; `E` 如果 `E` 表示可移动变量，则会发生编译时错误。 在最后一种情况下，可以使用 fixed 语句（[fixed 语句](unsafe-code.md#the-fixed-statement)）来暂时 "修复" 该变量，然后获取其地址。 如[成员访问](expressions.md#member-access)中所述，在定义字段的结构或类的实例构造函数或静态构造函数外部， `readonly` 该字段被视为值，而不是变量。 因此无法采用其地址。 同样，不能采用常量的地址。
 
-`&` 运算符不需要将其自变量指定为明确赋值，但在执行 `&` 操作后，该运算符应用于的变量在执行操作的执行路径中被视为明确赋值。 编程人员负责确保在这种情况下正确地初始化变量。
+`&`运算符不需要将其自变量指定为明确赋值，但在 `&` 操作后，该运算符应用于的变量在执行操作的执行路径中被视为已明确赋值。 编程人员负责确保在这种情况下正确地初始化变量。
 
 示例中
 
@@ -562,26 +562,26 @@ class Test
 }
 ```
 
-`i` 在用于初始化 `p`的 `&i` 操作后被视为已明确赋值。 对 `*p` 的赋值实际上会初始化 `i`，但包含此初始化是程序员的责任，并且如果删除分配，则不会发生编译时错误。
+`i`在用于初始化的操作后被视为已明确赋值 `&i` `p` 。 中的赋值将进行 `*p` 初始化 `i` ，但包含此初始化是程序员的责任，并且如果删除分配，则不会发生编译时错误。
 
-为 `&` 运算符提供明确赋值的规则，以便可以避免本地变量的冗余初始化。 例如，许多外部 Api 采用一个指向结构的指针，该结构由 API 填充。 调用此类 Api 通常会传递本地结构变量的地址，并且如果没有规则，则需要对结构变量进行冗余初始化。
+运算符的明确赋值规则 `&` 可避免局部变量的冗余初始化。 例如，许多外部 Api 采用一个指向结构的指针，该结构由 API 填充。 调用此类 Api 通常会传递本地结构变量的地址，并且如果没有规则，则需要对结构变量进行冗余初始化。
 
 ### <a name="pointer-increment-and-decrement"></a>指针增量和减量
 
-在不安全的上下文中，`++` 和 `--` 运算符（[后缀递增和递减运算符](expressions.md#postfix-increment-and-decrement-operators)以及[前缀增量和减量运算符](expressions.md#prefix-increment-and-decrement-operators)）可应用于除 `void*`之外的所有类型的指针变量。 因此，对于每个指针类型 `T*`，将隐式定义以下运算符：
+在不安全的上下文中， `++` 和 `--` 运算符（[后缀递增和递减运算符](expressions.md#postfix-increment-and-decrement-operators)以及[前缀增量和减量运算符](expressions.md#prefix-increment-and-decrement-operators)）可应用于除以外的所有类型的指针变量 `void*` 。 因此，对于每个指针类型 `T*` ，以下运算符都是隐式定义的：
 
 ```csharp
 T* operator ++(T* x);
 T* operator --(T* x);
 ```
 
-运算符分别与 `x + 1` 和 `x - 1`生成相同的结果（[指针算法](unsafe-code.md#pointer-arithmetic)）。 换言之，对于类型 `T*`的指针变量，`++` 运算符将 `sizeof(T)` 添加到变量中包含的地址，并且 `--` 运算符将从该变量中包含的地址减去 `sizeof(T)`。
+运算符分别与和生成相同的 `x + 1` 结果 `x - 1` （[指针算法](unsafe-code.md#pointer-arithmetic)）。 换言之，对于类型为的指针变量， `T*` `++` 运算符将添加 `sizeof(T)` 到变量中包含的地址， `--` 运算符将从该 `sizeof(T)` 变量中包含的地址中减去。
 
 如果指针增量或减量运算溢出了指针类型的域，则结果是实现定义的，但不会产生异常。
 
 ### <a name="pointer-arithmetic"></a>指针算术
 
-在不安全的上下文中，`+` 和 `-` 运算符（[加法运算符](expressions.md#addition-operator)和[减法运算符](expressions.md#subtraction-operator)）可应用于除 `void*`之外的所有指针类型的值。 因此，对于每个指针类型 `T*`，将隐式定义以下运算符：
+在不安全的上下文中， `+` 和 `-` 运算符（[加法运算符](expressions.md#addition-operator)和[减法运算符](expressions.md#subtraction-operator)）可应用于除之外的所有指针类型的值 `void*` 。 因此，对于每个指针类型 `T*` ，以下运算符都是隐式定义的：
 
 ```csharp
 T* operator +(T* x, int y);
@@ -602,9 +602,9 @@ T* operator -(T* x, ulong y);
 long operator -(T* x, T* y);
 ```
 
-给定表达式 `P` 指针类型 `T*` 和类型 `int`、`uint`、`long`或 `ulong`的表达式 `N`，表达式 `P + N` 和 `N + P` 会计算类型 `T*` 的指针值，结果是将 `N * sizeof(T)` 添加到 `P`给定的地址。 同样，表达式 `P - N` 会计算类型 `T*` 的指针值，因为从 `P`给定的地址中减去 `N * sizeof(T)` 产生的结果。
+给定 `P` 指针类型的表达式 `T*` 和 `N` 类型为 `int` 、、或的表达式时 `uint` `long` `ulong` ，表达式 `P + N` 和 `N + P` 计算类型的指针值，该类型是 `T*` 通过将添加 `N * sizeof(T)` 到给定的地址来生成的 `P` 。 同样，表达式 `P - N` 会计算类型的指针值 `T*` ，结果是从给定的地址中减去 `N * sizeof(T)` `P` 。
 
-给定指针类型 `T*`的两个表达式（`P` 和 `Q`），表达式 `P - Q` 计算 `P` 和 `Q` 给定的地址之间的差异，然后将该差异除以 `sizeof(T)`。 结果的类型始终 `long`。 实际上，`P - Q` 是 `((long)(P) - (long)(Q)) / sizeof(T)`计算得出的。
+如果有两个表达式（ `P` 和 `Q` ）作为指针类型 `T*` ，则表达式将 `P - Q` 计算与给定的地址之间的差异， `P` 然后将 `Q` 该差异除以 `sizeof(T)` 。 结果的类型始终为 `long` 。 实际上， `P - Q` 将计算为 `((long)(P) - (long)(Q)) / sizeof(T)` 。
 
 例如：
 
@@ -636,7 +636,7 @@ q - p = 14
 
 ### <a name="pointer-comparison"></a>指针比较
 
-在不安全的上下文中，`==`、`!=`、`<`、`>`、`<=`和 `=>` 运算符（[关系和类型测试运算符](expressions.md#relational-and-type-testing-operators)）可应用于所有指针类型的值。 指针比较运算符是：
+在不安全的上下文中，、、、 `==` `!=` `<` `>` 、 `<=` 和 `=>` 运算符（[关系和类型测试运算符](expressions.md#relational-and-type-testing-operators)）可应用于所有指针类型的值。 指针比较运算符是：
 
 ```csharp
 bool operator ==(void* x, void* y);
@@ -647,11 +647,11 @@ bool operator <=(void* x, void* y);
 bool operator >=(void* x, void* y);
 ```
 
-由于存在从任何指针类型到 `void*` 类型的隐式转换，因此可以使用这些运算符比较任何指针类型的操作数。 比较运算符比较两个操作数给定的地址，就像它们是无符号整数。
+由于存在从任何指针类型到类型的隐式转换 `void*` ，因此可以使用这些运算符比较任何指针类型的操作数。 比较运算符比较两个操作数给定的地址，就像它们是无符号整数。
 
 ### <a name="the-sizeof-operator"></a>Sizeof 运算符
 
-`sizeof` 运算符返回给定类型的变量所占用的字节数。 指定为 `sizeof` 的操作数的类型必须是*unmanaged_type* （[指针类型](unsafe-code.md#pointer-types)）。
+`sizeof` 运算符返回给定类型的变量所占用的字节数。 指定为操作数的类型 `sizeof` 必须为*unmanaged_type* （[指针类型](unsafe-code.md#pointer-types)）。
 
 ```antlr
 sizeof_expression
@@ -659,7 +659,7 @@ sizeof_expression
     ;
 ```
 
-`sizeof` 运算符的结果是 `int`类型的值。 对于某些预定义类型，`sizeof` 运算符产生一个常数值，如下表所示。
+运算符的结果 `sizeof` 为类型的值 `int` 。 对于某些预定义类型， `sizeof` 运算符将生成一个常数值，如下表所示。
 
 
 | __表达式__   | __结果__ |
@@ -677,7 +677,7 @@ sizeof_expression
 | `sizeof(double)` | `8`        |
 | `sizeof(bool)`   | `1`        |
 
-对于所有其他类型，`sizeof` 运算符的结果是实现定义的，并归类为值而不是常量。
+对于所有其他类型，运算符的结果 `sizeof` 是实现定义的，并归类为值而不是常量。
 
 成员打包到结构中的顺序是未指定的。
 
@@ -685,7 +685,7 @@ sizeof_expression
 
 当应用于具有结构类型的操作数时，结果为该类型的变量中的总字节数，包括任何空白。
 
-## <a name="the-fixed-statement"></a>Fixed 语句
+## <a name="the-fixed-statement"></a>fixed 语句
 
 在不安全的上下文中， *embedded_statement* （[语句](statements.md)）生产允许使用其他构造，即 `fixed` 语句，该语句用于 "修复" 可移动变量，使其地址在语句的持续时间内保持不变。
 
@@ -708,18 +708,18 @@ fixed_pointer_initializer
     ;
 ```
 
-每个*fixed_pointer_declarator*都声明给定*pointer_type*的局部变量，并使用相应*fixed_pointer_initializer*计算出的地址初始化该局部变量。 在 `fixed` 语句中声明的局部变量可在该变量的声明右侧和 `fixed` 语句的*embedded_statement*中的任何*fixed_pointer_initializer*进行访问。 `fixed` 语句声明的局部变量被视为只读。 如果嵌入的语句尝试修改此局部变量（通过赋值或 `++` 和 `--` 运算符），或将其作为 `ref` 或 `out` 参数传递，则会发生编译时错误。
+每个*fixed_pointer_declarator*都声明给定*pointer_type*的局部变量，并使用相应*fixed_pointer_initializer*计算出的地址初始化该局部变量。 语句中声明的局部变量 `fixed` 可在该变量的声明右侧以及语句的*embedded_statement*中发生的任何*fixed_pointer_initializer*中访问 `fixed` 。 语句声明的局部变量 `fixed` 被视为只读。 如果嵌入的语句尝试修改此局部变量（通过赋值或 `++` 和 `--` 运算符），或将其作为 `ref` 或参数传递，则会发生编译时错误 `out` 。
 
 *Fixed_pointer_initializer*可以是以下项之一：
 
-*  标记 "`&`" 后跟*variable_reference* （[确定明确赋值的精确规则](variables.md#precise-rules-for-determining-definite-assignment)）到非托管类型 `T`的可移动变量（[固定和可移动变量](unsafe-code.md#fixed-and-moveable-variables)），前提是该类型 `T*` 可隐式转换为 `fixed` 语句中给定的指针类型。 在这种情况下，初始值设定项将计算给定变量的地址，并且在 `fixed` 语句的持续时间内，该变量可保证保持为固定地址。
-*  带有非托管类型 `T`元素的*array_type*的表达式，前提是该类型 `T*` 可隐式转换为 `fixed` 语句中给定的指针类型。 在这种情况下，初始值设定项计算数组中第一个元素的地址，并且在 `fixed` 语句的持续时间内保证整个数组保持为固定的地址。 如果数组表达式为 null 或数组包含零个元素，则初始值设定项将计算等于零的地址。
-*  如果类型 `char*` 可隐式转换为 `fixed` 语句中给定的指针类型，则为 `string`类型的表达式。 在这种情况下，初始值设定项将计算字符串中第一个字符的地址，并且在 `fixed` 语句的持续时间内保证整个字符串保持为固定地址。 如果字符串表达式为 null，则 `fixed` 语句的行为是实现定义的。
-*  如果固定大小缓冲区成员的类型可隐式转换为在 `fixed` 语句中给定的指针类型，则引用可移动变量的固定大小缓冲区成员的*simple_name*或*member_access* 。 在这种情况下，初始值设定项将计算一个指针，该指针指向固定大小缓冲区的第一个元素（[表达式中的固定大小缓冲区](unsafe-code.md#fixed-size-buffers-in-expressions)），并且在 `fixed` 语句的持续时间内保证固定大小缓冲区保持为固定地址。
+*  标记 " `&` " 后跟一个*variable_reference* （用于[确定明确赋值的精确规则](variables.md#precise-rules-for-determining-definite-assignment)）到非托管类型的可移动变量（[固定和可移动变量](unsafe-code.md#fixed-and-moveable-variables)） `T` ，前提是该类型可 `T*` 隐式转换为语句中给定的指针类型 `fixed` 。 在这种情况下，初始值设定项将计算给定变量的地址，并且在语句的持续时间内保证变量在固定的地址上保持不变 `fixed` 。
+*  包含非托管类型的元素的*array_type*的表达式 `T` ，前提是该类型可 `T*` 隐式转换为语句中给定的指针类型 `fixed` 。 在这种情况下，初始值设定项计算数组中第一个元素的地址，并且保证整个数组在语句的持续时间内保持为固定的地址 `fixed` 。 如果数组表达式为 null 或数组包含零个元素，则初始值设定项将计算等于零的地址。
+*  `string`如果类型可 `char*` 隐式转换为语句中给定的指针类型，则为类型的表达式 `fixed` 。 在这种情况下，初始值设定项将计算字符串中第一个字符的地址，并且保证整个字符串在语句的持续时间内保持为固定地址 `fixed` 。 `fixed`如果字符串表达式为 null，则语句的行为是实现定义的。
+*  引用可移动变量的固定大小缓冲区成员的*simple_name*或*member_access* ，前提是固定大小缓冲区成员的类型可隐式转换为语句中给定的指针类型 `fixed` 。 在这种情况下，初始值设定项将计算一个指针，该指针指向固定大小缓冲区的第一个元素（[表达式中的固定大小缓冲区](unsafe-code.md#fixed-size-buffers-in-expressions)），并且在语句的持续时间内保证固定大小缓冲区保持为固定的地址 `fixed` 。
 
-对于由*fixed_pointer_initializer*计算得出的每个地址，`fixed` 语句可确保在 `fixed` 语句的持续时间内，垃圾回收器不会将该地址引用的变量重定位或释放。 例如，如果由*fixed_pointer_initializer*计算的地址引用一个对象的字段或数组实例的一个元素，则 `fixed` 语句保证在该语句的生存期内不会重新定位或释放包含对象实例。
+对于由*fixed_pointer_initializer*计算的每个地址，该 `fixed` 语句可确保在语句的持续时间内，由垃圾回收器在该地址引用的变量不会重定位或释放 `fixed` 。 例如，如果由*fixed_pointer_initializer*计算的地址引用一个对象的字段或数组实例的一个元素，则该 `fixed` 语句保证在语句的生存期内不会重新定位或释放包含对象实例。
 
-程序员应负责确保 `fixed` 语句创建的指针不会在执行这些语句的范围之外。 例如，当 `fixed` 语句创建的指针传递到外部 Api 时，程序员应负责确保 Api 不保留这些指针的内存。
+编程人员应负责确保由语句创建的指针 `fixed` 不会在执行这些语句的范围之外。 例如，当语句创建的指针 `fixed` 被传递给外部 api 时，程序员应负责确保 api 不保留这些指针的内存。
 
 固定对象可能会导致堆碎片（因为它们无法移动）。 因此，仅当绝对必要时才应修复对象，而只应在尽可能最短的时间进行修复。
 
@@ -748,11 +748,11 @@ class Test
 }
 ```
 
-演示 `fixed` 语句的几次使用。 第一条语句修复并获取静态字段的地址，第二条语句修复并获取实例字段的地址，第三条语句修复并获取数组元素的地址。 在每种情况下，使用 regular `&` 运算符都是错误的，因为变量全都归类为可移动变量。
+演示语句的几次使用 `fixed` 。 第一条语句修复并获取静态字段的地址，第二条语句修复并获取实例字段的地址，第三条语句修复并获取数组元素的地址。 在每种情况下，使用 regular 运算符都是错误的， `&` 因为变量全都归类为可移动变量。
 
-上面示例中的第四个 `fixed` 语句将产生类似于第三个的结果。
+上面示例中的第四个 `fixed` 语句生成的结果类似于第三个。
 
-此 `fixed` 语句的示例使用 `string`：
+此语句的示例 `fixed` 使用 `string` ：
 
 ```csharp
 class Test
@@ -773,7 +773,7 @@ class Test
 }
 ```
 
-在不安全的上下文数组元素中，一维数组的元素按索引顺序存储，从索引 `0` 开始，以 index `Length - 1`结束。 对于多维数组，将存储数组元素，这样最右边的维度的索引将首先增加，然后是下一个左侧维度，依此类推。 在 `fixed` 语句中获取指向数组实例 `a`的指针 `p`，指针值范围从 `p` 到 `p + a.Length - 1` 表示数组中元素的地址。 同样，从 `p[0]` 到 `p[a.Length - 1]` 的变量表示实际数组元素。 考虑到数组的存储方式，可以将任何维度的数组视为线性数组。
+在不安全的上下文数组元素中，一维数组的元素以递增索引顺序存储，以 index 开头， `0` 以 index 结尾 `Length - 1` 。 对于多维数组，将存储数组元素，这样最右边的维度的索引将首先增加，然后是下一个左侧维度，依此类推。 在 `fixed` 获取指向数组实例的指针的语句中 `p` `a` ，从到的指针值 `p` 用于 `p + a.Length - 1` 表示数组中元素的地址。 同样，范围内的变量 `p[0]` 用于 `p[a.Length - 1]` 表示实际数组元素。 考虑到数组的存储方式，可以将任何维度的数组视为线性数组。
 
 例如：
 
@@ -830,9 +830,9 @@ class Test
 }
 ```
 
-使用 `fixed` 语句修复数组，以便可以将其地址传递给采用指针的方法。
+`fixed`语句用于修复数组，以便可以将其地址传递给采用指针的方法。
 
-在下面的示例中：
+在示例中：
 
 ```csharp
 unsafe struct Font
@@ -865,11 +865,11 @@ class Test
 
 fixed 语句用于修复结构的固定大小缓冲区，使其地址可用作指针。
 
-通过修复字符串实例产生 `char*` 值始终指向以 null 结尾的字符串。 在 `s``p` 获取指向字符串实例的指针的固定语句中，指针值从 `p` 到 `p + s.Length - 1` 表示字符串中的字符的地址，指针值 `p + s.Length` 始终指向 null 字符（值为 `'\0'`的字符）。
+`char*`通过修复字符串实例生成的值始终指向以 null 结尾的字符串。 在获取指向字符串实例的指针的 fixed 语句中 `p` `s` ，从到的指针值（范围 `p` 为 `p + s.Length - 1` ）表示字符串中的字符的地址，指针值 `p + s.Length` 始终指向空字符（带有值的字符 `'\0'` ）。
 
 通过固定指针修改托管类型的对象可能导致未定义的行为。 例如，因为字符串是不可变的，所以，程序员应负责确保不会修改指向固定字符串的指针所引用的字符。
 
-在调用需要 "C 样式" 字符串的外部 Api 时，字符串的自动 null 终止非常方便。 但请注意，字符串实例允许包含 null 字符。 如果存在此类 null 字符，则该字符串将在被视为以 null 结尾的 `char*`时出现截断。
+在调用需要 "C 样式" 字符串的外部 Api 时，字符串的自动 null 终止非常方便。 但请注意，字符串实例允许包含 null 字符。 如果存在这样的空字符，则在被视为以 null 结尾的情况下，该字符串将会被截断 `char*` 。
 
 ## <a name="fixed-size-buffers"></a>固定大小的缓冲区
 
@@ -906,17 +906,17 @@ fixed_size_buffer_declarator
     ;
 ```
 
-固定大小的缓冲区声明可以包含一组属性（[特性](attributes.md)）、一个 `new` 修饰符（[修饰符](classes.md#modifiers)）、四个访问修饰符（[类型参数和约束](classes.md#type-parameters-and-constraints)）和 `unsafe` 修饰符（[不安全上下文](unsafe-code.md#unsafe-contexts)）的有效组合。 特性和修饰符适用于由固定大小缓冲区声明声明的所有成员。 同一修饰符在固定大小的缓冲区声明中多次出现是错误的。
+固定大小的缓冲区声明可以包含一组特性（[特性](attributes.md)）、 `new` 修饰符（[修饰符](classes.md#modifiers)）、四个访问修饰符（[类型参数和约束](classes.md#type-parameters-and-constraints)）和 `unsafe` 修饰符（[不安全上下文](unsafe-code.md#unsafe-contexts)）的有效组合。 特性和修饰符适用于由固定大小缓冲区声明声明的所有成员。 同一修饰符在固定大小的缓冲区声明中多次出现是错误的。
 
 固定大小的缓冲区声明不允许包含 `static` 修饰符。
 
-固定大小缓冲区声明的 buffer 元素类型指定声明引入的缓冲区的元素类型。 Buffer 元素类型必须是预定义的类型之一 `sbyte`、`byte`、`short`、`ushort`、`int`、`uint`、`long`、`ulong`、`char`、`float`、`double`或 `bool`。
+固定大小缓冲区声明的 buffer 元素类型指定声明引入的缓冲区的元素类型。 Buffer 元素类型必须是预定义的类型之一：、、、、、、、、、 `sbyte` `byte` `short` `ushort` `int` `uint` `long` `ulong` `char` `float` `double` 或 `bool` 。
 
-Buffer 元素类型后跟固定大小缓冲区声明符的列表，其中每个声明符都引入一个新成员。 固定大小的缓冲区声明符包含一个命名成员的标识符，后跟一个括在 `[` 和 `]` 令牌中的常量表达式。 常数表达式表示该固定大小缓冲区声明符引入的成员中的元素数目。 常数表达式的类型必须可隐式转换为类型 `int`，且值必须为非零正整数。
+Buffer 元素类型后跟固定大小缓冲区声明符的列表，其中每个声明符都引入一个新成员。 固定大小的缓冲区声明符包含命名成员的标识符，后跟括在和标记中的常量 `[` 表达式 `]` 。 常数表达式表示该固定大小缓冲区声明符引入的成员中的元素数目。 常数表达式的类型必须可隐式转换为类型 `int` ，并且值必须为非零正整数。
 
 保证固定大小缓冲区的元素在内存中按顺序排列。
 
-声明多个固定大小缓冲区的固定大小缓冲区声明等效于具有相同属性和元素类型的单个固定大小缓冲区声明的多个声明。 例如
+声明多个固定大小缓冲区的固定大小缓冲区声明等效于具有相同属性和元素类型的单个固定大小缓冲区声明的多个声明。 例如：
 
 ```csharp
 unsafe struct A
@@ -942,14 +942,14 @@ unsafe struct A
 
 使用*simple_name* （[类型推理](expressions.md#type-inference)）或*member_access* （对[动态重载决策进行编译时检查](expressions.md#compile-time-checking-of-dynamic-overload-resolution)），可以在表达式中引用固定大小的缓冲区。
 
-当将固定大小的缓冲区成员作为简单名称引用时，其效果与窗体 `this.I`的成员访问相同，其中 `I` 为固定大小缓冲区成员。
+当将固定大小的缓冲区成员作为简单名称引用时，其效果与窗体的成员访问相同 `this.I` ，其中 `I` 是固定大小的缓冲区成员。
 
-在窗体 `E.I`的成员访问中，如果 `E` 为结构类型，并且该结构类型中的 `I` 的成员查找标识固定大小成员，则按如下方式计算 `E.I`：
+在窗体的成员访问中 `E.I` ，如果 `E` 属于结构类型，并且 `I` 该结构类型中的成员查找标识固定大小成员，则 `E.I` 将按如下方式对其进行评估：
 
 *  如果表达式 `E.I` 未出现在不安全的上下文中，则会发生编译时错误。
 *  如果 `E` 归类为值，则会发生编译时错误。
 *  否则，如果 `E` 是可移动变量（[固定和可移动变量](unsafe-code.md#fixed-and-moveable-variables)），并且表达式 `E.I` 不是*fixed_pointer_initializer* （[Fixed 语句](unsafe-code.md#the-fixed-statement)），则会发生编译时错误。
-*  否则，`E` 引用了一个固定变量，并且该表达式的结果是一个指向 `E`中固定大小缓冲区成员 `I` 的第一个元素的指针。 结果的类型为 `S*`，其中 `S` 是 `I`的元素类型，并归类为值。
+*  否则， `E` 引用一个固定变量，并且该表达式的结果是指向中的固定大小缓冲区成员的第一个元素的 `I` 指针 `E` 。 结果的类型为 `S*` ，其中 `S` 是的元素类型 `I` ，并归类为值。
 
 可以使用第一个元素的指针操作访问固定大小缓冲区的后续元素。 与对数组的访问不同，对固定大小缓冲区的元素的访问是不安全的操作，并且不会进行范围检查。
 
@@ -1002,13 +1002,13 @@ stackalloc_initializer
 
 *Unmanaged_type*指示将存储在新分配的位置的项的类型，并且*表达式*指示这些项的数目。 它们一起指定了所需的分配大小。 由于堆栈分配的大小不能为负，因此将项的数目指定为计算结果为负值的*constant_expression*是编译时错误。
 
-格式 `stackalloc T[E]` 的堆栈分配初始值设定项需要 `T` 为非托管类型（[指针类型](unsafe-code.md#pointer-types)），并且 `E` 是 `int`类型的表达式。 构造从调用堆栈分配 `E * sizeof(T)` 字节，并将 `T*`类型的指针返回到新分配的块。 如果 `E` 为负值，则行为是不确定的。 如果 `E` 为零，则不进行任何分配，并且返回的指针是实现定义的。 如果内存不足，无法分配指定大小的块，则会引发 `System.StackOverflowException`。
+窗体的堆栈分配初始值设定项 `stackalloc T[E]` 需要为 `T` 非托管类型（[指针类型](unsafe-code.md#pointer-types)），并且 `E` 必须是类型的表达式 `int` 。 构造 `E * sizeof(T)` 从调用堆栈分配字节，并将类型的指针返回 `T*` 到新分配的块。 如果 `E` 是负值，则行为是不确定的。 如果 `E` 为零，则不进行任何分配，并且返回的指针是实现定义的。 如果内存不足，无法分配指定大小的块， `System.StackOverflowException` 则会引发。
 
 新分配的内存的内容未定义。
 
-`catch` 或 `finally` 块（[try 语句](statements.md#the-try-statement)）中不允许使用堆栈分配初始值设定项。
+或块中不允许使用堆栈分配初始值设定项 `catch` `finally` （[try 语句](statements.md#the-try-statement)）。
 
-无法显式释放使用 `stackalloc`分配的内存。 在函数成员执行过程中创建的所有堆栈分配的内存块将在该函数成员返回时自动被丢弃。 这对应于 `alloca` 函数，这是一个在 C 和C++实现中常见的扩展。
+无法显式释放使用分配 `stackalloc` 的内存。 在函数成员执行过程中创建的所有堆栈分配的内存块将在该函数成员返回时自动被丢弃。 这对应于 `alloca` 函数，这是一个在 C 和 c + + 实现中常见的扩展。
 
 示例中
 
@@ -1038,11 +1038,11 @@ class Test
 }
 ```
 
-`stackalloc` 初始值设定项用在 `IntToString` 方法中，用于在堆栈上分配16个字符的缓冲区。 当该方法返回时，缓冲区会自动丢弃。
+`stackalloc`在方法中使用初始值设定项在 `IntToString` 堆栈上分配16个字符的缓冲区。 当该方法返回时，缓冲区会自动丢弃。
 
 ## <a name="dynamic-memory-allocation"></a>动态内存分配
 
-除 `stackalloc` 运算符外， C#不提供用于管理非垃圾回收内存的预定义构造。 此类服务通常通过支持类库来提供，也可以从基础操作系统直接导入。 例如，下面的 `Memory` 类演示了如何从C#访问基础操作系统的堆函数：
+除了运算符以外 `stackalloc` ，c # 不提供用于管理非垃圾回收内存的预定义构造。 此类服务通常通过支持类库来提供，也可以从基础操作系统直接导入。 例如，下面的 `Memory` 类演示了如何从 c # 访问基础操作系统的堆函数：
 
 ```csharp
 using System;
@@ -1124,7 +1124,7 @@ public static unsafe class Memory
 }
 ```
 
-下面给出了使用 `Memory` 类的示例：
+`Memory`下面给出了使用类的示例：
 
 ```csharp
 class Test
@@ -1149,4 +1149,4 @@ class Test
 }
 ```
 
-该示例通过 `Memory.Alloc` 分配256字节的内存，并使用从0到255的值增加内存块。 然后，它分配一个256元素字节数组，并使用 `Memory.Copy` 将内存块的内容复制到字节数组中。 最后，使用 `Memory.Free` 释放内存块，并在控制台上输出字节数组的内容。
+该示例通过分配256字节的内存 `Memory.Alloc` ，并初始化值从0增加到255的内存块。 然后，它分配一个256元素字节数组，并使用将 `Memory.Copy` 内存块的内容复制到字节数组中。 最后，使用释放内存块， `Memory.Free` 并在控制台上输出字节数组的内容。
