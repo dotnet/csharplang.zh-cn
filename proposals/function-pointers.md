@@ -1,14 +1,14 @@
 ---
-ms.openlocfilehash: 6bf0b29d16297ae5201d9a7773fc9cb95a47f9cb
-ms.sourcegitcommit: 1bb454804d017a9ca18c5de47737dd1d68ce3eea
+ms.openlocfilehash: 22d949c50fa041f2599c8a90e5322a7db2156a29
+ms.sourcegitcommit: c25bf006cd9c2f2ccaecd150db1d93bc1b1314fc
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/02/2020
-ms.locfileid: "85835138"
+ms.lasthandoff: 07/22/2020
+ms.locfileid: "86943271"
 ---
 # <a name="function-pointers"></a>函数指针
 
-## <a name="summary"></a>总结
+## <a name="summary"></a>摘要
 
 此建议提供的语言构造提供当前无法有效访问或根本不能在 c # 中访问的 IL 操作码： `ldftn` 和 `calli` 。 这些 IL 操作码在高性能代码中非常重要，开发人员需要一种高效的访问方式。
 
@@ -306,6 +306,7 @@ C # 识别从 ECMA 335 映射到特定现有非托管的4个特殊标识符 `Cal
 * 在前面追加 `identifier` 字符串`CallConv`
 * 我们仅查看在命名空间中定义的类型 `System.Runtime.CompilerServices` 。
 * 我们仅查看在应用程序的核心库中定义的类型，它是用于定义 `System.Object` 和没有依赖项的库。
+* 我们仅探讨公共类型。
 
 如果在中指定的所有上 `identifier` 进行查找成功 `unmanaged_calling_convention` ，我们会将编码 `CallKind` 为 `unmanaged ext` ，并对 `modopt` 函数指针签名开头的一组中的每个已解析类型进行编码。 请注意，这些规则意味着用户不能 `identifier` 使用作为的前缀 `CallConv` ，因为这会导致查找 `CallConvCallConvVectorCall` 。
 
@@ -314,6 +315,7 @@ C # 识别从 ECMA 335 映射到特定现有非托管的4个特殊标识符 `Cal
 * 是在核心库中定义的，它是不引用其他库和定义的库 `System.Object` 。
 * 类型是在命名空间中定义的 `System.Runtime.CompilerServices` 。
 * 类型以前缀开头 `CallConv` 。
+* 类型是公共的。
 
  这表示 `identifier` `unmanaged_calling_convention` 当在源中定义函数指针类型时对中的执行查找时必须找到的类型。
 
