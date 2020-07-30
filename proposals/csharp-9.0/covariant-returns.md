@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 9cfc0758f16b2153d52faec1d19f0ecd817cde3b
-ms.sourcegitcommit: 0c25406d8a99064bb85d934bb32ffcf547753acc
+ms.openlocfilehash: 06ad8ee3795615c200c0eab48facd7d2f5e90e78
+ms.sourcegitcommit: a88d56e3131d7a94c65e637c276379541a3cd491
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/28/2020
-ms.locfileid: "87297253"
+ms.lasthandoff: 07/30/2020
+ms.locfileid: "87434509"
 ---
 # <a name="covariant-return-types"></a>协变返回类型
 
@@ -13,7 +13,7 @@ ms.locfileid: "87297253"
 * [] 实现：未启动
 * [X] 规范：未启动
 
-## <a name="summary"></a>摘要
+## <a name="summary"></a>总结
 [summary]: #summary
 
 支持_协变返回类型_。 具体而言，允许重写方法以返回比它重写的方法更多的派生返回类型，同样，允许重写只读属性以返回派生程度更高的返回类型。 方法或属性的调用方将从调用中静态接收更精确的返回类型，并且在更多派生的类型中出现的重写将要求至少提供一个返回类型，使其在其基类型的重写中出现。
@@ -50,7 +50,7 @@ class CSharpCompilation : Compilation
 
 ### <a name="class-method-override"></a>类方法重写
 
-[类重写方法上的现有约束](https://github.com/dotnet/csharplang/blob/master/spec/classes.md#override-methods)
+[类重写方法上的现有约束](../../spec/classes.md#override-methods)
 
 > - 重写方法和重写的基方法具有相同的返回类型。
 
@@ -61,19 +61,19 @@ class CSharpCompilation : Compilation
 以下附加要求将追加到该列表：
 
 > - 重写方法必须有一个返回类型，该返回类型可通过标识或隐式引用转换转换为重写方法的（直接或间接）基类型中声明的重写基方法的返回类型。
-> - 重写方法的返回类型必须至少具有与 override 方法（[可访问域](https://github.com/dotnet/csharplang/blob/master/spec/basic-concepts.md#accessibility-domains)）相同的可访问性。
+> - 重写方法的返回类型必须至少具有与 override 方法（[可访问域](../../spec/basic-concepts.md#accessibility-domains)）相同的可访问性。
 
 此约束允许类中的重写方法 `private` 具有 `private` 返回类型。  但是，它要求 `public` 类型中的重写方法 `public` 具有 `public` 返回类型。
 
 ### <a name="class-property-and-indexer-override"></a>类属性和索引器替代
 
-[类重写属性的现有约束](https://github.com/dotnet/csharplang/blob/master/spec/classes.md#virtual-sealed-override-and-abstract-property-accessors)
+[类重写属性的现有约束](../../spec/classes.md#virtual-sealed-override-and-abstract-property-accessors)
 
 > 重写属性声明应将完全相同的可访问性修饰符和名称指定为继承的属性，并且应在~~重写的类型和继承的属性之间~~进行标识转换。 如果继承的属性只有一个访问器（即，如果继承的属性是只读的或只写的），则重写属性应仅包含该访问器。 如果继承的属性包含两个访问器（即，如果继承的属性是读写的），则重写属性可以包含单个访问器或两个访问器。
 
 已修改为
 
-> 重写属性声明应将完全相同的可访问性修饰符和名称指定为继承的属性，并且应**从重写属性的类型到继承属性的类型的隐式引用转换（如果继承的属性是只读的）隐式引用转换**。 如果继承的属性只有一个访问器（即，如果继承的属性是只读的或只写的），则重写属性应仅包含该访问器。 如果继承的属性包含两个访问器（即，如果继承的属性是读写的），则重写属性可以包含单个访问器或两个访问器。 **重写属性的类型必须至少具有与重写属性（[可访问域](https://github.com/dotnet/csharplang/blob/master/spec/basic-concepts.md#accessibility-domains)）相同的可访问性。**
+> 重写属性声明应将完全相同的可访问性修饰符和名称指定为继承的属性，并且应**从重写属性的类型到继承属性的类型的隐式引用转换（如果继承的属性是只读的）隐式引用转换**。 如果继承的属性只有一个访问器（即，如果继承的属性是只读的或只写的），则重写属性应仅包含该访问器。 如果继承的属性包含两个访问器（即，如果继承的属性是读写的），则重写属性可以包含单个访问器或两个访问器。 **重写属性的类型必须至少具有与重写属性（[可访问域](../../spec/basic-concepts.md#accessibility-domains)）相同的可访问性。**
 
 ***下面的草案规范的其余部分建议更进一步扩展接口方法的协变返回，以备稍后考虑。***
 

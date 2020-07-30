@@ -1,14 +1,14 @@
 ---
-ms.openlocfilehash: 42839a8c233468dd0b5ec6dad436dc71f056a6d9
-ms.sourcegitcommit: 0c25406d8a99064bb85d934bb32ffcf547753acc
+ms.openlocfilehash: 615bacf466daf34a2785c616b4ff5e622decd2f1
+ms.sourcegitcommit: a88d56e3131d7a94c65e637c276379541a3cd491
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/28/2020
-ms.locfileid: "87297259"
+ms.lasthandoff: 07/30/2020
+ms.locfileid: "87434500"
 ---
 # <a name="native-sized-integers"></a>本机大小的整数
 
-## <a name="summary"></a>摘要
+## <a name="summary"></a>总结
 [summary]: #summary
 
 本机大小的有符号和无符号整数类型的语言支持。
@@ -196,7 +196,7 @@ _如果至少有一个操作数的类型为 `nint` 或 `nuint` _，则在重载�
 具体而言，表达式绑定为， `x = (T)(x op y)` 其中 `T` 是的类型 `x` ，其中 `x` 只计算一次。
 
 如果为4，则移位运算符应将位数屏蔽为 shift + 5 位 `sizeof(nint)` ，如果为8，则为6位 `sizeof(nint)` 。
-（请参阅 c # 规范中的[移位运算符](https://github.com/dotnet/csharplang/blob/master/spec/expressions.md#shift-operators)）。
+（请参阅 c # 规范中的[移位运算符](../../spec/expressions.md#shift-operators)）。
 
 ### <a name="dynamic"></a>动态
 

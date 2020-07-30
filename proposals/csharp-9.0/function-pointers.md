@@ -1,14 +1,14 @@
 ---
-ms.openlocfilehash: 22d949c50fa041f2599c8a90e5322a7db2156a29
-ms.sourcegitcommit: 0c25406d8a99064bb85d934bb32ffcf547753acc
+ms.openlocfilehash: c2e8a4d1d2be0955aa55ec46fb78132f3c55b785
+ms.sourcegitcommit: 71813f1643651699d67b2208757c650bc6ecaf78
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/28/2020
-ms.locfileid: "87297277"
+ms.lasthandoff: 07/29/2020
+ms.locfileid: "87388539"
 ---
 # <a name="function-pointers"></a>函数指针
 
-## <a name="summary"></a>摘要
+## <a name="summary"></a>总结
 
 此建议提供的语言构造提供当前无法有效访问或根本不能在 c # 中访问的 IL 操作码： `ldftn` 和 `calli` 。 这些 IL 操作码在高性能代码中非常重要，开发人员需要一种高效的访问方式。
 
@@ -138,7 +138,7 @@ funcptr_return_modifier
     ;
 ```
 
-如果未 `calling_convention_specifier` 提供，则默认值为 `managed` 。 在 `calling_convention_specifier` `identifier` `unmanaged_calling_convention` [调用约定的元数据表示形式](#Metadata-Representation-of-Calling-Conventions)中介绍了的精确元数据编码以及在中有效的。
+如果未 `calling_convention_specifier` 提供，则默认值为 `managed` 。 在 `calling_convention_specifier` `identifier` `unmanaged_calling_convention` [调用约定的元数据表示形式](#metadata-representation-of-calling-conventions)中介绍了的精确元数据编码以及在中有效的。
 
 ``` csharp
 delegate int Func1(string s);
@@ -234,19 +234,19 @@ unsafe class Util {
 
 > 在不安全的上下文中，有多个构造可用于在 \_ 不 _funcptr type_s 的所有 _pointer type_s 上运行 \_ ：
 >
-> *  `*`运算符可用于执行指针间接寻址（[指针间接](unsafe-code.md#pointer-indirection)寻址）。
-> *  `->`运算符可用于通过指针（[指针成员访问](unsafe-code.md#pointer-member-access)）访问结构的成员。
-> *  `[]`运算符可用于对指针（[指针元素访问](unsafe-code.md#pointer-element-access)）进行索引。
-> *  `&`运算符可用于获取变量的地址（[运算符的地址](unsafe-code.md#the-address-of-operator)）。
-> *  `++`和 `--` 运算符可用来递增和递减指针（[指针递增和递减](unsafe-code.md#pointer-increment-and-decrement)）。
-> *  `+`和 `-` 运算符可用于执行指针算法（[指针算法](unsafe-code.md#pointer-arithmetic)）。
-> *  、、、、 `==` `!=` `<` `>` `<=` 和运算符可 `=>` 用于比较指针（[指针比较](unsafe-code.md#pointer-comparison)）。
-> *  `stackalloc`运算符可用于从调用堆栈（[固定大小缓冲区](unsafe-code.md#fixed-size-buffers)）分配内存。
-> *  `fixed`语句可用于暂时修复变量，以便可以获取其地址（[fixed 语句](unsafe-code.md#the-fixed-statement)）。
+> *  `*`运算符可用于执行指针间接寻址（[指针间接](../../spec/unsafe-code.md#pointer-indirection)寻址）。
+> *  `->`运算符可用于通过指针（[指针成员访问](../../spec/unsafe-code.md#pointer-member-access)）访问结构的成员。
+> *  `[]`运算符可用于对指针（[指针元素访问](../../spec/unsafe-code.md#pointer-element-access)）进行索引。
+> *  `&`运算符可用于获取变量的地址（[运算符的地址](../../spec/unsafe-code.md#the-address-of-operator)）。
+> *  `++`和 `--` 运算符可用来递增和递减指针（[指针递增和递减](../../spec/unsafe-code.md#pointer-increment-and-decrement)）。
+> *  `+`和 `-` 运算符可用于执行指针算法（[指针算法](../../spec/unsafe-code.md#pointer-arithmetic)）。
+> *  、、、、 `==` `!=` `<` `>` `<=` 和运算符可 `=>` 用于比较指针（[指针比较](../../spec/unsafe-code.md#pointer-comparison)）。
+> *  `stackalloc`运算符可用于从调用堆栈（[固定大小缓冲区](../../spec/unsafe-code.md#fixed-size-buffers)）分配内存。
+> *  `fixed`语句可用于暂时修复变量，以便可以获取其地址（[fixed 语句](../../spec/unsafe-code.md#the-fixed-statement)）。
 > 
 > 在不安全的上下文中，有多个构造可用于在所有 _funcptr type_s 上操作 \_ ：
-> *  `&`运算符可用于获取静态方法的地址（[允许目标方法的地址](function-pointers.md#allow-address-of-to-target-methods)）
-> *  、、、、 `==` `!=` `<` `>` `<=` 和运算符可 `=>` 用于比较指针（[指针比较](unsafe-code.md#pointer-comparison)）。
+> *  `&`运算符可用于获取静态方法的地址（[允许目标方法的地址](#allow-address-of-to-target-methods)）
+> *  、、、、 `==` `!=` `<` `>` `<=` 和运算符可 `=>` 用于比较指针（[指针比较](../../spec/unsafe-code.md#pointer-comparison)）。
 
 此外，我们修改中的所有部分 `Pointers in expressions` 以禁止函数指针类型（和除外） `Pointer comparison` `The sizeof operator` 。
 

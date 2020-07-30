@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: bfdd44c81a40c49b26ac15a69d2327f795bd88e6
-ms.sourcegitcommit: 0c25406d8a99064bb85d934bb32ffcf547753acc
+ms.openlocfilehash: f5a97f699b552094b8b21aeceabe2aac0a478d98
+ms.sourcegitcommit: a88d56e3131d7a94c65e637c276379541a3cd491
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/28/2020
-ms.locfileid: "87297255"
+ms.lasthandoff: 07/30/2020
+ms.locfileid: "87434459"
 ---
 # <a name="target-typed-conditional-expression"></a>目标类型的条件表达式
 
@@ -25,24 +25,24 @@ ms.locfileid: "87297255"
 > 
 > 给定了 `C1` 从表达式转换为类型的隐式转换 `E` `T1` ，以及 `C2` 从表达式转换为类型的隐式转换， `E` `T2` `C1` 是比***better conversion*** `C2` `E` 不完全匹配 `T2` 且至少包含以下其中一项的更好的转换：
 > 
-> * `E`完全匹配 `T1` （[完全匹配的表达式](expressions.md#exactly-matching-expression)）
-> * `T1`比更好的转换目标 `T2` （[更好的转换目标](expressions.md#better-conversion-target)）
+> * `E`完全匹配 `T1` （[完全匹配的表达式](../../spec/expressions.md#exactly-matching-expression)）
+> * `T1`比更好的转换目标 `T2` （[更好的转换目标](../../spec/expressions.md#better-conversion-target)）
 
-实例部署到 Windows Azure 虚拟机 (VM) 中的
+to
 
 > #### <a name="better-conversion-from-expression"></a>表达式的更好转换
 > 
 > 给定了 `C1` 从表达式转换为类型的隐式转换 `E` `T1` ，以及 `C2` 从表达式转换为类型的隐式转换， `E` `T2` `C1` 是比***better conversion*** `C2` `E` 不完全匹配 `T2` 且至少包含以下其中一项的更好的转换：
 > 
-> * `E`完全匹配 `T1` （[完全匹配的表达式](expressions.md#exactly-matching-expression)）
+> * `E`完全匹配 `T1` （[完全匹配的表达式](../../spec/expressions.md#exactly-matching-expression)）
 > * **`C1`不是一个*条件表达式转换*，并且 `C2` 是一个 * 条件表达式转换 * * *。
-> * `T1`比 `T2` （[更好的转换目标](expressions.md#better-conversion-target)） * * 更好的转换目标，并且 `C1` 和 `C2` 都是*条件表达式*转换，或者两者都不是 * 条件表达式转换 * * *。
+> * `T1`比 `T2` （[更好的转换目标](../../spec/expressions.md#better-conversion-target)） * * 更好的转换目标，并且 `C1` 和 `C2` 都是*条件表达式*转换，或者两者都不是 * 条件表达式转换 * * *。
 
 ## <a name="cast-expression"></a>Cast 表达式
 
 当前 c # 语言规范显示
 
-> 窗体的*cast_expression* `(T)E` ，其中 `T` 是一个*类型*并且 `E` 是一个*unary_expression*，它执行到类型的值的显式转换（[显式转换](conversions.md#explicit-conversions)） `E` `T` 。
+> 窗体的*cast_expression* `(T)E` ，其中 `T` 是一个*类型*并且 `E` 是一个*unary_expression*，它执行到类型的值的显式转换（[显式转换](../../spec/conversions.md#explicit-conversions)） `E` `T` 。
 
 存在*条件表达式转换*时，可能有多个从到的转换可能 `E` `T` 。 通过添加*条件表达式转换*，我们更喜欢将任何其他转换转换为*条件表达式转换*，并将*条件表达式转换*仅用作最后的手段。
 

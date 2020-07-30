@@ -1,18 +1,18 @@
 ---
-ms.openlocfilehash: 6fbc866af9971d86a287b026013e235e5b25fc21
-ms.sourcegitcommit: 0c25406d8a99064bb85d934bb32ffcf547753acc
+ms.openlocfilehash: c4fc0bd978e02bbd4da6ed77fe1d2ac3533b2c12
+ms.sourcegitcommit: a88d56e3131d7a94c65e637c276379541a3cd491
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/28/2020
-ms.locfileid: "87297269"
+ms.lasthandoff: 07/30/2020
+ms.locfileid: "87434478"
 ---
 <a name="extending-partial-methods"></a>扩展分部方法
 =====
 
-## <a name="summary"></a>摘要
+## <a name="summary"></a>总结
 此建议旨在消除对 c # 中的方法的签名的所有限制 `partial` 。 目标是扩展一组方案，在这些方案中，这些方法可与源生成器一起使用，并且是更通用的 c # 方法声明形式。
 
-另请参阅[原始分部方法规范](/spec/classes.md#partial-methods)。
+另请参阅[原始分部方法规范](../../spec/classes.md#partial-methods)。
 
 ## <a name="motivation"></a>动机
 对于将方法拆分为声明和定义/实现的开发人员，c # 提供了有限的支持。 
