@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 8a888c789909c3e818328e5521e47f4dcbbd5a88
-ms.sourcegitcommit: 0c25406d8a99064bb85d934bb32ffcf547753acc
+ms.openlocfilehash: 412f91c7097aa1068f82513842dc35b55abd02e7
+ms.sourcegitcommit: cd3c18237ba6f0bee94788c480bca099285d2096
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/28/2020
-ms.locfileid: "87297256"
+ms.lasthandoff: 07/31/2020
+ms.locfileid: "87471371"
 ---
 
 # <a name="records"></a>记录
@@ -32,12 +32,14 @@ record_body
 ```
 
 记录类型是引用类型，类似于类声明。 如果不包含，记录将提供一个错误 `record_base` `argument_list` `record_declaration` `parameter_list` 。
+部分记录最多只能有一个分部类型声明提供 `parameter_list` 。
+如果为空，则是错误的 `parameter_list` 。
 
 记录参数不能 `ref` 使用 `out` 或 `this` 修饰符（但 `in` `params` 允许和）。
 
 ## <a name="inheritance"></a>继承
 
-除非类为 `object` ，且类不能从记录继承，否则记录不能从类继承。
+除非类为 `object` ，且类不能从记录继承，否则记录不能从类继承。 记录可以继承自其他记录。
 
 ## <a name="members-of-a-record-type"></a>记录类型的成员
 
@@ -65,8 +67,6 @@ protected override Type EqualityContract { get; };
 可以显式声明属性。 如果显式声明与预期的签名或辅助功能不匹配，或者如果显式声明不允许在派生类型中 overiding 它且记录类型不匹配，则是错误的 `sealed` 。 如果合成的或显式声明的属性未在记录类型中重写具有此签名的属性 `Base` （例如，在 `Base` 、密封或非虚拟的情况下，或者在不是虚拟的情况下），则是错误的。
 合成属性返回 `typeof(R)` ，其中 `R` 是记录类型。
 
-_`EqualityContract`如果记录类型为 `sealed` 且派生自，是否可以忽略 `System.Object` ？_
-
 记录类型实现 `System.IEquatable<R>` 并包含合成型强类型重载， `Equals(R? other)` 其中 `R` 是记录类型。
 方法为 `public` ，并且方法为， `virtual` 除非记录类型为 `sealed` 。
 可以显式声明方法。 如果显式声明与预期的签名或辅助功能不匹配，或显式声明不允许在派生类型中 overiding 它，并且记录类型不是，则是错误的 `sealed` 。
@@ -78,6 +78,15 @@ public virtual bool Equals(R? other);
 - 对于 `fieldN` 记录类型中不是继承的每个实例字段，其中的值 `System.Collections.Generic.EqualityComparer<TN>.Default.Equals(fieldN, other.fieldN)` `TN` 为字段类型，而
 - 如果有基本记录类型，则的值 `base.Equals(other)` （对的非虚拟调用 `public virtual bool Equals(Base? other)` ）; 否则为的值 `EqualityContract == other.EqualityContract` 。
 
+记录类型包括合成 `==` 运算符和与 `!=` 运算符等效的运算符，如下所示：
+```C#
+pubic static bool operator==(R? r1, R? r2)
+    => (object)r1 == r2 || (r1?.Equals(r2) ?? false);
+public static bool operator!=(R? r1, R? r2)
+    => !(r1 == r2);
+```
+`Equals`运算符调用的方法 `==` 是 `Equals(R? other)` 上面指定的方法。 `!=`运算符委托给 `==` 运算符。 如果显式声明了运算符，则是错误的。
+    
 如果记录类型是从基本记录类型派生的 `Base` ，则记录类型包括合成重写等效于如下所示的方法：
 ```C#
 public sealed override bool Equals(Base? other);
@@ -109,7 +118,7 @@ public override int GetHashCode();
 ```C#
 record R1(T1 P1);
 record R2(T1 P1, T2 P2) : R1(P1);
-record R2(T1 P1, T2 P2, T3 P3) : R2(P1, P2);
+record R3(T1 P1, T2 P2, T3 P3) : R2(P1, P2);
 ```
 
 对于这些记录类型，合成成员将如下所示：
@@ -125,6 +134,10 @@ class R1 : IEquatable<R1>
             EqualityContract == other.EqualityContract &&
             EqualityComparer<T1>.Default.Equals(P1, other.P1);
     }
+    pubic static bool operator==(R1? r1, R1? r2)
+        => (object)r1 == r2 || (r1?.Equals(r2) ?? false);
+    public static bool operator!=(R1? r1, R1? r2)
+        => !(r1 == r2);    
     public override int GetHashCode()
     {
         return Combine(EqualityComparer<Type>.Default.GetHashCode(EqualityContract),
@@ -143,6 +156,10 @@ class R2 : R1, IEquatable<R2>
         return base.Equals((R1?)other) &&
             EqualityComparer<T2>.Default.Equals(P2, other.P2);
     }
+    pubic static bool operator==(R2? r1, R2? r2)
+        => (object)r1 == r2 || (r1?.Equals(r2) ?? false);
+    public static bool operator!=(R2? r1, R2? r2)
+        => !(r1 == r2)`;    
     public override int GetHashCode()
     {
         return Combine(base.GetHashCode(),
@@ -161,6 +178,10 @@ class R3 : R2, IEquatable<R3>
         return base.Equals((R2?)other) &&
             EqualityComparer<T3>.Default.Equals(P3, other.P3);
     }
+    pubic static bool operator==(R3? r1, R3? r2)
+        => (object)r1 == r2 || (r1?.Equals(r2) ?? false);
+    public static bool operator!=(R3? r1, R3? r2)
+        => !(r1 == r2);    
     public override int GetHashCode()
     {
         return Combine(base.GetHashCode(),
@@ -242,6 +263,7 @@ member_initializer
     : identifier '=' expression
     ;
 ```
+`with`表达式不允许作为语句。
 
 `with`表达式允许 "非破坏性转变"，旨在生成接收方表达式的副本，并在中对赋值进行修改 `member_initializer_list` 。
 
