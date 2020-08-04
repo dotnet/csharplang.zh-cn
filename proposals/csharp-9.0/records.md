@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 412f91c7097aa1068f82513842dc35b55abd02e7
-ms.sourcegitcommit: cd3c18237ba6f0bee94788c480bca099285d2096
+ms.openlocfilehash: d862df4b5cf6026eb93397f78ccad220012cd2ed
+ms.sourcegitcommit: 4f02d029d1354e333dd80fcafb6fd04b4b0649fb
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/31/2020
-ms.locfileid: "87471371"
+ms.lasthandoff: 08/03/2020
+ms.locfileid: "87521338"
 ---
 
 # <a name="records"></a>记录
@@ -159,7 +159,7 @@ class R2 : R1, IEquatable<R2>
     pubic static bool operator==(R2? r1, R2? r2)
         => (object)r1 == r2 || (r1?.Equals(r2) ?? false);
     public static bool operator!=(R2? r1, R2? r2)
-        => !(r1 == r2)`;    
+        => !(r1 == r2);    
     public override int GetHashCode()
     {
         return Combine(base.GetHashCode(),
