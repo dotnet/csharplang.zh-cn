@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: a42c55a8ebeb848cd0df906363c2feb327331ef6
-ms.sourcegitcommit: 0c25406d8a99064bb85d934bb32ffcf547753acc
+ms.openlocfilehash: e0e18660cb3dbb6bfea77dd860ef7aa1388a3ca3
+ms.sourcegitcommit: f22293533088b7527fa88d8916711b1d6a9ce5fd
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/28/2020
-ms.locfileid: "87297250"
+ms.lasthandoff: 08/05/2020
+ms.locfileid: "87802414"
 ---
 # <a name="top-level-statements"></a>顶级语句
 
@@ -13,10 +13,10 @@ ms.locfileid: "87297250"
 * [x] 实现：已启动
 * [] 规范：未启动
 
-## <a name="summary"></a>摘要
+## <a name="summary"></a>总结
 [summary]: #summary
 
-允许一系列*语句*在*compilation_unit*的*namespace_member_declaration*（即源文件）之前立即发生。
+允许一系列*语句*直接出现在*compilation_unit* (的*namespace_member_declaration*（即源文件) ）之前。
 
 语义是，如果存在这样一系列*语句*，则将发出下面的类型声明，取模实际类型名称和方法名称：
 
@@ -52,7 +52,7 @@ compilation_unit
 
 只允许一个*compilation_unit*具有*语句*。 
 
-例如：
+示例：
 
 ``` c#
 if (args.Length == 0
@@ -91,10 +91,10 @@ static class Program
 在顶级语句中允许使用异步操作，使其能够在常规异步入口点方法中的语句中使用。 但是，它们不是必需的，如果 `await` 省略了表达式和其他异步操作，则不会生成任何警告。
 
 生成的入口点方法的签名根据顶级语句使用的操作来确定，如下所示：
-**Async-operations\Return-with-expression** | **存在** | **缺少**
-----------------------------------------| -------------|-------------
-**存在** | ```static Task<int> Main(string[] args)```| ```static Task Main(string[] args)```
-**缺少**  | ```static int Main(string[] args)``` | ```static void Main(string[] args)```
+| **Async-operations\Return-with-expression** | **现值** | **不存在** |
+|----------------------------------------|-------------|-------------|
+| **现值** | ```static Task<int> Main(string[] args)```| ```static Task Main(string[] args)``` |
+| **不存在**  | ```static int Main(string[] args)``` | ```static void Main(string[] args)``` |
 
 以上示例将生成以下 `$Main` 方法声明：
 
@@ -185,5 +185,5 @@ static class $Program
 
 如果简单名称计算在顶级语句之外进行，并且计算产生顶级局部变量或函数，则会导致错误。
 
-通过这种方式，我们可以帮助我们更好地处理 "顶级函数" （中的方案 2 https://github.com/dotnet/csharplang/issues/3117) ），并能够向错误地认为受支持的用户提供有用的诊断。
+通过这种方式，我们可以保护我们的未来功能，从而更好地解决中的 "顶级功能" (情况 2 https://github.com/dotnet/csharplang/issues/3117) ，并能够向错误地认为受支持的用户提供有用的诊断。
 
