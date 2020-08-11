@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: c2e8a4d1d2be0955aa55ec46fb78132f3c55b785
-ms.sourcegitcommit: 71813f1643651699d67b2208757c650bc6ecaf78
+ms.openlocfilehash: 5580323e47df890962d8d2228c93592f1f57a2b1
+ms.sourcegitcommit: eade6b9b5501bd0313aa88934f0f1ee1c1c4cc9a
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/29/2020
-ms.locfileid: "87388539"
+ms.lasthandoff: 08/11/2020
+ms.locfileid: "88059457"
 ---
 # <a name="function-pointers"></a>函数指针
 
@@ -14,7 +14,7 @@ ms.locfileid: "87388539"
 
 ## <a name="motivation"></a>动机
 
-以下问题中介绍了此功能的动机和背景（这是此功能的一个潜在实现方式）：
+下面的问题中描述了此功能的动机和背景， (方式是功能) 的可能实现：
 
 https://github.com/dotnet/csharplang/issues/191
 
@@ -38,7 +38,7 @@ unsafe class Example {
 这些类型使用 ECMA-335 中所述的函数指针类型来表示。 这意味着对的调用将 `delegate*` 使用对 `calli` `delegate` 方法使用的调用 `callvirt` `Invoke` 。
 当然，对于这两种构造，调用是相同的。
 
-方法指针的 ECMA-335 定义将调用约定包含为类型签名（第7.1 节）的一部分。
+方法指针的 ECMA-335 定义包含调用约定，作为类型签名的一部分 (节 7.1) 。
 默认调用约定将为 `managed` 。 通过 `unmanaged` 将关键字叫到 `delegate*` 将使用运行时平台默认的语法，可以指定非托管调用约定。 然后，可以 `unmanaged` 通过在 `CallConv` 命名空间中指定以命名空间开头的任何类型，将特定的非托管约定括在括号中 `System.Runtime.CompilerServices` 。 这些类型必须来自程序的核心库，并且一组有效的组合依赖于平台。
 
 ``` csharp
@@ -113,6 +113,7 @@ unmanaged_calling_convention
     | 'Thiscall'
     | 'Fastcall'
     | identifier (',' identifier)*
+    ;
 
 funptr_parameter_list
     : (funcptr_parameter ',')*
@@ -155,14 +156,14 @@ delegate*<delegate* managed<string, int>, delegate*<string, int>>;
 
 ### <a name="function-pointer-conversions"></a>函数指针转换
 
-在不安全的上下文中，可以使用隐式转换集（隐式转换）进行扩展，以包括以下隐式指针转换：
+在不安全的上下文中，将扩展 (隐式转换) 的可用隐式转换集，使其包含以下隐式指针转换：
 - [_现有转换_](https://github.com/dotnet/csharplang/blob/master/spec/unsafe-code.md#pointer-conversions)
 - 如果满足以下所有条件，则从_funcptr \_ 类型_ `F0` 到另一_funcptr \_ 类型_ `F1` ：
     - `F0`和 `F1` 具有相同数量的参数，中的每个参数与 `D0n` `F0` `ref` `out` `in` 中的相应参数具有相同的、或修饰符 `D1n` `F1` 。
-    - 对于每个值参数（不带 `ref` 、 `out` 或修饰符的参数 `in` ），从中的参数类型 `F0` 到中的相应参数类型存在标识转换、隐式引用转换或隐式指针转换 `F1` 。
+    - 对于每个 value 参数 (没有 `ref` 、 `out` 或 `in` 修饰符) 的参数，存在从中的参数类型 `F0` 到中的相应参数类型的标识转换、隐式引用转换或隐式指针转换 `F1` 。
     - 对于每个 `ref` 、 `out` 或 `in` 参数，中的参数类型与 `F0` 中相应的参数类型相同 `F1` 。
-    - 如果返回类型是 by 值（no `ref` 或 `ref readonly` ），则标识、隐式引用或隐式指针转换从的返回类型到的 `F1` 返回类型 `F0` 。
-    - 如果返回类型是按引用（ `ref` 或 `ref readonly` ），则的返回类型和修饰符与的 `ref` `F1` 返回类型和 `ref` 修饰符相同 `F0` 。
+    - 如果返回类型是通过值 (no `ref` 或 `ref readonly`) 、标识、隐式引用或隐式指针转换从的返回类型 `F1` 到的返回类型 `F0` 。
+    - 如果返回类型是按引用 (`ref` 或 `ref readonly`) ，则的返回类型和修饰符与的 `ref` `F1` 返回类型和 `ref` 修饰符相同 `F0` 。
     - 的调用约定与的 `F0` 调用约定相同 `F1` 。
 
 ### <a name="allow-address-of-to-target-methods"></a>允许目标方法的地址
@@ -177,30 +178,27 @@ unsafe class Util {
         delegate*<void> ptr1 = &Util.Log;
 
         // Error: type "delegate*<void>" not compatible with "delegate*<int>";
-        delegate*<int> ptr2 = &Util.Log;
 
-        // Okay. Conversion to void* is always allowed.
-        void* v = &Util.Log;
    }
 }
 ```
 
 在不安全的上下文中， `M` `F` 如果满足以下所有条件，则方法与函数指针类型兼容：
 - `M`和 `F` 具有相同数量的参数，中的每个参数与 `M` `ref` `out` `in` 中的相应参数具有相同的、或修饰符 `F` 。
-- 对于每个值参数（不带 `ref` 、 `out` 或修饰符的参数 `in` ），从中的参数类型 `M` 到中的相应参数类型存在标识转换、隐式引用转换或隐式指针转换 `F` 。
+- 对于每个 value 参数 (没有 `ref` 、 `out` 或 `in` 修饰符) 的参数，存在从中的参数类型 `M` 到中的相应参数类型的标识转换、隐式引用转换或隐式指针转换 `F` 。
 - 对于每个 `ref` 、 `out` 或 `in` 参数，中的参数类型与 `M` 中相应的参数类型相同 `F` 。
-- 如果返回类型是 by 值（no `ref` 或 `ref readonly` ），则标识、隐式引用或隐式指针转换从的返回类型到的 `F` 返回类型 `M` 。
-- 如果返回类型是按引用（ `ref` 或 `ref readonly` ），则的返回类型和修饰符与的 `ref` `F` 返回类型和 `ref` 修饰符相同 `M` 。
+- 如果返回类型是通过值 (no `ref` 或 `ref readonly`) 、标识、隐式引用或隐式指针转换从的返回类型 `F` 到的返回类型 `M` 。
+- 如果返回类型是按引用 (`ref` 或 `ref readonly`) ，则的返回类型和修饰符与的 `ref` `F` 返回类型和 `ref` 修饰符相同 `M` 。
 - 的调用约定与的 `M` 调用约定相同 `F` 。 这包括调用约定位，以及非托管标识符中指定的任何调用约定标志。
 - `M` 是静态方法。
 
 在不安全的上下文中，如果包含的表达式的目标为方法组，而该表达式的目标为方法组，则该表达式的目标为方法组， `E` `F` 前提是至少有 `E` 一个方法适用于通过使用的参数类型和修饰符构造的参数列表 `F` ，如下所述。
 - 选择一个方法，该方法 `M` 对应于窗体的方法调用 `E(A)` ，其中包含以下修改：
-   - 参数列表 `A` 是一个表达式列表，每个表达式都分类为一个变量，并且具有 `ref` 相应的 `out` `in` _funcptr \_ 参数 \_ 列表_的类型和修饰符（、或） `F` 。
+   - 参数列表 `A` 是一个表达式列表，每个表达式都分类为一个变量，并使用类型和修饰符 (`ref` 、或的 `out` `in` 相应_funcptr \_ 参数 \_ 列表_的) `F` 。
    - 候选方法只是那些适用于其普通窗体的方法，而不是以其展开形式适用的方法。
    - 候选方法仅为静态方法。
 - 如果重载决策的算法产生错误，则会发生编译时错误。 否则，该算法将生成单个最佳方法， `M` 该方法的参数数目与 `F` 相同，转换被视为存在。
-- 所选方法 `M` 必须与函数指针类型兼容（如上所述） `F` 。 否则，将发生编译时错误。
+- 所选的方法 `M` 必须与) 与函数指针类型一起定义 (兼容 `F` 。 否则，将发生编译时错误。
 - 转换的结果是类型的函数指针 `F` 。
 
 这意味着开发人员可以依赖重载决策规则与地址运算符结合使用：
@@ -234,19 +232,19 @@ unsafe class Util {
 
 > 在不安全的上下文中，有多个构造可用于在 \_ 不 _funcptr type_s 的所有 _pointer type_s 上运行 \_ ：
 >
-> *  `*`运算符可用于执行指针间接寻址（[指针间接](../../spec/unsafe-code.md#pointer-indirection)寻址）。
-> *  `->`运算符可用于通过指针（[指针成员访问](../../spec/unsafe-code.md#pointer-member-access)）访问结构的成员。
-> *  `[]`运算符可用于对指针（[指针元素访问](../../spec/unsafe-code.md#pointer-element-access)）进行索引。
-> *  `&`运算符可用于获取变量的地址（[运算符的地址](../../spec/unsafe-code.md#the-address-of-operator)）。
-> *  `++`和 `--` 运算符可用来递增和递减指针（[指针递增和递减](../../spec/unsafe-code.md#pointer-increment-and-decrement)）。
-> *  `+`和 `-` 运算符可用于执行指针算法（[指针算法](../../spec/unsafe-code.md#pointer-arithmetic)）。
-> *  、、、、 `==` `!=` `<` `>` `<=` 和运算符可 `=>` 用于比较指针（[指针比较](../../spec/unsafe-code.md#pointer-comparison)）。
-> *  `stackalloc`运算符可用于从调用堆栈（[固定大小缓冲区](../../spec/unsafe-code.md#fixed-size-buffers)）分配内存。
-> *  `fixed`语句可用于暂时修复变量，以便可以获取其地址（[fixed 语句](../../spec/unsafe-code.md#the-fixed-statement)）。
+> *  `*`运算符可用于 ([指针间接](../../spec/unsafe-code.md#pointer-indirection)寻址) 执行指针间接寻址。
+> *  `->`运算符可用于通过指针访问结构的成员 ([指针成员访问](../../spec/unsafe-code.md#pointer-member-access)) 。
+> *  `[]`运算符可用于索引指针 ([指针元素访问](../../spec/unsafe-code.md#pointer-element-access)) 。
+> *  `&`运算符可用于获取 () [地址的](../../spec/unsafe-code.md#the-address-of-operator)变量的地址。
+> *  `++`和 `--` 运算符可用于递增和递减指针 ([指针增量和减量](../../spec/unsafe-code.md#pointer-increment-and-decrement)) 。
+> *  `+`和 `-` 运算符可用于 ([指针算法](../../spec/unsafe-code.md#pointer-arithmetic)) 执行指针算法。
+> *  `==` `!=` 可以使用、、、、 `<` `>` `<=` 和 `=>` 运算符来比较指针)  ([指针比较](../../spec/unsafe-code.md#pointer-comparison)。
+> *  `stackalloc`运算符可用于从调用堆栈 ([固定大小缓冲区](../../spec/unsafe-code.md#fixed-size-buffers)) 分配内存。
+> *  `fixed`语句可用于临时修复变量，因此可以 ([fixed 语句](../../spec/unsafe-code.md#the-fixed-statement)) 获取其地址。
 > 
 > 在不安全的上下文中，有多个构造可用于在所有 _funcptr type_s 上操作 \_ ：
-> *  `&`运算符可用于获取静态方法的地址（[允许目标方法的地址](#allow-address-of-to-target-methods)）
-> *  、、、、 `==` `!=` `<` `>` `<=` 和运算符可 `=>` 用于比较指针（[指针比较](../../spec/unsafe-code.md#pointer-comparison)）。
+> *  `&`运算符可用于获取静态方法的地址 ([允许地址的目标方法](#allow-address-of-to-target-methods)) 
+> *  `==` `!=` 可以使用、、、、 `<` `>` `<=` 和 `=>` 运算符来比较指针)  ([指针比较](../../spec/unsafe-code.md#pointer-comparison)。
 
 此外，我们修改中的所有部分 `Pointers in expressions` 以禁止函数指针类型（和除外） `Pointer comparison` `The sizeof operator` 。
 
@@ -295,7 +293,7 @@ CallKind
 
 其中，c # 中的函数指针将支持除之外的所有函数 `varargs` 。
 
-此外，运行时（和最终335）将更新以 `CallKind` 在新平台上包含新的。 目前没有正式的名称，但本文档将用作 `unmanaged ext` 新的可扩展调用约定格式的占位符作为替代。 不包含 `modopt` ， `unmanaged ext` 是平台默认调用约定， `unmanaged` 不带方括号。
+此外，运行时 (和最终 335) 将更新为 `CallKind` 在新平台上包含新的。 目前没有正式的名称，但本文档将用作 `unmanaged ext` 新的可扩展调用约定格式的占位符作为替代。 不包含 `modopt` ， `unmanaged ext` 是平台默认调用约定， `unmanaged` 不带方括号。
 
 #### <a name="mapping-the-calling_convention_specifier-to-a-callkind"></a>将映射 `calling_convention_specifier` 到`CallKind`
 
@@ -349,7 +347,7 @@ https://github.com/dotnet/runtime/issues/38135跟踪添加此标志。 根据评
 
 ### <a name="allow-instance-methods"></a>允许实例方法
 
-通过利用 `EXPLICITTHIS` CLI 调用约定（ `instance` 在 c # 代码中命名），可以将该建议扩展为支持实例方法。 这种形式的 CLI 函数指针将 `this` 参数作为函数指针语法的显式第一个参数。
+可以通过使用 `EXPLICITTHIS` `instance` c # 代码) 中 (指定的 CLI 调用约定，将该建议扩展为支持实例方法。 这种形式的 CLI 函数指针将 `this` 参数作为函数指针语法的显式第一个参数。
 
 ``` csharp
 unsafe class Instance {
@@ -374,7 +372,7 @@ unsafe class Instance {
 
 ### <a name="dont-require-unsafe-at-declaration"></a>声明时不需要 unsafe
 
-不需要 `unsafe` 每次使用 `delegate*` ，只需要在将方法组转换为的点上使用 `delegate*` 。 这就是核心安全问题的播放（知道在值处于活动状态时不能卸载包含程序集）。 如果需要 `unsafe` 其他位置，则可能会出现过多。
+不需要 `unsafe` 每次使用 `delegate*` ，只需要在将方法组转换为的点上使用 `delegate*` 。 在这种情况下，核心安全问题就 (知道在值处于活动状态时不能卸载包含程序集) 。 如果需要 `unsafe` 其他位置，则可能会出现过多。
 
 这就是设计的最初设计方式。 但产生的语言规则觉得非常笨拙。 这是不可能的，因为这是一个指针值，并且即使不使用关键字，它仍可查看 `unsafe` 。 例如，无法允许转换为， `object` 它不能是等的成员。 `class`C # 设计需要 `unsafe` 使用所有指针，因此这种设计遵循这一设计。
 
