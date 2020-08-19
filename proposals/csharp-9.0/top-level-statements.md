@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: e0e18660cb3dbb6bfea77dd860ef7aa1388a3ca3
-ms.sourcegitcommit: f22293533088b7527fa88d8916711b1d6a9ce5fd
+ms.openlocfilehash: f4304760253d26cff7adec14ed27a8ec7ca91757
+ms.sourcegitcommit: cc02cda55fca4ebd201e242c9f04498abcb7fb10
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 08/05/2020
-ms.locfileid: "87802414"
+ms.lasthandoff: 08/19/2020
+ms.locfileid: "88602648"
 ---
 # <a name="top-level-statements"></a>顶级语句
 
@@ -18,7 +18,7 @@ ms.locfileid: "87802414"
 
 允许一系列*语句*直接出现在*compilation_unit* (的*namespace_member_declaration*（即源文件) ）之前。
 
-语义是，如果存在这样一系列*语句*，则将发出下面的类型声明，取模实际类型名称和方法名称：
+语义是，如果存在这样一系列 *语句* ，则将发出下面的类型声明，取模实际类型名称和方法名称：
 
 ``` c#
 static class Program
@@ -42,7 +42,7 @@ static class Program
 
 ### <a name="syntax"></a>语法
 
-唯一的附加语法允许编译单元中的一系列*语句*，刚好在*namespace_member_declaration*之前：
+唯一的附加语法允许编译单元中的一系列 *语句*，刚好在 *namespace_member_declaration*之前：
 
 ``` antlr
 compilation_unit
@@ -50,7 +50,7 @@ compilation_unit
     ;
 ```
 
-只允许一个*compilation_unit*具有*语句*。 
+只允许一个 *compilation_unit* 具有 *语句*。 
 
 示例：
 
@@ -91,6 +91,7 @@ static class Program
 在顶级语句中允许使用异步操作，使其能够在常规异步入口点方法中的语句中使用。 但是，它们不是必需的，如果 `await` 省略了表达式和其他异步操作，则不会生成任何警告。
 
 生成的入口点方法的签名根据顶级语句使用的操作来确定，如下所示：
+
 | **Async-operations\Return-with-expression** | **现值** | **不存在** |
 |----------------------------------------|-------------|-------------|
 | **现值** | ```static Task<int> Main(string[] args)```| ```static Task Main(string[] args)``` |
