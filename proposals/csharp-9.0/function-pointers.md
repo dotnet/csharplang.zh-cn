@@ -1,14 +1,14 @@
 ---
-ms.openlocfilehash: 5580323e47df890962d8d2228c93592f1f57a2b1
-ms.sourcegitcommit: eade6b9b5501bd0313aa88934f0f1ee1c1c4cc9a
+ms.openlocfilehash: 8457e2b66036368ce8618edb1e1d2a106f6ee18b
+ms.sourcegitcommit: 5d40e91f041571a3c265b5ba2f8dba2d83897f9a
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 08/11/2020
-ms.locfileid: "88059457"
+ms.lasthandoff: 08/21/2020
+ms.locfileid: "88746887"
 ---
 # <a name="function-pointers"></a>函数指针
 
-## <a name="summary"></a>总结
+## <a name="summary"></a>摘要
 
 此建议提供的语言构造提供当前无法有效访问或根本不能在 c # 中访问的 IL 操作码： `ldftn` 和 `calli` 。 这些 IL 操作码在高性能代码中非常重要，开发人员需要一种高效的访问方式。
 
@@ -158,8 +158,8 @@ delegate*<delegate* managed<string, int>, delegate*<string, int>>;
 
 在不安全的上下文中，将扩展 (隐式转换) 的可用隐式转换集，使其包含以下隐式指针转换：
 - [_现有转换_](https://github.com/dotnet/csharplang/blob/master/spec/unsafe-code.md#pointer-conversions)
-- 如果满足以下所有条件，则从_funcptr \_ 类型_ `F0` 到另一_funcptr \_ 类型_ `F1` ：
-    - `F0`和 `F1` 具有相同数量的参数，中的每个参数与 `D0n` `F0` `ref` `out` `in` 中的相应参数具有相同的、或修饰符 `D1n` `F1` 。
+- 如果满足以下所有条件，则从 _funcptr \_ 类型_ `F0` 到另一 _funcptr \_ 类型_ `F1` ：
+    - `F0` 和 `F1` 具有相同数量的参数，中的每个参数与 `D0n` `F0` `ref` `out` `in` 中的相应参数具有相同的、或修饰符 `D1n` `F1` 。
     - 对于每个 value 参数 (没有 `ref` 、 `out` 或 `in` 修饰符) 的参数，存在从中的参数类型 `F0` 到中的相应参数类型的标识转换、隐式引用转换或隐式指针转换 `F1` 。
     - 对于每个 `ref` 、 `out` 或 `in` 参数，中的参数类型与 `F0` 中相应的参数类型相同 `F1` 。
     - 如果返回类型是通过值 (no `ref` 或 `ref readonly`) 、标识、隐式引用或隐式指针转换从的返回类型 `F1` 到的返回类型 `F0` 。
@@ -184,7 +184,7 @@ unsafe class Util {
 ```
 
 在不安全的上下文中， `M` `F` 如果满足以下所有条件，则方法与函数指针类型兼容：
-- `M`和 `F` 具有相同数量的参数，中的每个参数与 `M` `ref` `out` `in` 中的相应参数具有相同的、或修饰符 `F` 。
+- `M` 和 `F` 具有相同数量的参数，中的每个参数与 `M` `ref` `out` `in` 中的相应参数具有相同的、或修饰符 `F` 。
 - 对于每个 value 参数 (没有 `ref` 、 `out` 或 `in` 修饰符) 的参数，存在从中的参数类型 `M` 到中的相应参数类型的标识转换、隐式引用转换或隐式指针转换 `F` 。
 - 对于每个 `ref` 、 `out` 或 `in` 参数，中的参数类型与 `M` 中相应的参数类型相同 `F` 。
 - 如果返回类型是通过值 (no `ref` 或 `ref readonly`) 、标识、隐式引用或隐式指针转换从的返回类型 `F` 到的返回类型 `M` 。
@@ -194,7 +194,7 @@ unsafe class Util {
 
 在不安全的上下文中，如果包含的表达式的目标为方法组，而该表达式的目标为方法组，则该表达式的目标为方法组， `E` `F` 前提是至少有 `E` 一个方法适用于通过使用的参数类型和修饰符构造的参数列表 `F` ，如下所述。
 - 选择一个方法，该方法 `M` 对应于窗体的方法调用 `E(A)` ，其中包含以下修改：
-   - 参数列表 `A` 是一个表达式列表，每个表达式都分类为一个变量，并使用类型和修饰符 (`ref` 、或的 `out` `in` 相应_funcptr \_ 参数 \_ 列表_的) `F` 。
+   - 参数列表 `A` 是一个表达式列表，每个表达式都分类为一个变量，并使用类型和修饰符 (`ref` 、或的 `out` `in` 相应 _funcptr \_ 参数 \_ 列表_ 的) `F` 。
    - 候选方法只是那些适用于其普通窗体的方法，而不是以其展开形式适用的方法。
    - 候选方法仅为静态方法。
 - 如果重载决策的算法产生错误，则会发生编译时错误。 否则，该算法将生成单个最佳方法， `M` 该方法的参数数目与 `F` 相同，转换被视为存在。
@@ -295,13 +295,13 @@ CallKind
 
 此外，运行时 (和最终 335) 将更新为 `CallKind` 在新平台上包含新的。 目前没有正式的名称，但本文档将用作 `unmanaged ext` 新的可扩展调用约定格式的占位符作为替代。 不包含 `modopt` ， `unmanaged ext` 是平台默认调用约定， `unmanaged` 不带方括号。
 
-#### <a name="mapping-the-calling_convention_specifier-to-a-callkind"></a>将映射 `calling_convention_specifier` 到`CallKind`
+#### <a name="mapping-the-calling_convention_specifier-to-a-callkind"></a>将映射 `calling_convention_specifier` 到 `CallKind`
 
 `calling_convention_specifier`省略或指定为的将 `managed` 映射到 `default` `CallKind` 。 这是 `CallKind` 未特性化的任何方法的默认值 `UnmanagedCallersOnly` 。
 
 C # 识别从 ECMA 335 映射到特定现有非托管的4个特殊标识符 `CallKind` 。 若要进行此映射，必须自行指定这些标识符，无需任何其他标识符，并且此要求将编码到中的规范中 `unmanaged_calling_convention` 。 这些标识符 `Cdecl` `Thiscall` `Stdcall` `Fastcall` `unmanaged cdecl` `unmanaged thiscall` `unmanaged stdcall` `unmanaged fastcall` 分别分别对应于、、和。 如果指定了多个 `identifer` ，或单个不 `identifier` 属于专门识别的标识符，我们将对标识符执行特殊的名称查找，规则如下：
 
-* 在前面追加 `identifier` 字符串`CallConv`
+* 在前面追加 `identifier` 字符串 `CallConv`
 * 我们仅查看在命名空间中定义的类型 `System.Runtime.CompilerServices` 。
 * 我们仅查看在应用程序的核心库中定义的类型，它是用于定义 `System.Object` 和没有依赖项的库。
 * 我们仅探讨公共类型。
@@ -321,11 +321,11 @@ C # 识别从 ECMA 335 映射到特定现有非托管的4个特殊标识符 `Cal
 
 ### `System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute`
 
-`System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute`是 CLR 用来指示应使用特定调用约定调用方法的属性。 因此，我们引入了以下对使用该属性的支持：
+`System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute` 是 CLR 用来指示应使用特定调用约定调用方法的属性。 因此，我们引入了以下对使用该属性的支持：
 
 * 直接从 c # 中调用使用此属性批注的方法是错误的。 用户必须获取指向方法的函数指针，然后调用该指针。
 * 将特性应用于静态方法之外的任何内容是错误的。 C # 编译器会将从元数据导入的任何非静态方法标记为该语言不支持的属性。
-* 将非托管类型作为参数或用特性标记的方法的返回类型是错误的。
+* 将托管类型作为参数或用特性标记的方法的返回类型是错误的。
 * 将用特性标记的方法转换为委托类型是错误的。
 * 为指定的任何类型不 `UnmanagedCallersOnly.CallConvs` 符合 `modopt` 在元数据中调用约定的要求是错误的。
 
@@ -339,9 +339,9 @@ C # 识别从 ECMA 335 映射到特定现有非托管的4个特殊标识符 `Cal
 
 ## <a name="open-questions"></a>未解决的问题
 
-### <a name="detecting-runtime-support-for-unmanaged-ext"></a>检测运行时支持`unmanaged ext`
+### <a name="detecting-runtime-support-for-unmanaged-ext"></a>检测运行时支持 `unmanaged ext`
 
-https://github.com/dotnet/runtime/issues/38135跟踪添加此标志。 根据评审的反馈，我们将使用问题中指定的属性，或使用的状态 `UnmanagedCallersOnlyAttribute` 作为确定运行时是否支持的标志 `unmanaged ext` 。
+https://github.com/dotnet/runtime/issues/38135 跟踪添加此标志。 根据评审的反馈，我们将使用问题中指定的属性，或使用的状态 `UnmanagedCallersOnlyAttribute` 作为确定运行时是否支持的标志 `unmanaged ext` 。
 
 ## <a name="considerations"></a>注意事项
 
@@ -441,7 +441,7 @@ class NamedTupleExample {
 
 ### <a name="static-delegates"></a>静态委托
 
-这是指允许类型声明的[建议](https://github.com/dotnet/csharplang/issues/302)， `delegate` 这些类型只能引用 `static` 成员。 其优势在于，此类 `delegate` 实例可以在性能敏感的情况下免费分配和更好地分配。
+这是指允许类型声明的 [建议](https://github.com/dotnet/csharplang/issues/302) ， `delegate` 这些类型只能引用 `static` 成员。 其优势在于，此类 `delegate` 实例可以在性能敏感的情况下免费分配和更好地分配。
 
 如果实现函数指针功能， `static delegate` 建议可能会关闭。此功能的建议优点是分配免费性质。 但最近的调查发现，由于程序集卸载，无法实现。 必须有一个从到它所引用的方法的强句柄， `static delegate` 以防止程序集从其下卸载。
 
