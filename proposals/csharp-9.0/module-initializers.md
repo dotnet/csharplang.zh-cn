@@ -1,22 +1,22 @@
 ---
-ms.openlocfilehash: e345bb5d9a4f998f80c13a255cec808bd2c9299f
-ms.sourcegitcommit: 0c25406d8a99064bb85d934bb32ffcf547753acc
+ms.openlocfilehash: ea7032eef4b18197ea9bd3a321013058eeec213e
+ms.sourcegitcommit: 06ee75e6e3f1e0d9b4859ffed66024364d3d8f26
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/28/2020
-ms.locfileid: "87297258"
+ms.lasthandoff: 08/21/2020
+ms.locfileid: "88720433"
 ---
 # <a name="module-initializers"></a>模块初始值设定项
 
 * [x] 建议
-* [] 原型：[正在进行](https://github.com/jnm2/roslyn/tree/module_initializer)
-* [] 实现：[正在进行](https://github.com/dotnet/roslyn/tree/features/module-initializers)
-* [] 规范：[未启动]()
+* [] 原型： [正在进行](https://github.com/jnm2/roslyn/tree/module_initializer)
+* [] 实现：正在进行
+* [] 规范： [未启动]()
 
 ## <a name="summary"></a>摘要
 [summary]: #summary
 
-尽管 .NET 平台具有直接支持编写程序集（从技术上讲为模块）的初始化代码的[功能](https://github.com/dotnet/runtime/blob/master/docs/design/specs/Ecma-335-Augments.md#module-initializer)，但它不是用 c # 公开的。  这是一个相当小的方案，但一旦进入该方案，解决方案就显得非常令人头痛。  有[大量客户](https://www.google.com/search?q=.net+module+constructor+c%23&oq=.net+module+constructor)（在 Microsoft 内部和外部）正在解决问题，并且没有任何不清楚记录的情况。
+尽管 .NET 平台具有直接支持编写程序集的初始化代码的 [功能](https://github.com/dotnet/runtime/blob/master/docs/design/specs/Ecma-335-Augments.md#module-initializer) (技术上的模块) ，但它不是用 c # 公开的。  这是一个相当小的方案，但一旦进入该方案，解决方案就显得非常令人头痛。  在 Microsoft 内部和外部 (有 [许多客户](https://www.google.com/search?q=.net+module+constructor+c%23&oq=.net+module+constructor)) 遇到此问题，并且没有任何不清楚记录的情况。
 
 ## <a name="motivation"></a>动机
 [motivation]: #motivation
@@ -67,10 +67,10 @@ class C
 ## <a name="drawbacks"></a>缺点
 [drawbacks]: #drawbacks
 
-为什么*不*应这样做？
+为什么 *不* 应这样做？
 
 - "注入" 模块初始值设定项的现有第三方工具或许足以满足要求使用此功能的用户。
 
 ## <a name="design-meetings"></a>设计会议
 
-### <a name="april-8th-2020"></a>[2020年4月8日](/meetings/2020/LDM-2020-04-08.md#module-initializers)
+### <a name="april-8th-2020"></a>[2020年4月8日](https://github.com/dotnet/csharplang/meetings/2020/LDM-2020-04-08.md#module-initializers)
