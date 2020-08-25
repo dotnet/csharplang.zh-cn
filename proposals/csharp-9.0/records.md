@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: ec25583ef947a49c7586ec403bffe96c7aa0b344
-ms.sourcegitcommit: 7d3c77ee79ef38c4153df5d0fa494a7a55e4f242
+ms.openlocfilehash: 49bacaa2d98ee98c90a2911c442f1db65584acfb
+ms.sourcegitcommit: f38867ee6e9b49b0449ae3565048f7970d7edf36
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 08/07/2020
-ms.locfileid: "87928333"
+ms.lasthandoff: 08/24/2020
+ms.locfileid: "88789031"
 ---
 
 # <a name="records"></a>记录
@@ -74,7 +74,7 @@ protected override Type EqualityContract { get; };
 public virtual bool Equals(R? other);
 ```
 `Equals(R?)` `true` 当且仅当以下各项都为时，合成返回 `true` ：
-- `other`不是 `null` ，并且
+- `other` 不是 `null` ，并且
 - 对于 `fieldN` 记录类型中不是继承的每个实例字段，其中的值 `System.Collections.Generic.EqualityComparer<TN>.Default.Equals(fieldN, other.fieldN)` `TN` 为字段类型，而
 - 如果有基本记录类型，则的值 `base.Equals(other)` (对) 的非虚拟调用 `public virtual bool Equals(Base? other)` ; 否则为的值 `EqualityContract == other.EqualityContract` 。
 
@@ -230,7 +230,7 @@ protected override bool PrintMembers(StringBuilder builder);
 否则，方法为：
 1. 调用基 `PrintMembers` 方法，其中一个参数 (其 `builder` 参数) 。
 2. 如果该 `PrintMembers` 方法返回 true，则将 "，" 追加到生成器中，
-3. 对于记录的每个可打印成员，将追加后跟 "=" 后跟成员值的成员的名称： `this.member` ，用 "，" 分隔，
+3. 对于每个记录的可打印成员，将追加后跟 "=" 后跟成员值的成员的名称： `this.member` (或 `this.member.ToString()` 值类型) ，用 "，" 分隔）。
 4. 返回 true。
 
 `PrintMembers`可以显式声明方法。
@@ -246,7 +246,7 @@ public override string ToString();
 合成方法：
 1. 创建一个 `StringBuilder` 实例，
 2. 将记录名称追加到生成器，后面跟有 "{"、
-3. 调用记录的 `PrintMembers` 方法，为其提供生成器，
+3. 调用记录的 `PrintMembers` 方法，为其提供生成器，后跟 "" （如果它返回 true），
 4. 追加 "}"，
 3. 返回生成器的内容 `builder.ToString()` 。
 
@@ -268,7 +268,7 @@ class R1 : IEquatable<R1>
     {
         builder.Append(nameof(P1));
         builder.Append(" = ");
-        builder.Append(this.P1);
+        builder.Append(this.P1); // or builder.Append(this.P1); if P1 has a value type
         
         return true;
     }
@@ -279,9 +279,10 @@ class R1 : IEquatable<R1>
         builder.Append(nameof(R1));
         builder.Append(" { ");
 
-        PrintMembers(builder);
+        if (PrintMembers(builder))
+            builder.Append(" ");
 
-        builder.Append(" }");
+        builder.Append("}");
         return builder.ToString();
     }
 }
@@ -298,13 +299,13 @@ class R2 : R1, IEquatable<R2>
             
         builder.Append(nameof(P2));
         builder.Append(" = ");
-        builder.Append(this.P2);
+        builder.Append(this.P2); // or builder.Append(this.P2); if P2 has a value type
         
         builder.Append(", ");
         
         builder.Append(nameof(P3));
         builder.Append(" = ");
-        builder.Append(this.P3);
+        builder.Append(this.P3); // or builder.Append(this.P3); if P3 has a value type
         
         return true;
     }
@@ -315,9 +316,10 @@ class R2 : R1, IEquatable<R2>
         builder.Append(nameof(R2));
         builder.Append(" { ");
 
-        PrintMembers(builder);
+        if (PrintMembers(builder))
+            builder.Append(" ");
 
-        builder.Append(" }");
+        builder.Append("}");
         return builder.ToString();
     }
 }
@@ -384,6 +386,6 @@ member_initializer
 
 有效的 `with` 表达式包含具有非 void 类型的接收方。 接收方类型必须是一条记录。
 
-表达式的右侧 `with` 是一个 `member_initializer_list` 带有*标识符*的赋值序列的，它必须是接收方类型的可访问实例字段或属性。
+表达式的右侧 `with` 是一个 `member_initializer_list` 带有 *标识符*的赋值序列的，它必须是接收方类型的可访问实例字段或属性。
 
 首先，调用接收方的 "clone" 方法 (调用) ，并将其结果转换为接收方的类型。 然后，每个 `member_initializer` 处理方式与对转换结果的字段或属性访问的赋值相同。 按词法顺序处理赋值。
