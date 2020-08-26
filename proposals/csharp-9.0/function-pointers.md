@@ -1,14 +1,14 @@
 ---
-ms.openlocfilehash: 8457e2b66036368ce8618edb1e1d2a106f6ee18b
-ms.sourcegitcommit: 5d40e91f041571a3c265b5ba2f8dba2d83897f9a
+ms.openlocfilehash: 9a30d64b8df1913b77e5fb1d3ccb27f8a64c1460
+ms.sourcegitcommit: 31289a8255732df5c0379a6d197142109b7afced
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 08/21/2020
-ms.locfileid: "88746887"
+ms.lasthandoff: 08/26/2020
+ms.locfileid: "88897605"
 ---
 # <a name="function-pointers"></a>函数指针
 
-## <a name="summary"></a>摘要
+## <a name="summary"></a>总结
 
 此建议提供的语言构造提供当前无法有效访问或根本不能在 c # 中访问的 IL 操作码： `ldftn` 和 `calli` 。 这些 IL 操作码在高性能代码中非常重要，开发人员需要一种高效的访问方式。
 
@@ -39,7 +39,7 @@ unsafe class Example {
 当然，对于这两种构造，调用是相同的。
 
 方法指针的 ECMA-335 定义包含调用约定，作为类型签名的一部分 (节 7.1) 。
-默认调用约定将为 `managed` 。 通过 `unmanaged` 将关键字叫到 `delegate*` 将使用运行时平台默认的语法，可以指定非托管调用约定。 然后，可以 `unmanaged` 通过在 `CallConv` 命名空间中指定以命名空间开头的任何类型，将特定的非托管约定括在括号中 `System.Runtime.CompilerServices` 。 这些类型必须来自程序的核心库，并且一组有效的组合依赖于平台。
+默认调用约定将为 `managed` 。 通过 `unmanaged` 将关键字叫到 `delegate*` 将使用运行时平台默认的语法，可以指定非托管调用约定。 然后 `unmanaged` ，可以通过在命名空间中指定以命名空间开头的任何类型，在括号中指定特定的非托管约定 `CallConv` `System.Runtime.CompilerServices` ，而不是 `CallConv` 前缀。 这些类型必须来自程序的核心库，并且一组有效的组合依赖于平台。
 
 ``` csharp
 //This method has a managed calling convention. This is the same as leaving the managed keyword off.
@@ -50,10 +50,13 @@ delegate* managed<int, int>;
 delegate* unmanaged<int, int>;
 
 // This method will be invoked using the cdecl calling convention
-delegate* unmanaged[CallConvCdecl] <int, int>;
+// Cdecl maps to System.Runtime.CompilerServices.CallConvCdecl
+delegate* unmanaged[Cdecl] <int, int>;
 
 // This method will be invoked using the stdcall calling convention, and suppresses GC transition
-delegate* unmanaged[CallConvStdCall, CallConvSuppressGCTransition] <int, int>;
+// Stdcall maps to System.Runtime.CompilerServices.CallConvStdcall
+// SuppressGCTransition maps to System.Runtime.CompilerServices.CallConvSuppressGCTransition
+delegate* unmanaged[Stdcall, SuppressGCTransition] <int, int>;
 ```
 
 类型之间的转换 `delegate*` 是根据其签名（包括调用约定）完成的。
@@ -324,8 +327,11 @@ C # 识别从 ECMA 335 映射到特定现有非托管的4个特殊标识符 `Cal
 `System.Runtime.InteropServices.UnmanagedCallersOnlyAttribute` 是 CLR 用来指示应使用特定调用约定调用方法的属性。 因此，我们引入了以下对使用该属性的支持：
 
 * 直接从 c # 中调用使用此属性批注的方法是错误的。 用户必须获取指向方法的函数指针，然后调用该指针。
-* 将特性应用于静态方法之外的任何内容是错误的。 C # 编译器会将从元数据导入的任何非静态方法标记为该语言不支持的属性。
-* 将托管类型作为参数或用特性标记的方法的返回类型是错误的。
+* 将该特性应用于一般静态方法或普通静态本地函数之外的任何内容是错误的。
+C # 编译器会将从元数据导入的任何非静态或静态非普通方法标记为该语言不支持的属性。
+* 对于用特性标记的方法，如果该方法的参数或返回类型不是，则是错误的 `unmanaged_type` 。
+* 如果用特性标记的方法具有类型参数，则是错误的，即使这些类型参数被约束为也是如此 `unmanaged` 。
+* 泛型类型中的方法使用属性进行标记是错误的。
 * 将用特性标记的方法转换为委托类型是错误的。
 * 为指定的任何类型不 `UnmanagedCallersOnly.CallConvs` 符合 `modopt` 在元数据中调用约定的要求是错误的。
 
