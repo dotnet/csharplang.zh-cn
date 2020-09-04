@@ -1,12 +1,14 @@
 ---
-ms.openlocfilehash: 7ff986e42e34c1de8d21a2b99e1c9ecfd9f2f9a9
-ms.sourcegitcommit: ac14d87c16f28535299060d510fb4f647029a765
+ms.openlocfilehash: dc46c0c8492440aad2d3c1a36b4d7794fd1d1b5c
+ms.sourcegitcommit: 95adf054b95824f93d19025c549b9a1ddcee40c5
 ms.translationtype: MT
 ms.contentlocale: zh-CN
 ms.lasthandoff: 09/04/2020
-ms.locfileid: "89446832"
+ms.locfileid: "89477316"
 ---
-## <a name="summary"></a>总结
+# <a name="covariant-returns"></a>协变返回
+
+## <a name="summary"></a>摘要
 [summary]: #summary
 
 支持 _协变返回类型_。 具体而言，允许重写方法，以声明派生程度比它重写的方法更派生的返回类型，同样，也可以允许重写只读属性以声明派生程度更高的类型。 在更多派生的类型中出现的重写声明需要至少提供返回类型，就像在其基类型的重写中出现一样。 方法或属性的调用方将从调用中静态接收更精确的返回类型。
@@ -231,4 +233,3 @@ class Digit : Cloneable
 - 一些讨论 <https://github.com/dotnet/roslyn/issues/357> 。
 - https://github.com/dotnet/csharplang/blob/master/meetings/2020/LDM-2020-01-08.md
 - 针对决策的离线讨论，以支持仅在 c # 9.0 中重写类方法。
-
