@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 9a30d64b8df1913b77e5fb1d3ccb27f8a64c1460
-ms.sourcegitcommit: 31289a8255732df5c0379a6d197142109b7afced
+ms.openlocfilehash: 6a641cf1b733156ce6ae0ee247c0e5aa7d990d2d
+ms.sourcegitcommit: c3df20406f43fcd460cfedd1cd61b6cc47d27250
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 08/26/2020
-ms.locfileid: "88897605"
+ms.lasthandoff: 09/08/2020
+ms.locfileid: "89554638"
 ---
 # <a name="function-pointers"></a>函数指针
 
@@ -181,7 +181,7 @@ unsafe class Util {
         delegate*<void> ptr1 = &Util.Log;
 
         // Error: type "delegate*<void>" not compatible with "delegate*<int>";
-
+        delegate*<int> ptr2 = &Util.Log;
    }
 }
 ```

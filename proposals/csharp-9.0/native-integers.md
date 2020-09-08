@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 615bacf466daf34a2785c616b4ff5e622decd2f1
-ms.sourcegitcommit: a88d56e3131d7a94c65e637c276379541a3cd491
+ms.openlocfilehash: f16a182cb205c889c15eae2d33bfa342e9579b10
+ms.sourcegitcommit: c3df20406f43fcd460cfedd1cd61b6cc47d27250
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/30/2020
-ms.locfileid: "87434500"
+ms.lasthandoff: 09/08/2020
+ms.locfileid: "89554625"
 ---
 # <a name="native-sized-integers"></a>本机大小的整数
 
@@ -33,9 +33,9 @@ _ = nint.Equals(x, 3);
 常数表达式的类型可以是 `nint` 或 `nuint` 。
 本机 int 文本没有直接的语法。 可以改为使用其他整数常数值的隐式或显式转换： `const nint i = (nint)42;` 。
 
-`nint`常量处于 [ `int.MinValue` ，] 范围内 `int.MaxValue` 。
+`nint` 常量处于 [ `int.MinValue` ，] 范围内 `int.MaxValue` 。
 
-`nuint`常量处于 [ `uint.MinValue` ，] 范围内 `uint.MaxValue` 。
+`nuint` 常量处于 [ `uint.MinValue` ，] 范围内 `uint.MaxValue` 。
 
 `MinValue` `MaxValue` 或上没有字段或， `nint` 因为不 `nuint` `nuint.MinValue` 能将这些值作为常量发出。
 
@@ -49,7 +49,7 @@ _ = nint.Equals(x, 3);
 仅有不同于本机 int 和基础类型的复合类型之间存在标识转换：数组、 `Nullable<>` 、构造类型和元组。
 
 下表介绍了特殊类型之间的转换。
-（每个转换的 IL 包括和上下文的变量（ `unchecked` `checked` 如果不同）。
+ (每个转换的 IL 包括和上下文的变量（ `unchecked` `checked` 如果不同）。 ) 
 
 | 操作数 | 目标 | 转换 | IL |
 |:---:|:---:|:---:|:---:|
@@ -142,7 +142,7 @@ _ = nint.Equals(x, 3);
 预定义运算符如下所示。
 _如果至少有一个操作数的类型为 `nint` 或 `nuint` _，则在重载解析过程中，将根据隐式转换的常规规则考虑这些运算符。
 
-（如果不同，则每个运算符的 IL 都包含 `unchecked` 和上下文的变量 `checked` 。）
+ (每个运算符的 IL 包含和上下文的变量（ `unchecked` `checked` 如果不同）。 ) 
 
 | 一元 | 运算符签名 | IL |
 |:---:|:---:|:---:|
@@ -152,7 +152,7 @@ _如果至少有一个操作数的类型为 `nint` 或 `nuint` _，则在重载�
 | `~` | `nint operator ~(nint value)` | `not` |
 | `~` | `nuint operator ~(nuint value)` | `not` |
 
-| Binary | 运算符签名 | IL |
+| 二进制 | 运算符签名 | IL |
 |:---:|:---:|:---:|
 | `+` | `nint operator +(nint left, nint right)` | `add` / `add.ovf` |
 | `+` | `nuint operator +(nuint left, nuint right)` | `add` / `add.ovf.un` |
@@ -187,7 +187,7 @@ _如果至少有一个操作数的类型为 `nint` 或 `nuint` _，则在重载�
 | `>>` | `nint operator >>(nint left, int right)` | `shr` |
 | `>>` | `nuint operator >>(nuint left, int right)` | `shr.un` |
 
-对于某些二元运算符，IL 运算符支持其他操作数类型（请参阅[ECMA-335](https://www.ecma-international.org/publications/files/ECMA-ST/ECMA-335.pdf) III. 1.5 操作数类型表）。
+对于某些二元运算符，IL 运算符支持其他操作数类型 (请参阅 [ECMA-335](https://www.ecma-international.org/publications/files/ECMA-ST/ECMA-335.pdf) III. 1.5 操作数类型表) 。
 但对于简单起见，c # 支持的操作数类型集是有限的，并且与语言中的现有运算符保持一致。
 
 支持参数和返回类型为和的运算符的提升版本 `nint?` `nuint?` 。
@@ -196,7 +196,29 @@ _如果至少有一个操作数的类型为 `nint` 或 `nuint` _，则在重载�
 具体而言，表达式绑定为， `x = (T)(x op y)` 其中 `T` 是的类型 `x` ，其中 `x` 只计算一次。
 
 如果为4，则移位运算符应将位数屏蔽为 shift + 5 位 `sizeof(nint)` ，如果为8，则为6位 `sizeof(nint)` 。
-（请参阅 c # 规范中的[移位运算符](../../spec/expressions.md#shift-operators)）。
+ (参见 c # spec) 中的 [移位运算符](../../spec/expressions.md#shift-operators) 。
+
+使用早期的语言版本进行编译时，c # 9 编译器将报告与预定义的本机整数运算符绑定的错误，但允许对本机整数使用预定义的转换。
+
+`csc -langversion:9 -t:library A.cs`
+```C#
+public class A
+{
+    public static nint F;
+}
+```
+
+`csc -langversion:8 -r:A.dll B.cs`
+```C#
+class B : A
+{
+    static void Main()
+    {
+        F = F + 1; // error: nint operator+ not available with -langversion:8
+        F = (System.IntPtr)F + 1; // ok
+    }
+}
+```
 
 ### <a name="dynamic"></a>动态
 
@@ -214,7 +236,7 @@ nint z = d + x; // RuntimeBinderException: '+' cannot be applied 'System.IntPtr'
 
 或的唯一构造函数是不带 `nint` `nuint` 参数的构造函数。
 
-和的以下成员 `System.IntPtr` `System.UIntPtr` _被显式排除_在 `nint` 或中 `nuint` ：
+和的以下成员 `System.IntPtr` `System.UIntPtr` _被显式排除_ 在 `nint` 或中 `nuint` ：
 ```C#
 // constructors
 // arithmetic operators
@@ -228,7 +250,7 @@ public long ToInt64();
 public void* ToPointer();
 ```
 
-和的其余成员 `System.IntPtr` `System.UIntPtr` _将隐式包含_在 `nint` 和中 `nuint` 。 对于 .NET Framework 4.7.2：
+和的其余成员 `System.IntPtr` `System.UIntPtr` _将隐式包含_ 在 `nint` 和中 `nuint` 。 对于 .NET Framework 4.7.2：
 ```C#
 public override bool Equals(object obj);
 public override int GetHashCode();
@@ -236,20 +258,20 @@ public override string ToString();
 public string ToString(string format);
 ```
 
-和实现的 `System.IntPtr` 接口 `System.UIntPtr` _将隐式包含_在 `nint` 和中 `nuint` ，其中出现的基础类型由相应的本机整数类型替换。
+和实现的 `System.IntPtr` 接口 `System.UIntPtr` _将隐式包含_ 在 `nint` 和中 `nuint` ，其中出现的基础类型由相应的本机整数类型替换。
 例如，如果 `IntPtr` 实现 `ISerializable, IEquatable<IntPtr>, IComparable<IntPtr>` ，则 `nint` 实现 `ISerializable, IEquatable<nint>, IComparable<nint>` 。
 
 ### <a name="overriding-hiding-and-implementing"></a>重写、隐藏和实现
 
-`nint`和 `System.IntPtr` 、和 `nuint` `System.UIntPtr` 都被视为等效于重写、隐藏和实现。
+`nint` 和 `System.IntPtr` 、和 `nuint` `System.UIntPtr` 都被视为等效于重写、隐藏和实现。
 
 重载不能单独不同于 `nint` 和 `System.IntPtr` 、和 `nuint` `System.UIntPtr` 。
 重写和实现可单独不同于 `nint` `System.IntPtr` 、、或 `nuint` `System.UIntPtr` 。
 方法隐藏了不同于 `nint` `System.IntPtr` 、或和的其他 `nuint` 方法 `System.UIntPtr` 。
 
-### <a name="miscellaneous"></a>杂项
+### <a name="miscellaneous"></a>其他
 
-`nint`用作 `nuint` 数组索引的表达式将在不进行转换的情况下发出。
+`nint` 用作 `nuint` 数组索引的表达式将在不进行转换的情况下发出。
 ```C#
 static object GetItem(object[] array, nint index)
 {
@@ -257,7 +279,7 @@ static object GetItem(object[] array, nint index)
 }
 ```
 
-`nint`和 `nuint` 可用作 `enum` 基类型。
+`nint` 和 `nuint` 可用作 `enum` 基类型。
 ```C#
 enum E : nint // ok
 {
@@ -269,19 +291,19 @@ enum E : nint // ok
 可以将字段标记 `volatile` 为类型 `nint` 和 `nuint` 。
 [ECMA-334](https://www.ecma-international.org/publications/files/ECMA-ST/ECMA-334.pdf) 15.5.4 不包括 `enum` 基类型 `System.IntPtr` 或 `System.UIntPtr` 。
 
-`default(nint)`和与 `new nint()` 等效 `(nint)0` 。
+`default(nint)` 和与 `new nint()` 等效 `(nint)0` 。
 
 `typeof(nint)` 为 `typeof(IntPtr)`。
 
-`sizeof(nint)`支持，但要求在不安全的上下文中进行编译（就像那样 `sizeof(IntPtr)` ）。
+`sizeof(nint)` 支持，但要求在不安全的上下文中进行编译 (`sizeof(IntPtr)`) 。
 该值不是编译时常量。
-`sizeof(nint)`实现为 `sizeof(IntPtr)` 而不是 `IntPtr.Size` 。
+`sizeof(nint)` 实现为 `sizeof(IntPtr)` 而不是 `IntPtr.Size` 。
 
 编译器诊断，适用于涉及或报告的类型引用， `nint` `nuint` `nint` `nuint` 而不是或 `IntPtr` `UIntPtr` 。
 
 ### <a name="metadata"></a>元数据
 
-`nint`和 `nuint` 在元数据中表示为 `System.IntPtr` 和 `System.UIntPtr` 。
+`nint` 和 `nuint` 在元数据中表示为 `System.IntPtr` 和 `System.UIntPtr` 。
 
 包含或的类型引用， `nint` `nuint` `System.Runtime.CompilerServices.NativeIntegerAttribute` 用于指示类型引用的哪些部分是本机整数。
 
@@ -308,21 +330,14 @@ namespace System.Runtime.CompilerServices
         {
             TransformFlags = flags;
         }
-        public IList<bool> TransformFlags { get; }
+        public readonly bool[] TransformFlags;
     }
 }
 ```
 
-编码使用用于编码的方法 `DynamicAttribute` ，尽管很明显地编码类型引用内的类型，而不是类型 `DynamicAttribute` `dynamic` 为本机 int 的类型。
-如果编码导致值的数组 `false` ， `NativeIntegerAttribute` 则不需要。
-无参数 `NativeIntegerAttribute` 构造函数使用单个值生成编码 `true` 。
+`NativeIntegerAttribute` [NativeIntegerAttribute.md](https://github.com/dotnet/roslyn/blob/master/docs/features/NativeIntegerAttribute.md)中介绍了的类型引用编码。
 
-```C#
-nuint A;                    // [NativeInteger] UIntPtr A
-(Stream, nint) B;           // [NativeInteger(new[] { false, false, true })] ValueType<Stream, IntPtr> B
-```
-
-## <a name="alternatives"></a>备选项
+## <a name="alternatives"></a>备选方法
 [alternatives]: #alternatives
 
 上述 "类型擦除" 方法的替代方法是引入新的类型： `System.NativeInt` 和 `System.NativeUInt` 。
