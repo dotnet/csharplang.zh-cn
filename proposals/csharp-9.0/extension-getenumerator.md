@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: a774e370a14373ccf308c2cba9944305c0053c05
-ms.sourcegitcommit: c3df20406f43fcd460cfedd1cd61b6cc47d27250
+ms.openlocfilehash: 45ab9a04928916323f2d78d74bda8b691ac85858
+ms.sourcegitcommit: 8df4f29c1c9b691b30a2672c440b82248a99c2cb
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 09/08/2020
-ms.locfileid: "89557559"
+ms.lasthandoff: 09/09/2020
+ms.locfileid: "89609313"
 ---
 # <a name="extension-getenumerator-support-for-foreach-loops"></a>扩展 `GetEnumerator` 支持 `foreach` 循环。
 
@@ -26,7 +26,7 @@ Spec 更改相对简单。 修改 `The foreach statement` 此文本部分：
 >Foreach 语句的编译时处理首先确定表达式的 ***集合类型***、 ***枚举器类型*** 和 ***元素类型*** 。 这种决定将按如下方式进行：
 >
 >*  如果表达式的 `X` 类型*expression*是数组类型，则从到接口 (存在隐式引用转换， `X` `IEnumerable` 因为 `System.Array`) 实现此接口。 ***集合类型***是 `IEnumerable` 接口，***枚举器类型***为 `IEnumerator` 接口，***元素类型***是数组类型的元素类型 `X` 。
->*  如果表达式的 `X` 类型*expression*为，则 `dynamic` 从*expression*到 Interface 的隐式转换 `IEnumerable` ([隐式动态转换](conversions.md#implicit-dynamic-conversions)) 。 ***集合类型***是 `IEnumerable` 接口，而***枚举器类型***是 `IEnumerator` 接口。 如果 `var` 标识符指定为 *local_variable_type* 则该 ***元素类型*** 为 `dynamic` ，否则为 `object` 。
+>*  如果表达式的 `X` 类型*expression*为，则 `dynamic` 从*expression*到 Interface 的隐式转换 `IEnumerable` ([隐式动态转换](../../spec/conversions.md#implicit-dynamic-conversions)) 。 ***集合类型***是 `IEnumerable` 接口，而***枚举器类型***是 `IEnumerator` 接口。 如果 `var` 标识符指定为 *local_variable_type* 则该 ***元素类型*** 为 `dynamic` ，否则为 `object` 。
 >*  否则，请确定该类型是否 `X` 具有适当的 `GetEnumerator` 方法：
 >    * 对 `X` 具有标识符 `GetEnumerator` 且无类型参数的类型执行成员查找。 如果成员查找不会生成匹配项，或者它产生了多义性，或者产生了不是方法组的匹配项，请检查可枚举的接口，如下所述。 如果成员查找产生了除方法组以外的任何内容，则建议发出警告。
 >    * 使用生成的方法组和空参数列表执行重载决策。 如果重载决策导致没有适用的方法、导致歧义或产生单个最佳方法，但该方法是静态的或非公共的，请按如下所述检查可枚举的接口。 如果重载决策产生了除明确的公共实例方法之外的任何内容，或者没有适用方法，则建议发出警告。

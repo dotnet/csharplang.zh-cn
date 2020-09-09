@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: ea7032eef4b18197ea9bd3a321013058eeec213e
-ms.sourcegitcommit: 06ee75e6e3f1e0d9b4859ffed66024364d3d8f26
+ms.openlocfilehash: dc7e75537c8552ca703b040542e41abb55f56193
+ms.sourcegitcommit: 8df4f29c1c9b691b30a2672c440b82248a99c2cb
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 08/21/2020
-ms.locfileid: "88720433"
+ms.lasthandoff: 09/09/2020
+ms.locfileid: "89609299"
 ---
 # <a name="module-initializers"></a>模块初始值设定项
 
@@ -13,7 +13,7 @@ ms.locfileid: "88720433"
 * [] 实现：正在进行
 * [] 规范： [未启动]()
 
-## <a name="summary"></a>摘要
+## <a name="summary"></a>总结
 [summary]: #summary
 
 尽管 .NET 平台具有直接支持编写程序集的初始化代码的 [功能](https://github.com/dotnet/runtime/blob/master/docs/design/specs/Ecma-335-Augments.md#module-initializer) (技术上的模块) ，但它不是用 c # 公开的。  这是一个相当小的方案，但一旦进入该方案，解决方案就显得非常令人头痛。  在 Microsoft 内部和外部 (有 [许多客户](https://www.google.com/search?q=.net+module+constructor+c%23&oq=.net+module+constructor)) 遇到此问题，并且没有任何不清楚记录的情况。
@@ -73,4 +73,4 @@ class C
 
 ## <a name="design-meetings"></a>设计会议
 
-### <a name="april-8th-2020"></a>[2020年4月8日](https://github.com/dotnet/csharplang/meetings/2020/LDM-2020-04-08.md#module-initializers)
+### <a name="april-8th-2020"></a>[2020年4月8日](https://github.com/dotnet/csharplang/blob/master/meetings/2020/LDM-2020-04-08.md#module-initializers)
