@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 49bacaa2d98ee98c90a2911c442f1db65584acfb
-ms.sourcegitcommit: f38867ee6e9b49b0449ae3565048f7970d7edf36
+ms.openlocfilehash: ac590d2d00ea776f21a50b008885dc7de5e2a852
+ms.sourcegitcommit: ca09fc178fb0e8285e80d2244786e99e04eed882
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 08/24/2020
-ms.locfileid: "88789031"
+ms.lasthandoff: 09/12/2020
+ms.locfileid: "90044801"
 ---
 
 # <a name="records"></a>记录
@@ -70,6 +70,9 @@ protected override Type EqualityContract { get; };
 记录类型实现 `System.IEquatable<R>` 并包含合成型强类型重载， `Equals(R? other)` 其中 `R` 是记录类型。
 方法为 `public` ，并且方法为， `virtual` 除非记录类型为 `sealed` 。
 可以显式声明方法。 如果显式声明与预期的签名或辅助功能不匹配，或显式声明不允许在派生类型中重写，并且记录类型不是，则是错误的 `sealed` 。
+
+如果 `Equals(R? other)` 或 `GetHashCode` 是用户定义的 (未合成) ，而不是同时出现，则会生成警告。
+
 ```C#
 public virtual bool Equals(R? other);
 ```
