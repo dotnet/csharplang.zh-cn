@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: b943165e9de0381a916c1aa71f3cfad183c36423
-ms.sourcegitcommit: fcf884f7f8a2c2c7d925a67c2a7fad22e09b9506
+ms.openlocfilehash: e3027c3fe9b05d3e5379535c010e148e4fbbc761
+ms.sourcegitcommit: 2661a4b3950d2ec5c557b025af13e52ba200fd05
 ms.translationtype: MT
 ms.contentlocale: zh-CN
 ms.lasthandoff: 09/16/2020
-ms.locfileid: "90682270"
+ms.locfileid: "90687170"
 ---
 # <a name="pattern-matching-changes-for-c-90"></a>C # 9.0 的模式匹配更改
 
@@ -144,6 +144,10 @@ primary_pattern
     : // all of the patterns forms previously defined
     ;
 ```
+
+## <a name="change-to-7542-grammar-ambiguities"></a>更改为7.5.4.2 语法多义性
+
+由于引入了 *type 模式*，因此泛型类型可能出现在标记之前 `=>` 。  因此，我们将添加 `=>` 到 *7.5.4.2 语法多义性* 中列出的一组标记，以允许消除 `<` 开始类型参数列表的的歧义。  另请参阅 https://github.com/dotnet/roslyn/issues/47614。
 
 ## <a name="open-issues-with-proposed-changes"></a>打开建议更改的问题
 
