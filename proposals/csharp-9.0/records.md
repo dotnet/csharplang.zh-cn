@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: f3219f373f21d1e37b0b0750c99783ee70aaffd9
-ms.sourcegitcommit: d6109bf586a416cf8fb2ee4c2bbdfaa2109508c8
+ms.openlocfilehash: f9c398585ab1e1a657bb130aa15abc031175eaaf
+ms.sourcegitcommit: 3f901fa3036b852131fc2baa528b781580cb005a
 ms.translationtype: MT
 ms.contentlocale: zh-CN
 ms.lasthandoff: 09/21/2020
-ms.locfileid: "90829270"
+ms.locfileid: "90832380"
 ---
 
 # <a name="records"></a>记录
@@ -70,7 +70,7 @@ protected override Type EqualityContract { get; };
 方法为 `public` ，并且方法为， `virtual` 除非记录类型为 `sealed` 。
 可以显式声明方法。 如果显式声明与预期的签名或辅助功能不匹配，或显式声明不允许在派生类型中重写，并且记录类型不是，则是错误的 `sealed` 。
 
-如果 `Equals(R? other)` 或 `GetHashCode` 是用户定义的 (未合成) ，而不是同时出现，则会生成警告。
+如果 `Equals(R? other)` 是用户定义的 (未合成) 但 `GetHashCode` 不是，则会生成警告。
 
 ```C#
 public virtual bool Equals(R? other);
@@ -219,7 +219,7 @@ bool PrintMembers(System.StringBuilder builder);
 `private`如果记录类型为，则方法为 `sealed` 。 否则，方法为 `virtual` 和 `protected` 。
 
 方法如下：
-1. 对于) 的公共字段和属性成员 (的每个记录的可打印成员，将追加后跟 "=" 的成员名称，后跟成员的值： `this.member` ，用 "，" 分隔，
+1. 对于每个记录的可打印成员 (非静态公共字段和可读属性成员) ，追加该成员的名称后跟 "="，后跟成员的值： `this.member` ，用 "，" 分隔，
 2. 如果记录具有可打印成员，则返回 true。
 
 如果记录类型是从基本记录派生的 `Base` ，则记录包括合成重写等效于声明为的方法：
