@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: f16a182cb205c889c15eae2d33bfa342e9579b10
-ms.sourcegitcommit: c3df20406f43fcd460cfedd1cd61b6cc47d27250
+ms.openlocfilehash: b69d71e76a9cb07d5f0141c903abb162a3eedfdd
+ms.sourcegitcommit: b2699bff42ae273d71d26310e3595f7598e63afb
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 09/08/2020
-ms.locfileid: "89554625"
+ms.lasthandoff: 09/25/2020
+ms.locfileid: "91249142"
 ---
 # <a name="native-sized-integers"></a>本机大小的整数
 
@@ -85,6 +85,8 @@ _ = nint.Equals(x, 3);
 | `decimal` | `nuint` | ExplicitNumeric | `ulong decimal.op_Explicit(decimal) conv.u` / `... conv.ovf.u.un`  |
 | `IntPtr` | `nuint` | 无 | |
 | `UIntPtr` | `nuint` | 标识 | |
+|枚举|`nint`|ExplicitEnumeration||
+|枚举|`nuint`|ExplicitEnumeration||
 
 | 操作数 | 目标 | 转换 | IL |
 |:---:|:---:|:---:|:---:|
@@ -105,6 +107,7 @@ _ = nint.Equals(x, 3);
 | `nint` | `decimal` | ImplicitNumeric | `conv.i8 decimal decimal.op_Implicit(long)` |
 | `nint` | `IntPtr` | 标识 | |
 | `nint` | `UIntPtr` | 无 | |
+| `nint` |枚举|ExplicitEnumeration||
 | `nuint` | `object` | 装箱 | `box` |
 | `nuint` | `void*` | PointerToVoid | `conv.u` |
 | `nuint` | `nint` | ExplicitNumeric | `conv.i` / `conv.ovf.i` |
@@ -122,6 +125,7 @@ _ = nint.Equals(x, 3);
 | `nuint` | `decimal` | ImplicitNumeric | `conv.u8 decimal decimal.op_Implicit(ulong)` |
 | `nuint` | `IntPtr` | 无 | |
 | `nuint` | `UIntPtr` | 标识 | |
+| `nuint` |枚举|ExplicitEnumeration||
 
 从到的转换 `A` `Nullable<B>` 为：
 - 如果有标识转换或从到的隐式转换，则为隐式可为 null 的转换 `A` `B` ;
@@ -269,7 +273,7 @@ public string ToString(string format);
 重写和实现可单独不同于 `nint` `System.IntPtr` 、、或 `nuint` `System.UIntPtr` 。
 方法隐藏了不同于 `nint` `System.IntPtr` 、或和的其他 `nuint` 方法 `System.UIntPtr` 。
 
-### <a name="miscellaneous"></a>其他
+### <a name="miscellaneous"></a>杂项
 
 `nint` 用作 `nuint` 数组索引的表达式将在不进行转换的情况下发出。
 ```C#
@@ -301,7 +305,7 @@ enum E : nint // ok
 
 编译器诊断，适用于涉及或报告的类型引用， `nint` `nuint` `nint` `nuint` 而不是或 `IntPtr` `UIntPtr` 。
 
-### <a name="metadata"></a>元数据
+### <a name="metadata"></a>Metadata
 
 `nint` 和 `nuint` 在元数据中表示为 `System.IntPtr` 和 `System.UIntPtr` 。
 
@@ -357,4 +361,8 @@ Distinct 类型允许重载不同于 `IntPtr` ，并允许不同的分析和 `To
 
 ## <a name="design-meetings"></a>设计会议
 
-https://github.com/dotnet/csharplang/blob/master/meetings/2017/LDM-2017-05-26.md https://github.com/dotnet/csharplang/blob/master/meetings/2017/LDM-2017-06-13.md https://github.com/dotnet/csharplang/blob/master/meetings/2017/LDM-2017-07-05.md#native-int-and-intptr-operators https://github.com/dotnet/csharplang/blob/master/meetings/2019/LDM-2019-10-23.md https://github.com/dotnet/csharplang/blob/master/meetings/2020/LDM-2020-03-25.md
+- https://github.com/dotnet/csharplang/blob/master/meetings/2017/LDM-2017-05-26.md
+- https://github.com/dotnet/csharplang/blob/master/meetings/2017/LDM-2017-06-13.md
+- https://github.com/dotnet/csharplang/blob/master/meetings/2017/LDM-2017-07-05.md#native-int-and-intptr-operators
+- https://github.com/dotnet/csharplang/blob/master/meetings/2019/LDM-2019-10-23.md
+- https://github.com/dotnet/csharplang/blob/master/meetings/2020/LDM-2020-03-25.md
