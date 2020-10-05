@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: f9c398585ab1e1a657bb130aa15abc031175eaaf
-ms.sourcegitcommit: 3f901fa3036b852131fc2baa528b781580cb005a
+ms.openlocfilehash: 4f911764758901a3077783e249f8acec6ae2649c
+ms.sourcegitcommit: 6bfe301e7902c8df4281499e4006a92903e247d1
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 09/21/2020
-ms.locfileid: "90832380"
+ms.lasthandoff: 10/05/2020
+ms.locfileid: "91716765"
 ---
 
 # <a name="records"></a>记录
@@ -82,7 +82,7 @@ public virtual bool Equals(R? other);
 
 记录类型包括合成 `==` 运算符和与 `!=` 运算符等效的运算符，如下所示：
 ```C#
-pubic static bool operator==(R? r1, R? r2)
+public static bool operator==(R? r1, R? r2)
     => (object)r1 == r2 || (r1?.Equals(r2) ?? false);
 public static bool operator!=(R? r1, R? r2)
     => !(r1 == r2);
@@ -136,7 +136,7 @@ class R1 : IEquatable<R1>
             EqualityContract == other.EqualityContract &&
             EqualityComparer<T1>.Default.Equals(P1, other.P1);
     }
-    pubic static bool operator==(R1? r1, R1? r2)
+    public static bool operator==(R1? r1, R1? r2)
         => (object)r1 == r2 || (r1?.Equals(r2) ?? false);
     public static bool operator!=(R1? r1, R1? r2)
         => !(r1 == r2);    
@@ -158,7 +158,7 @@ class R2 : R1, IEquatable<R2>
         return base.Equals((R1?)other) &&
             EqualityComparer<T2>.Default.Equals(P2, other.P2);
     }
-    pubic static bool operator==(R2? r1, R2? r2)
+    public static bool operator==(R2? r1, R2? r2)
         => (object)r1 == r2 || (r1?.Equals(r2) ?? false);
     public static bool operator!=(R2? r1, R2? r2)
         => !(r1 == r2);    
@@ -180,7 +180,7 @@ class R3 : R2, IEquatable<R3>
         return base.Equals((R2?)other) &&
             EqualityComparer<T3>.Default.Equals(P3, other.P3);
     }
-    pubic static bool operator==(R3? r1, R3? r2)
+    public static bool operator==(R3? r1, R3? r2)
         => (object)r1 == r2 || (r1?.Equals(r2) ?? false);
     public static bool operator!=(R3? r1, R3? r2)
         => !(r1 == r2);    
