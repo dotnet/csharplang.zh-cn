@@ -1,14 +1,14 @@
 ---
-ms.openlocfilehash: dc46c0c8492440aad2d3c1a36b4d7794fd1d1b5c
-ms.sourcegitcommit: 95adf054b95824f93d19025c549b9a1ddcee40c5
+ms.openlocfilehash: 28d1fee07bc192fd705091d320647c568e7b1d76
+ms.sourcegitcommit: 94b8189f4aa36ba0d0495ec8c2bb2eb8735c3eb3
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 09/04/2020
-ms.locfileid: "89477316"
+ms.lasthandoff: 10/21/2020
+ms.locfileid: "92333499"
 ---
 # <a name="covariant-returns"></a>协变返回
 
-## <a name="summary"></a>摘要
+## <a name="summary"></a>总结
 [summary]: #summary
 
 支持 _协变返回类型_。 具体而言，允许重写方法，以声明派生程度比它重写的方法更派生的返回类型，同样，也可以允许重写只读属性以声明派生程度更高的类型。 在更多派生的类型中出现的重写声明需要至少提供返回类型，就像在其基类型的重写中出现一样。 方法或属性的调用方将从调用中静态接收更精确的返回类型。
@@ -49,11 +49,11 @@ class CSharpCompilation : Compilation
 
 已修改为
 
-> - 如果方法具有值 return，则重写方法必须具有可通过标识转换转换的返回类型 (; 如果该方法具有值返回，则为该方法的返回类型 [，) 隐](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/ref-locals-returns.md) 式引用转换为重写基方法的返回类型。
+> - 如果方法具有值 return，则重写方法必须具有可转换的返回类型 (; 如果该方法具有值返回，则返回类型不是 [引用返回](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/ref-locals-returns.md) 值，) 隐式引用转换为重写基方法的返回类型。
 
 以下附加要求将追加到该列表：
 
-> - 重写方法必须有一个通过标识转换转换的返回类型，如果该方法具有值返回，则返回类型为 (; 如果该方法具有 [值) 返回，则返回](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/ref-locals-returns.md) 类型为对重写方法的 (直接或间接) 基类型中声明的重写基方法的返回类型的隐式引用转换。
+> - 重写方法必须具有一个可通过标识转换转换的返回类型，如果该方法具有值返回，则返回类型为 (; 如果该方法具有 [值) 返回，则返回](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/ref-locals-returns.md) 类型为对重写方法的 (直接或间接) 基类型中声明的重写基方法的返回类型的隐式引用转换。
 > - 重写方法的返回类型必须至少具有与可访问 [性域](../../spec/basic-concepts.md#accessibility-domains))  (重写方法相同的可访问性。
 
 此约束允许类中的重写方法 `private` 具有 `private` 返回类型。  但是，它要求 `public` 类型中的重写方法 `public` 具有 `public` 返回类型。
@@ -66,11 +66,11 @@ class CSharpCompilation : Compilation
 
 已修改为
 
-> 重写属性声明应将完全相同的可访问性修饰符和名称指定为继承的属性，并且 **如果继承的属性是只读的，并且具有值类型（而不是 [ref return](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/ref-locals-returns.md) ）) 类型) 隐式引用转换（从重写属性的类型到继承属性**的类型），则应使用标识转换或 (。 如果继承的属性只有一个访问器 (也就是说，如果继承的属性是只读的或只写的) ，则重写属性应仅包括该访问器。 如果继承的属性包含两个访问器 (也就是说，如果继承的属性是读写) ，则重写属性可以包含单个访问器或两个访问器。 **重写属性的类型必须至少具有与可访问 [性域](../../spec/basic-concepts.md#accessibility-domains))  (重写属性相同的可访问性。**
+> 重写属性声明应将完全相同的可访问性修饰符和名称指定为继承的属性，并且**如果继承的属性是只读的，并且具有值 return （而不) 是从重写属性[ref return](https://github.com/dotnet/csharplang/blob/master/proposals/csharp-7.0/ref-locals-returns.md)的类型到继承属性类型的隐式引用转换**），则应进行标识转换或 (。 如果继承的属性只有一个访问器 (也就是说，如果继承的属性是只读的或只写的) ，则重写属性应仅包括该访问器。 如果继承的属性包含两个访问器 (也就是说，如果继承的属性是读写) ，则重写属性可以包含单个访问器或两个访问器。 **重写属性的类型必须至少具有与可访问 [性域](../../spec/basic-concepts.md#accessibility-domains))  (重写属性相同的可访问性。**
 
 -----------------
 
-***下面的草案规范的其余部分建议更进一步扩展接口方法的协变返回，以备稍后考虑。***
+**_下面的草案规范的其余部分建议更进一步扩展接口方法的协变返回，以备稍后考虑。_*_
 
 ### <a name="interface-method-property-and-indexer-override"></a>接口方法、属性和索引器替代
 
@@ -78,11 +78,11 @@ class CSharpCompilation : Compilation
 
 类中的以下文本：
 
-> 重写声明重写的方法称为 ***重写基方法***。 对于 `M` 在类中声明的重写方法 `C` ，重写的基方法是通过检查的每个基类确定的，该方法 `C` 从的直接基类开始， `C` 然后继续使用每个连续的直接基类，直到至少有一个可访问方法与 `M` 类型参数替换后具有相同签名的可访问方法。
+> 重写声明重写的方法称为 _*_重写基方法_*_。 对于 `M` 在类中声明的重写方法 `C` ，重写的基方法是通过检查的每个基类确定的，该方法 `C` 从的直接基类开始， `C` 然后继续使用每个连续的直接基类，直到至少有一个可访问方法与 `M` 类型参数替换后具有相同签名的可访问方法。
 
 为提供接口的相应规范：
 
-> 重写声明重写的方法称为 ***重写基方法***。 对于 `M` 在接口中声明的重写方法 `I` ，重写的基方法是通过检查的每个直接或间接基接口确定的 `I` ，收集一组接口，该接口声明一个具有与 `M` 类型参数替换相同的签名的可访问方法。  如果这组接口具有派生程度 *最高的类型*，则为该集合中的每个类型都有一个标识或隐式引用转换，并且该类型包含一个唯一的此类方法声明，即 *重写的基方法*。
+> 重写声明重写的方法称为 _*_重写基方法_*_。 对于 `M` 在接口中声明的重写方法 `I` ，重写的基方法是通过检查的每个直接或间接基接口确定的 `I` ，收集一组接口，该接口声明一个具有与 `M` 类型参数替换相同的签名的可访问方法。  如果这组接口具有一个 _most 派生类型 *，并且此集合中的每个类型都有一个标识或隐式引用转换，并且该类型包含唯一的此类方法声明，则这是 *重写的基方法*。
 
 同样，允许 `override` 接口中的属性和索引器在 *15.7.6 Virtual、sealed、override 和 abstract 访问器*中为类指定。
 
@@ -198,7 +198,7 @@ class C : I1, I2, I3
 - [] 我们应该确保性能合理，甚至在深层继承层次结构中也是如此
 - [] 我们应该确保翻译策略的项目不会影响语言语义，即使在使用旧编译器的新 IL 时也是如此。
 
-## <a name="alternatives"></a>备选方法
+## <a name="alternatives"></a>备选项
 [alternatives]: #alternatives
 
 我们可以略微放宽语言规则，在源中，
