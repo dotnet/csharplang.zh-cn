@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: b3a78b910029d779e2fa814e3bde1151b44a28fe
-ms.sourcegitcommit: 7014365bd820533f7fe48c18d03d210ea798a405
+ms.openlocfilehash: 4e6c45b68b68a38a00295d990f2bf35f65a9c424
+ms.sourcegitcommit: 0d9762aa9ff13f8018860c8fcb474dd69c3b69e8
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 10/06/2020
-ms.locfileid: "91763416"
+ms.lasthandoff: 10/23/2020
+ms.locfileid: "92492627"
 ---
 
 # <a name="records"></a>记录
@@ -26,7 +26,7 @@ record_base
     ;
 
 record_body
-    : '{' class_member_declaration* '}'
+    : '{' class_member_declaration* '}' ';'?
     | ';'
     ;
 ```
