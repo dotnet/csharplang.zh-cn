@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 2ee7d19715aec05f4e29f66016380987bae5c707
-ms.sourcegitcommit: b2b83eed296a53b5d49de7be08db6c9bc49262a7
+ms.openlocfilehash: 3605661e9c17143c8df5b9b994a1f67800db006f
+ms.sourcegitcommit: 7125a8428a23fadaf4c93b2fc1ec88019876eaa7
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 10/30/2020
-ms.locfileid: "93049380"
+ms.lasthandoff: 10/31/2020
+ms.locfileid: "93142153"
 ---
 
 # <a name="records"></a>记录
@@ -346,7 +346,7 @@ class R2 : R1, IEquatable<R2>
 
 主构造函数的参数以及记录的成员位于 `argument_list` `record_base` 子句的和实例字段或属性的初始值设定项中的范围内。 实例成员将是这些位置中的错误 (类似于当前在常规构造函数初始值设定项的作用域中的方式，但使用) 的错误，但主构造函数的参数将在范围内并且可用，并将隐藏成员。 静态成员还可以使用，类似于目前普通构造函数中的基调用和初始值设定项的工作方式。
 
-生成一个警告，但不读取主构造函数的参数。
+如果未读取主构造函数的参数，则会生成一个警告。
 
 在中声明的表达式变量 `argument_list` 在范围内 `argument_list` 。 与规则构造函数初始值设定项的参数列表中相同的隐藏规则也适用。
 
