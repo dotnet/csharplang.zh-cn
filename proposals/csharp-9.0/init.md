@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: c4da24ad9de4293d7612b03c662f6c3590baa839
-ms.sourcegitcommit: 9fb76a990c1ae8392a2d5ce4018a7213c48ed74b
+ms.openlocfilehash: 79716f258ef080445c0f44af63fba4310fafdb4b
+ms.sourcegitcommit: 22ab7021c3aa72a4c49bc8326deca389803422b5
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 09/10/2020
-ms.locfileid: "89741616"
+ms.lasthandoff: 11/02/2020
+ms.locfileid: "93189827"
 ---
 <a name="init-only-setters"></a>仅 Init 资源库
 =====
@@ -220,6 +220,24 @@ class Init
 - `init`访问器只能用于实例属性
 - 属性不能同时包含 `init` 和 `set` 访问器
 - 如果基具有，则属性的所有重写都必须具有 `init` `init` 。 此规则也适用于接口实现。
+
+### <a name="readonly-structs"></a>只读结构
+
+`init` 访问器 (自动实现的访问器和手动实现的访问器) 在的属性以及属性上都是允许的 `readonly struct` `readonly` 。 `init` 不允许 `readonly` 在 `readonly` 和非类型中将访问器标记为自身 `readonly` `struct` 。
+
+```cs
+readonly struct ReadonlyStruct1
+{
+    public int Prop1 { get; init; } // Allowed
+}
+
+struct ReadonlyStruct2
+{
+    public readonly int Prop2 { get; init; } // Allowed
+
+    public int Prop3 { get; readonly init; } // Error
+}
+```
 
 ### <a name="metadata-encoding"></a>元数据编码 
 属性 `init` 访问器将作为标准 `set` 访问器发出，并使用标记有 modreq 的返回类型 `IsExternalInit` 。 这是一种新类型，它具有以下定义：
