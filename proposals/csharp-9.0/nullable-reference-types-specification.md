@@ -1,14 +1,14 @@
 ---
-ms.openlocfilehash: 39291abb97f11662520467fbe0e3430ea2da621d
+ms.openlocfilehash: 3fc0f7d8db936d81a9419af15c495e9eeb456dd2
 ms.sourcegitcommit: 29df547564c4ffc51b1dedf8369dc91e8f0ba854
 ms.translationtype: MT
 ms.contentlocale: zh-CN
 ms.lasthandoff: 11/04/2020
-ms.locfileid: "93344341"
+ms.locfileid: "93351936"
 ---
 # <a name="nullable-reference-types-specification"></a>可以为 null 的引用类型规范
 
-这是一个正在进行的工作-缺少几个部件或这些部件不完整。 可在 c # 9 文件夹中找到此文档的更新版本。 **_
+***这是一个正在进行的工作-缺少几个部件或这些部件不完整。** _
 
 ## <a name="syntax"></a>语法
 
