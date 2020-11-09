@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: fd8159145e235fc7a26b304ef6adcbddb4c05e96
-ms.sourcegitcommit: 4c8b0a1c815f6ed5f69e2bdff94da354b2908fed
+ms.openlocfilehash: 4d079ddea08351aec785ce8c11c790af9b26031a
+ms.sourcegitcommit: 796742db0d28da6893384b3d2ccf801415efb188
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 11/05/2020
-ms.locfileid: "93406299"
+ms.lasthandoff: 11/08/2020
+ms.locfileid: "94371431"
 ---
 # <a name="per-method-asyncmethodbuilders"></a>Per-Method AsyncMethodBuilders
 
@@ -13,7 +13,7 @@ ms.locfileid: "93406299"
 * [] 实现：未启动
 * [] 规范：未启动
 
-## <a name="summary"></a>摘要
+## <a name="summary"></a>总结
 [summary]: #summary
 
 扩展现有的异步方法生成器，以支持除现有的按返回类型支持之外的每个方法的特性。
@@ -149,17 +149,7 @@ class MyClass
 ## <a name="drawbacks"></a>缺点
 [drawbacks]: #drawbacks
 
-* 将此类属性应用于方法的语法是详细的。  这是一项高级功能，但使用该功能的开发人员通常可以创建自己关心的属性，然后使用该派生属性来简化，例如
-```C#
-class Pool<T> : AsyncMethodBuilderAttribute<T>
-{
-    public Pool() : base(typeof(AsyncValueTaskMethodBuilder<T>)) { }
-}
-...
-[Pool]
-internal async ValueTask<int> ExampleAsync() { ... }
-```
-不过，我并不确切知道如何使用 createArguments 支持。  派生的属性还可以接受一个 params 数组，并将其传递给基，但编译器需要能够识别它。  也许是在 AsyncMethodBuilder 派生属性末尾的任何 params object [] 的特殊大小写法。
+* 将此类属性应用于方法的语法是详细的。  如果开发人员可以将其应用于多种方法，例如在类型或模块级别，则会降低这种影响。
 
 ## <a name="alternatives"></a>备选项
 [alternatives]: #alternatives
