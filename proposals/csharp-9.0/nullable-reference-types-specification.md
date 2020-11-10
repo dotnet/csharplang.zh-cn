@@ -1,41 +1,61 @@
 ---
-ms.openlocfilehash: 3fc0f7d8db936d81a9419af15c495e9eeb456dd2
-ms.sourcegitcommit: 29df547564c4ffc51b1dedf8369dc91e8f0ba854
+ms.openlocfilehash: e6a784ef90308a5395c6b1db454a67d40c10e3e4
+ms.sourcegitcommit: 00d9d791b6f1d9538a979a111e93cf935d9b6cfe
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 11/04/2020
-ms.locfileid: "93351936"
+ms.lasthandoff: 11/10/2020
+ms.locfileid: "94423364"
 ---
 # <a name="nullable-reference-types-specification"></a>可以为 null 的引用类型规范
 
 ***这是一个正在进行的工作-缺少几个部件或这些部件不完整。** _
 
+此功能添加了两种新类型的可为 null 的类型 (可以为 null 的引用类型和可以为 null 的现有值类型) 为 null 的泛型类型，并引入了静态流分析以实现 null 安全。
+
 ## <a name="syntax"></a>语法
 
-### <a name="nullable-reference-types"></a>可为空引用类型
+### <a name="nullable-reference-types-and-nullable-type-parameters"></a>可以为 null 的引用类型和可以为 null 的类型参数
 
-可以为 null 的引用类型与 "可以为 null 的值类型" 的缩写形式具有相同的语法 `T?` ，但没有相应的长格式。
+可以为 null 的引用类型和可以为 null 的类型参数的语法 `T?` 与可以为 null 的值类型的短格式相同，但没有相应的长格式。
 
-出于规范的目的，当前 `nullable_type` 生产将重命名为 `nullable_value_type` ，并 `nullable_reference_type` 添加生产：
+出于规范的目的，当前 `nullable_type` 生产被重命名为 `nullable_value_type` ，并 `nullable_reference_type` `nullable_type_parameter` 添加了生产：
 
 ```antlr
+type
+    : value_type
+    | reference_type
+    | nullable_type_parameter
+    | type_parameter
+    | type_unsafe
+    ;
+
 reference_type
     : ...
     | nullable_reference_type
     ;
-    
+
 nullable_reference_type
     : non_nullable_reference_type '?'
     ;
-    
+
 non_nullable_reference_type
-    : type
+    : reference_type
+    ;
+
+nullable_type_parameter
+    : non_nullable_non_value_type_parameter '?'
+    ;
+
+non_nullable_non_value_type_parameter
+    : type_parameter
     ;
 ```
 
-`non_nullable_reference_type`在中， `nullable_reference_type` 必须是不可以为 null 的引用类型 (类、接口、委托或数组) ，或者是一个被约束为不可为 null 的引用类型的类型参数， (通过 `class` 约束或除) 以外的类 `object` 。
+`non_nullable_reference_type` `nullable_reference_type` 必须是不可 null 引用类型 (类、接口、委托或数组) 。
 
-可以为 null 的引用类型不能出现在以下位置：
+`non_nullable_non_value_type_parameter`In `nullable_type_parameter` 必须是不被约束为值类型的类型参数。
+
+可以为 null 的引用类型和可以为 null 的类型参数不能出现在以下位置：
 
 - 作为基类或接口
 - 作为的接收方 `member_access`
@@ -44,9 +64,9 @@ non_nullable_reference_type
 - 作为 `type` 中的 `is_expression` ， `catch_clause` 或 `type_pattern`
 - 作为 `interface` 完全限定的接口成员名称中的
 
-在 `nullable_reference_type` 禁用了可为 null 的注释上下文的位置上，将发出警告。
+在 `nullable_reference_type` 和 `nullable_type_parameter` _disabled * 可为 null 的注释上下文中提供了警告。
 
-### <a name="nullable-class-constraint"></a>可以为 null 的类约束
+### <a name="class-and-class-constraint"></a>`class` and `class?` 约束
 
 `class`约束具有可为 null 的对应项 `class?` ：
 
@@ -57,29 +77,75 @@ primary_constraint
     ;
 ```
 
+`class`*已启用* 的批注上下文) 中 (约束的类型参数必须使用不可 null 引用类型进行实例化。
+
+`class?` (或 `class` *已禁用* 的注释上下文中的类型形参) 可以使用可以为 null 的或不可 null 的引用类型进行实例化。
+
+`class?`*已禁用* 批注上下文中的约束提供了警告。
+
+### <a name="notnull-constraint"></a>`notnull` constraint
+
+使用约束的类型形参 `notnull` 不能是可以为 null 的类型 (可以为 null 的值类型、可以为 null 的引用类型或可以为 null 的类型参数) 
+
+```antlr
+primary_constraint
+    : ...
+    | 'notnull'
+    ;
+```
+
+### <a name="default-constraint"></a>`default` constraint
+
+`default`约束可用于方法重写或显式实现，以消除 "可以为 null `T?` 的类型参数" 与 "可以为 null 的值类型" (`Nullable<T>`) 。 如果缺少 `default` 约束，则 `T?` 重写或显式实现中的语法将被解释为 `Nullable<T>`
+
+请参见https://github.com/dotnet/csharplang/blob/master/proposals/csharp-9.0/unconstrained-type-parameter-annotations.md#default-constraint
+
 ### <a name="the-null-forgiving-operator"></a>包容性运算符
 
-后修复后的 `!` 运算符称为包容性运算符。
+后修复后的 `!` 运算符称为包容性运算符。 它可以应用于 *primary_expression* 或 *null_conditional_expression* 内：
 
 ```antlr
 primary_expression
     : ...
     | null_forgiving_expression
     ;
-    
+
 null_forgiving_expression
     : primary_expression '!'
     ;
+
+null_conditional_expression
+    : primary_expression null_conditional_operations_no_suppression suppression?
+    ;
+
+null_conditional_operations_no_suppression
+    : null_conditional_operations? '?' '.' identifier type_argument_list?
+    | null_conditional_operations? '?' '[' argument_list ']'
+    | null_conditional_operations '.' identifier type_argument_list?
+    | null_conditional_operations '[' argument_list ']'
+    | null_conditional_operations '(' argument_list? ')'
+    ;
+
+null_conditional_operations
+    : null_conditional_operations_no_suppression suppression?
+    ;
+
+suppression
+    : '!'
+    ;
 ```
 
-`primary_expression`必须为引用类型。  
+例如：
 
-后缀 `!` 运算符没有运行时效果，它的计算结果为基础表达式的结果。 其唯一的作用是更改表达式的 null 状态，并限制其使用时给出的警告。
+```csharp
+var v = expr!;
+expr!.M();
+_ = a?.b!.c;
+```
 
-### <a name="nullable-implicitly-typed-local-variables"></a>可以为 null 的隐式类型的局部变量
+`primary_expression`和 `null_conditional_operations_no_suppression` 必须是可以为 null 的类型。
 
-`var` 推导引用类型的批注类型。
-例如，在中 `var s = "";` ， `var` 将推断为 `string?` 。
+后缀 `!` 运算符没有运行时效果，它的计算结果为基础表达式的结果。 其唯一的作用是将表达式的 null 状态更改为 "not null"，并限制在使用时给出的警告。
 
 ### <a name="nullable-compiler-directives"></a>可以为 null 的编译器指令
 
@@ -90,37 +156,41 @@ pp_directive
     : ...
     | pp_nullable
     ;
-    
+
 pp_nullable
-    : whitespace? '#' whitespace? 'nullable' whitespace nullable_action pp_new_line
+    : whitespace? '#' whitespace? 'nullable' whitespace nullable_action (whitespace nullable_target)? pp_new_line
     ;
-    
+
 nullable_action
     : 'disable'
     | 'enable'
     | 'restore'
     ;
+
+nullable_target
+    : 'warnings'
+    | 'annotations'
+    ;
 ```
 
-`#pragma warning` 指令将展开以允许更改可为 null 的警告上下文，并允许在默认情况下启用单个警告（即使它们在默认情况下处于禁用状态）：
+`#pragma warning` 展开指令以允许更改可为 null 的警告上下文：
 
 ```antlr
 pragma_warning_body
     : ...
-    | 'warning' whitespace nullable_action whitespace 'nullable'
-    ;
-
-warning_action
-    : ...
-    | 'enable'
+    | 'warning' whitespace warning_action whitespace 'nullable'
     ;
 ```
 
-请注意，的新形式 `pragma_warning_body` 使用 `nullable_action` ，而不是 `warning_action` 。
+例如：
+
+```csharp
+#pragma warning disable nullable
+```
 
 ## <a name="nullable-contexts"></a>可为空上下文
 
-源代码的每一行都有一个 _nullable 注释上下文 * 和一个 *可以为 null 的警告上下文* 。 这些控件控制是否可为 null 的批注是否有效，以及是否给定了可为空性警告。 给定行的批注上下文已 *禁用* 或 *启用* 。 给定行的警告上下文已 *禁用* 或 *启用* 。
+源代码的每个行都有 *可为 null 的注释上下文* 和 *可以为 null 的警告上下文* 。 这些控件控制是否可为 null 的批注是否有效，以及是否给定了可为空性警告。 给定行的批注上下文已 *禁用* 或 *启用* 。 给定行的警告上下文已 *禁用* 或 *启用* 。
 
 既可在 c # 源代码) 之外的项目级别指定这两个上下文，也可通过预处理器指令在源文件中的任何位置指定 (`#nullable` 。 如果未提供任何项目级别设置，则默认情况下，这两个上下文都是 *禁用* 的。
 
@@ -142,13 +212,13 @@ warning_action
 
 ## <a name="nullability-of-types"></a>类型为 Null 性
 
-给定的类型可以有以下四个 nullabilities 之一： *在意* 、 *不可 null* 、 *nullable* 和 *unknown* 。 
+给定的类型可以具有以下三个 nullabilities 之一： *在意* 、 *不可 null* 和 *可以为 null* 。
 
-如果将可能的值分配给 *不可 null* 和 *未知* 类型，则可能会引发警告 `null` 。 但是， *在意* 和可以 *为* null 的类型为 "可 *赋值* "，可以 `null` 为其分配值而不会出现警告。 
+如果将可能的值分配给 *不可 null* 类型，则可能会引发警告 `null` 。 但是， *在意* 和可以 *为* null 的类型为 "可 *赋值* "，可以 `null` 为其分配值而不会出现警告。
 
-可以取消引用或分配 *在意* 和 *不可 null* 类型，而不会出现警告。 然而， *可以为* null 的类型和 *未知* 类型的值都是 " *空* 值"，当取消引用或赋值时，如果没有正确的 null 检查，则可能会导致警告。 
+可以取消引用或分配 *在意* 和 *不可 null* 类型的值，而不会出现警告。 但是， *可以为* null 的类型的值为 " *空* 值"，并可能在取消引用或赋值时导致警告，而不进行正确的 null 检查。
 
-Null 生成类型的 *默认 null 状态* 为 "可能为 null"。 非 null 生成类型的默认 null 状态为 "not null"。
+Null 产生类型的 *默认 null 状态* 是 "可能是 null" 或 "可能是默认值"。 非 null 生成类型的默认 null 状态为 "not null"。
 
 类型的类型和在确定其为 null 性时所发生的可为 null 的注释上下文：
 
@@ -160,20 +230,11 @@ Null 生成类型的 *默认 null 状态* 为 "可能为 null"。 非 null 生�
 
 类型参数还会考虑它们的约束：
 
-- 一个类型参数 `T` ，其中所有约束都 (如果任何) 为 null 生成类型 ( *可以为* null 且 *未知* ) 或 `class?` 约束 *未知*
-- 一个类型参数 `T` ，其中至少有一个约束为 *在意* 或 *不可 null* ，或者其中一个 `struct` 或 `class` 约束为
+- `T`如果任何) 为可以为 null 的类型或 `class?` 约束 *可以为 null* ，则为所有约束都 (的类型参数
+- 一个类型参数 `T` ，其中至少有一个约束为 *在意* 或 *不可 null* ，或者其中一个 `struct` 或 `class` 或 `notnull` 约束为
     - *禁用* 的注释上下文中的 *在意*
     - *已启用* 的批注上下文中的 *不可 null*
-- 一个可以为 null 的类型参数， `T?` 其中至少有一个 `T` 约束是 *在意* 或 *不可 null* ，或者是 `struct` 或 `class` 约束之一，是
-    - 在 *禁用* 的批注上下文中 *可以为 null* (但会生成警告) 
-    - 在 *启用* 的批注上下文中 *为 null*
-
-对于类型参数 `T` ， `T?` 仅当 `T` 已知为值类型或已知为引用类型时，才允许。
-
-### <a name="nested-functions"></a>嵌套函数
-
-嵌套函数 (lambda 和局部函数) 被视为方法，但其捕获变量除外。
-Lambda 或本地函数中捕获的变量的默认状态是该嵌套函数的所有 "使用" 中的变量的可以为 null 的状态的交集。 函数的使用是对该函数的调用或将其转换为委托的位置。
+- 可以为 null 的类型参数 `T?` *可以为 null* ，但如果不是值类型，则 *已禁用* 的批注上下文中会生成一个警告。 `T`
 
 ### <a name="oblivious-vs-nonnullable"></a>在意 vs 不可 null
 
@@ -183,15 +244,19 @@ Lambda 或本地函数中捕获的变量的默认状态是该嵌套函数的所�
 
 ## <a name="constraints"></a>约束
 
-可以为 null 的引用类型可用作泛型约束。 而且 `object` 现在作为显式约束有效。 缺少约束现在等效于 `object?` 约束 (而不是 `object`) ，但 (与之前不同， `object`) `object?` 不会被视为显式约束。
+可以为 null 的引用类型可用作泛型约束。
 
-`class?` 表示 "可能可以为 null 的引用类型" 的新约束，而 `class` 表示 "不可 null 引用类型"。
+`class?` 表示 "可能为 null 的引用类型" 的新约束，而 `class` *启用* 的批注上下文中表示 "不可 null 引用类型"。
+
+`default` 一个新约束，用于表示未知类型参数或值类型。 它只能用于重写和显式实现的方法。 对于此约束， `T?` 表示可以为 null 的类型参数，而不是的简写形式 `Nullable<T>` 。
+
+`notnull` 表示不可 null 类型参数的新约束。
 
 类型参数或约束的为空性并不会影响类型是否满足约束，但目前已 (可以为 null 的值类型不满足约束) 的情况除外 `struct` 。 但是，如果类型参数不满足约束的为 null 性要求，则可以提供警告。
 
 ## <a name="null-state-and-null-tracking"></a>Null 状态和 null 跟踪
 
-给定源位置中的每个表达式都具有 *null 状态* ，指示其是否被认为可能计算为 null。 Null 状态为 "not null" 或 "可能为 null"。 Null 状态用于确定是否应为不安全的转换和取消引用提供警告。
+给定源位置中的每个表达式都具有 *null 状态* ，指示其是否被认为可能计算为 null。 Null 状态为 "not null"、"可能为 null" 或 "可能为默认值"。 Null 状态用于确定是否应为不安全的转换和取消引用提供警告。
 
 ### <a name="null-tracking-for-variables"></a>变量的 Null 跟踪
 
@@ -208,6 +273,8 @@ tracked_expression
 
 其中，标识符表示字段或属性。
 
+被跟踪变量的 null 状态在无法访问的代码中为 "not null"。 这遵循了有关无法访问的代码的其他决策，如考虑将所有局部变量明确赋值。
+
 ***描述类似于明确赋值的空状态转换** _
 
 ### <a name="null-state-for-expressions"></a>表达式为 Null
@@ -216,7 +283,7 @@ tracked_expression
 
 ### <a name="literals"></a>文本
 
-文本的 null 状态 `null` 为 "可能为 null"。 `default`正在转换为已知不是不可 null 值类型的类型的文本的 null 状态为 "可能为 null"。 任何其他文本的 null 状态为 "not null"。
+和文本的 null 状态 `null` `default` 为 "可能是默认值"。 任何其他文本的 null 状态为 "not null"。
 
 ### <a name="simple-names"></a>简单名称
 
@@ -240,7 +307,7 @@ tracked_expression
 
 ### <a name="default-expressions"></a>默认表达式
 
-`default(T)` 如果 `T` 已知为不可 null 值类型，则具有 null 状态 "非 null"。 否则，它的状态为 "可能为 null"。
+`default(T)` 如果 `T` 已知为不可 null 值类型，则具有 null 状态 "not null"。 否则，它的状态为 "可能是默认值"。
 
 ### <a name="null-conditional-expressions"></a>Null 条件表达式
 
@@ -248,7 +315,9 @@ tracked_expression
 
 ### <a name="cast-expressions"></a>强制转换表达式
 
-如果强制转换表达式 `(T)E` 调用用户定义的转换，则表达式的 null 状态为其类型的默认 null 状态。 否则，如果 `T` 为 null 生成 (_nullable * 或 *未知* ) ，则 null 状态为 "可能为 null"。 否则，null 状态与的 null 状态相同 `E` 。
+如果强制转换表达式 `(T)E` 调用用户定义的转换，则表达式的 null 状态为其类型的默认 null 状态。 否则，如果 `T` 为 _nullable *，则 null 状态为 "可能为 null"。 否则，null 状态与的 null 状态相同 `E` 。
+
+***这需要 upddating** _
 
 ### <a name="await-expressions"></a>Await 表达式
 
@@ -278,7 +347,7 @@ tracked_expression
 
 如果一元或二元运算符调用了用一个或多个特性声明的用户定义的运算符来实现特殊的 null 行为，则 null 状态由这些特性决定。 否则，表达式的 null 状态为其类型的默认 null 状态。
 
-***对于 `+` 字符串和委托，二进制文件的特殊** 操作是什么？_
+_*_对于字符串和委托，二进制文件的特殊操作是什么 `+` ？_*_
 
 ### <a name="expressions-that-propagate-null-state"></a>传播 null 状态的表达式
 
@@ -297,43 +366,27 @@ tracked_expression
 - 包容性表达式
 - `is` 表达式
 
+### <a name="nested-functions"></a>嵌套函数
+
+嵌套函数 (lambda 和局部函数) 被视为方法，但其捕获变量除外。
+Lambda 或局部函数内捕获的变量的初始状态是该嵌套函数或 lambda 的所有 "使用" 中的变量的可以为 null 的状态的交集。 本地函数的使用是对该函数的调用，或将其转换为委托的位置。 Lambda 的使用是在源中定义它的点。
+
 ## <a name="type-inference"></a>类型推理
 
-### <a name="type-inference-for-var"></a>的类型推理 `var`
+### <a name="nullable-implicitly-typed-local-variables"></a>可以为 null 的隐式类型的局部变量
 
-为声明的局部变量声明的类型 `var` 由初始化表达式的 null 状态通知。
-
-```csharp
-var x = E;
-```
-
-如果的类型 `E` 是可以为 null 的引用类型 `C?` ，并且的 null 状态 `E` 为 "not null"，则为推断的类型 `x` 为 `C` 。 否则，推理出的类型是的类型 `E` 。
-
-为推断的类型的可为 null 性根据 `x` 的注释上下文确定，这一点与该 `var` 位置中显式给定的类型相同。
-
-### <a name="type-inference-for-var"></a>的类型推理 `var?`
-
-为声明的局部变量的类型与 `var?` 初始化表达式的 null 状态无关。
-
-```csharp
-var? x = E;
-```
-
-如果的类型 `T` `E` 是可以为 null 的值类型或可以为 null 的引用类型，则为推断的类型 `x` 为 `T` 。 否则，如果 `T` 是不可 null 值类型，则 `S` 推断出的类型为 `S?` 。 否则，如果 `T` 是不可 null 引用类型，则 `C` 推断出的类型为 `C?` 。 否则，声明是非法的。
-
-为推断的类型的为空性 `x` 始终 _nullable *。
+`var` 推理引用类型的批注类型和不被约束为值类型的类型参数。
+例如：
+- 在中， `var s = "";` `var` 将推断为 `string?` 。
+- 在中， `var t = new T();` `T` 不受约束的将 `var` 推断为 `T?` 。
 
 ### <a name="generic-type-inference"></a>泛型类型推理
 
-泛型类型推理经过了增强，可帮助确定推断的引用类型是否可以为 null。 这是一项最大的工作，并且本身不会生成警告，但在将所选重载的推断类型应用于参数时，可能会导致可以为 null 的警告。
-
-类型推断不依赖于传入类型的注释上下文。 相反 `type` ，将从其 "可能已在" 中获取其自己的注释上下文（如果已显式表示）。 这会将类型推理的角色作为一种简便方式，方便您自己编写的内容。
-
-更准确地说，推理出的类型实参的注释上下文是标记的上下文，该标记后面应跟 `<...>` 有一个类型形参列表，其中有一个，即要调用的泛型方法的名称。 对于转换为此类调用的查询表达式，上下文取自从中生成调用的查询子句的初始上下文关键字。
+泛型类型推理经过了增强，可帮助确定推断的引用类型是否可以为 null。 这是一个最大努力。 它可能会生成有关空性约束的警告，并且在将所选重载的推断类型应用于参数时，可能会导致可以为 null 的警告。
 
 ### <a name="the-first-phase"></a>第一阶段
 
-可以为 null 的引用类型从初始表达式流入边界，如下所述。 此外，引入了两种新的界限，即 `null` 和 `default` 。 其目的是在输入表达式中执行 `null` 或 `default` ，这可能会导致推断出的类型可以为 null，即使在其他情况下也是如此。 这甚至适用于可为 null 的值类型，这些 *值* 类型得到了增强，可在推断过程中选取 "非 null"。
+可以为 null 的引用类型从初始表达式流入边界，如下所述。 此外，引入了两种新的界限，即 `null` 和 `default` 。 其目的是在输入表达式中执行 `null` 或 `default` ，这可能会导致推断出的类型可以为 null，即使在其他情况下也是如此。 这也适用于可为 null 的 _value * 类型，这些类型经过增强，可在推断过程中选取 "非 null"。
 
 在第一阶段中，确定要添加的界限如下：
 
@@ -359,7 +412,7 @@ var? x = E;
 
 如果多个边界彼此之间相互转换，但不同，则该规范并不是一种很好的描述。 这种情况可能发生 `object` 在与之间， `dynamic` 在不同于元素名称的元组类型之间、构造它们的类型之间以及 `C` `C?` 引用类型中的类型之间。
 
-此外，我们还需要将 "非 null" 从输入表达式传播到结果类型。 
+此外，我们还需要将 "非 null" 从输入表达式传播到结果类型。
 
 为了应对这些情况，我们添加了更多的修复阶段，这现在是：
 
@@ -398,6 +451,7 @@ var? x = E;
 
 ### <a name="nullable-types-in-disabled-annotation-context"></a>禁用的注释上下文中可以为 null 的类型
 
-## <a name="attributes-for-special-null-behavior"></a>特殊 null 行为的特性
+### <a name="override-and-implementation-nullability-mismatch"></a>重写和实现为空性不匹配
 
+## <a name="attributes-for-special-null-behavior"></a>特殊 null 行为的特性
 
