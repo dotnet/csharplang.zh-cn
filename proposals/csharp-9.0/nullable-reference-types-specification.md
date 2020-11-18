@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: e6a784ef90308a5395c6b1db454a67d40c10e3e4
-ms.sourcegitcommit: 00d9d791b6f1d9538a979a111e93cf935d9b6cfe
+ms.openlocfilehash: a11b695d8345e521d3d781ed59cd730d83f87fd0
+ms.sourcegitcommit: 3d2315ca498ffe0e87848306ca08d0f5b265890d
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 11/10/2020
-ms.locfileid: "94423364"
+ms.lasthandoff: 11/18/2020
+ms.locfileid: "94717788"
 ---
 # <a name="nullable-reference-types-specification"></a>可以为 null 的引用类型规范
 
@@ -190,7 +190,7 @@ pragma_warning_body
 
 ## <a name="nullable-contexts"></a>可为空上下文
 
-源代码的每个行都有 *可为 null 的注释上下文* 和 *可以为 null 的警告上下文* 。 这些控件控制是否可为 null 的批注是否有效，以及是否给定了可为空性警告。 给定行的批注上下文已 *禁用* 或 *启用* 。 给定行的警告上下文已 *禁用* 或 *启用* 。
+源代码的每个行都有 *可为 null 的注释上下文* 和 *可以为 null 的警告上下文*。 这些控件控制是否可为 null 的批注是否有效，以及是否给定了可为空性警告。 给定行的批注上下文已 *禁用* 或 *启用*。 给定行的警告上下文已 *禁用* 或 *启用*。
 
 既可在 c # 源代码) 之外的项目级别指定这两个上下文，也可通过预处理器指令在源文件中的任何位置指定 (`#nullable` 。 如果未提供任何项目级别设置，则默认情况下，这两个上下文都是 *禁用* 的。
 
@@ -212,11 +212,11 @@ pragma_warning_body
 
 ## <a name="nullability-of-types"></a>类型为 Null 性
 
-给定的类型可以具有以下三个 nullabilities 之一： *在意* 、 *不可 null* 和 *可以为 null* 。
+给定的类型可以具有以下三个 nullabilities 之一： *在意*、 *不可 null* 和 *可以为 null*。
 
-如果将可能的值分配给 *不可 null* 类型，则可能会引发警告 `null` 。 但是， *在意* 和可以 *为* null 的类型为 "可 *赋值* "，可以 `null` 为其分配值而不会出现警告。
+如果将可能的值分配给 *不可 null* 类型，则可能会引发警告 `null` 。 但是，*在意* 和可以 *为* null 的类型为 "可 *赋值*"，可以 `null` 为其分配值而不会出现警告。
 
-可以取消引用或分配 *在意* 和 *不可 null* 类型的值，而不会出现警告。 但是， *可以为* null 的类型的值为 " *空* 值"，并可能在取消引用或赋值时导致警告，而不进行正确的 null 检查。
+可以取消引用或分配 *在意* 和 *不可 null* 类型的值，而不会出现警告。 但是， *可以为* null 的类型的值为 "*空* 值"，并可能在取消引用或赋值时导致警告，而不进行正确的 null 检查。
 
 Null 产生类型的 *默认 null 状态* 是 "可能是 null" 或 "可能是默认值"。 非 null 生成类型的默认 null 状态为 "not null"。
 
@@ -234,7 +234,7 @@ Null 产生类型的 *默认 null 状态* 是 "可能是 null" 或 "可能是默
 - 一个类型参数 `T` ，其中至少有一个约束为 *在意* 或 *不可 null* ，或者其中一个 `struct` 或 `class` 或 `notnull` 约束为
     - *禁用* 的注释上下文中的 *在意*
     - *已启用* 的批注上下文中的 *不可 null*
-- 可以为 null 的类型参数 `T?` *可以为 null* ，但如果不是值类型，则 *已禁用* 的批注上下文中会生成一个警告。 `T`
+- 可以为 null 的类型参数 `T?` *可以为 null*，但如果不是值类型，则 *已禁用* 的批注上下文中会生成一个警告。 `T`
 
 ### <a name="oblivious-vs-nonnullable"></a>在意 vs 不可 null
 
@@ -256,11 +256,29 @@ Null 产生类型的 *默认 null 状态* 是 "可能是 null" 或 "可能是默
 
 ## <a name="null-state-and-null-tracking"></a>Null 状态和 null 跟踪
 
-给定源位置中的每个表达式都具有 *null 状态* ，指示其是否被认为可能计算为 null。 Null 状态为 "not null"、"可能为 null" 或 "可能为默认值"。 Null 状态用于确定是否应为不安全的转换和取消引用提供警告。
+给定源位置中的每个表达式都具有 *null 状态*，指示其是否被认为可能计算为 null。 Null 状态为 "not null"、"可能为 null" 或 "可能为默认值"。 Null 状态用于确定是否应为不安全的转换和取消引用提供警告。
+
+"可能为 null" 和 "可能为默认值" 之间的区别非常微妙，适用于类型参数。 区别在于， `T` 状态为 "可能为 null" 的类型参数意味着该值在合法值的域中， `T` 但合法值可能包括 `null` 。 如果 "可能为默认值"，则表示该值可能在的合法域范围之外 `T` 。 
+
+例如： 
+
+```c#
+// The value `t` here has the state "maybe null". It's possible for `T` to be instantiated
+// with `string?` in which case `null` would be within the domain of legal values here. The 
+// assumption though is the value provided here is within the legal values of `T`. Hence 
+// if `T` is `string` then `null` will not be a value, just as we assume that `null` is not
+// provided for a normal `string` parameter
+void M<T>(T t)
+{
+    // There is no guarantee that default(T) is within the legal values for T hence the 
+    // state *must* be "maybe-default" and hence `local` must be `T?`
+    T? local = default(T);
+}
+```
 
 ### <a name="null-tracking-for-variables"></a>变量的 Null 跟踪
 
-对于指定变量或属性的某些表达式，将根据对它们的赋值、对它们执行的测试以及它们之间的控制流，在发生之间跟踪 null 状态。 这类似于为变量跟踪明确赋值的方式。 跟踪的表达式如下所示：
+对于表示变量、字段或属性的某些表达式，将基于对它们的赋值、对它们执行的测试以及它们之间的控制流，在发生的情况之间跟踪 null 状态。 这类似于为变量跟踪明确赋值的方式。 跟踪的表达式如下所示：
 
 ```antlr
 tracked_expression
@@ -283,7 +301,11 @@ tracked_expression
 
 ### <a name="literals"></a>文本
 
-和文本的 null 状态 `null` `default` 为 "可能是默认值"。 任何其他文本的 null 状态为 "not null"。
+文本的 null 状态 `null` 取决于表达式的目标类型。 如果目标类型是受引用类型约束的类型参数，则它是 "可能的默认值"。 否则为 "可能为 null"。
+
+文本的 null 状态 `default` 取决于文本的目标类型 `default` 。 `default`目标类型的文本与 `T` 表达式具有相同的 null 状态 `default(T)` 。
+
+任何其他文本的 null 状态为 "not null"。
 
 ### <a name="simple-names"></a>简单名称
 
@@ -293,13 +315,86 @@ tracked_expression
 
 如果 `member_access` 未归类为值，则其 null 状态为 "not null"。 否则，如果是跟踪的表达式，则其 null 状态将为其在此源位置跟踪的 null 状态。 否则，其 null 状态为其类型的默认 null 状态。
 
+```c#
+var person = new Person();
+
+// The receiver is a tracked expression hence the member_access of the property 
+// is tracked as well 
+if (person.FirstName is not null)
+{
+    Use(person.FirstName);
+}
+
+// The return of an invocation is not a tracked expression hence the member_access
+// of the return is also not tracked
+if (GetAnonymous().FirstName is not null)
+{
+    // Warning: Cannot convert null literal to non-nullable reference type.
+    Use(GetAnonymous().FirstName);
+}
+
+void Use(string s) 
+{ 
+    // ...
+}
+
+public class Person
+{
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+
+    private static Person s_anonymous = new Person();
+    public static Person GetAnonymous() => s_anonymous;
+}
+```
+
 ### <a name="invocation-expressions"></a>调用表达式
 
 如果 `invocation_expression` 调用使用一个或多个特性声明的成员以实现特殊的 null 行为，则 null 状态由这些特性决定。 否则，表达式的 null 状态为其类型的默认 null 状态。
 
+`invocation_expression`编译器不跟踪的 null 状态。
+
+```c#
+
+// The result of an invocation_expression is not tracked
+if (GetText() is not null)
+{
+    // Warning: Converting null literal or possible null value to non-nullable type.
+    string s = GetText();
+    // Warning: Dereference of a possibly null reference.
+    Use(s);
+}
+
+// Nullable friendly pattern
+if (GetText() is string s)
+{
+    Use(s);
+}
+
+string? GetText() => ... 
+Use(string s) {  }
+```
+
 ### <a name="element-access"></a>元素访问
 
 如果 `element_access` 调用使用一个或多个特性声明的索引器来实现特殊的 null 行为，则 null 状态由这些特性决定。 否则，表达式的 null 状态为其类型的默认 null 状态。
+
+```c#
+object?[] array = ...;
+if (array[0] != null)
+{
+    // Warning: Converting null literal or possible null value to non-nullable type.
+    object o = array[0];
+    // Warning: Dereference of a possibly null reference.
+    Console.WriteLine(o.ToString());
+}
+
+// Nullable friendly pattern
+if (array[0] is {} o)
+{
+    Console.WriteLine(o.ToString());
+}
+```
 
 ### <a name="base-access"></a>基本访问权限
 
@@ -307,17 +402,36 @@ tracked_expression
 
 ### <a name="default-expressions"></a>默认表达式
 
-`default(T)` 如果 `T` 已知为不可 null 值类型，则具有 null 状态 "not null"。 否则，它的状态为 "可能是默认值"。
+`default(T)` 对于类型的属性，具有 null 状态 `T` ：
 
-### <a name="null-conditional-expressions"></a>Null 条件表达式
+- 如果类型是 _nonnullable * 类型，则它的状态为 "not null"。
+- 如果类型是类型参数，则为; 否则，它的状态为 "可能为默认值"
+- 否则它的状态为 "可能为 null"
 
-`null_conditional_expression`具有 null 状态 "可能为 null"。
+### <a name="null-conditional-expressions-"></a>空条件表达式？。
+
+`null_conditional_expression`基于表达式类型，具有 null 状态。 请注意，这是指的类型 `null_conditional_expression` ，而不是所调用的成员的原始类型：
+
+- 如果类型是 *可以为* null 的值类型，则它的状态为 "可能为 null"
+- 否则，如果该类型是 *可以为* null 的类型参数，则它将具有 null 状态 "可能是默认值"
+- 否则它的状态为 "可能为 null"
 
 ### <a name="cast-expressions"></a>强制转换表达式
 
-如果强制转换表达式 `(T)E` 调用用户定义的转换，则表达式的 null 状态为其类型的默认 null 状态。 否则，如果 `T` 为 _nullable *，则 null 状态为 "可能为 null"。 否则，null 状态与的 null 状态相同 `E` 。
+如果强制转换表达式 `(T)E` 调用用户定义的转换，则该表达式的 null 状态为用户定义的转换类型的默认 null 状态。 否则：
 
-***这需要 upddating** _
+- 如果 `T` 是 *不可 null* 值类型，则 `T` 具有 null 状态 "not null"
+- 否则 `T` ，如果是 *可以为* null 的值类型，则 `T` 具有 null 状态 "可能为 null"
+- 否则，如果 `T` 是形式为 *null* 的类型， `U?` 其中 `U` 为类型参数，则为 `T` null 状态 "可能是默认值"
+- 否则 `T` ，如果是一个 *可以为* null 的类型，并且 `E` 具有 null 状态 "可能是 null" 或 "可能是默认值"，则将其 `T` 状态设置为 null。
+- 否则 `T` ，如果是类型参数，并且 `E` 具有 null 状态 "可能是 null" 或 "可能是默认值"，则将其 `T` 状态设置为 null 状态 "可能是默认值"
+- Else `T` 的 null 状态与相同 `E`
+
+### <a name="unary-and-binary-operators"></a>一元运算符和二元运算符
+
+如果一元运算符或二元运算符调用用户定义的运算符，则该表达式的 null 状态为用户定义的运算符的类型的默认 null 状态。 否则为表达式的 null 状态。
+
+***对于 `+` 字符串和委托，二进制文件的特殊** 操作是什么？_
 
 ### <a name="await-expressions"></a>Await 表达式
 
@@ -325,29 +439,33 @@ tracked_expression
 
 ### <a name="the-as-operator"></a>`as` 运算符
 
-`as`表达式的状态为 "可能为 null"。
+表达式的 null 状态 `E as T` 首先依赖于该类型的属性 `T` 。 如果的类型 `T` 为 _nonnullable *，则 null 状态为 "not null"。 否则，null 状态取决于从类型到类型的转换 `E` `T` ：
+
+- 如果转换为标识、装箱、隐式引用或隐式可为 null 的转换，则 null 状态为 null 状态 `E`
+- 否则 `T` ，如果是类型参数，则它的状态为 "可能是默认值"
+- 否则它的状态为 "可能为 null"
 
 ### <a name="the-null-coalescing-operator"></a>Null 合并运算符
 
-`E1 ?? E2` 具有与相同的空状态 `E2`
+的 null 状态 `E1 ?? E2` 为的空状态 `E2`
 
 ### <a name="the-conditional-operator"></a>条件运算符
 
-`E1 ? E2 : E3`如果和的 null 状态为 `E2` `E3` "not null"，则的 null 状态为 "not null"。 否则为 "可能为 null"。
+的 null 状态 `E1 ? E2 : E3` 基于和的 null 状态 `E2` `E3` ：
+
+- 如果两者都为 "not null"，则 null 状态为 "not null"。
+- 否则，如果两者都为 "可能是默认值"，则 null 状态为 "可能是默认值"
+- 否则，null 状态为 "not null"
 
 ### <a name="query-expressions"></a>查询表达式
 
 查询表达式的 null 状态为其类型的默认 null 状态。
 
+*此处需要其他工作*
+
 ### <a name="assignment-operators"></a>赋值运算符
 
 `E1 = E2` 和 `E1 op= E2` 都具有与 `E2` 应用任何隐式转换相同的空状态。
-
-### <a name="unary-and-binary-operators"></a>一元运算符和二元运算符
-
-如果一元或二元运算符调用了用一个或多个特性声明的用户定义的运算符来实现特殊的 null 行为，则 null 状态由这些特性决定。 否则，表达式的 null 状态为其类型的默认 null 状态。
-
-_*_对于字符串和委托，二进制文件的特殊操作是什么 `+` ？_*_
 
 ### <a name="expressions-that-propagate-null-state"></a>传播 null 状态的表达式
 
@@ -386,7 +504,7 @@ Lambda 或局部函数内捕获的变量的初始状态是该嵌套函数或 lam
 
 ### <a name="the-first-phase"></a>第一阶段
 
-可以为 null 的引用类型从初始表达式流入边界，如下所述。 此外，引入了两种新的界限，即 `null` 和 `default` 。 其目的是在输入表达式中执行 `null` 或 `default` ，这可能会导致推断出的类型可以为 null，即使在其他情况下也是如此。 这也适用于可为 null 的 _value * 类型，这些类型经过增强，可在推断过程中选取 "非 null"。
+可以为 null 的引用类型从初始表达式流入边界，如下所述。 此外，引入了两种新的界限，即 `null` 和 `default` 。 其目的是在输入表达式中执行 `null` 或 `default` ，这可能会导致推断出的类型可以为 null，即使在其他情况下也是如此。 这甚至适用于可为 null 的值类型，这些 *值* 类型得到了增强，可在推断过程中选取 "非 null"。
 
 在第一阶段中，确定要添加的界限如下：
 
@@ -423,20 +541,20 @@ Lambda 或局部函数内捕获的变量的初始状态是该嵌套函数或 lam
 5. 按如下所述 *合并* 剩余候选项
 6. 如果生成的候选项是引用类型或不可 null 值类型，并且 *所有* 完全 *限定或下限* 都是可以为 null 的值类型、可以为 null 的引用类型 `null` 或 `default` ，则 `?` 将其添加到生成的候选项，使其成为可以为 null 的值类型或引用类型。
 
-两个候选类型之间介绍了 *合并* 。 它是可传递和可交换的，因此，可按任何顺序将候选项合并，并获得相同的最终结果。 如果两个候选类型不能相互转换，则它是不确定的。
+两个候选类型之间介绍了 *合并*。 它是可传递和可交换的，因此，可按任何顺序将候选项合并，并获得相同的最终结果。 如果两个候选类型不能相互转换，则它是不确定的。
 
-*Merge* 函数采用两种候选类型和方向 ( *+* 或 *-* ) ：
+*Merge* 函数采用两种候选类型和方向 (*+* 或 *-*) ：
 
-- *Merge* (`T` ， `T` ， *d* ) = T
-- *Merge* (`S` ， `T?` ， *+* ) = *merge* (`S?` ， `T` ， *+* ) = *merge* (`S` ， `T` ， *+* ) `?`
-- *Merge* (`S` ， `T?` ， *-* ) = *merge* (`S?` ， `T` ， *-* ) = *merge* (`S` ， `T` ， *-* ) 
-- *Merge* (`C<S1,...,Sn>` ， `C<T1,...,Tn>` ， *+* ) = `C<` *merge* (`S1` ， `T1` ， *d1* ) `,...,` *merge* (`Sn` ， `Tn` ， *dn* ) `>` ， *其中*
+- *Merge* (`T` ， `T` ， *d*) = T
+- *Merge* (`S` ， `T?` ， *+*) = *merge* (`S?` ， `T` ， *+*) = *merge* (`S` ， `T` ， *+*) `?`
+- *Merge* (`S` ， `T?` ， *-*) = *merge* (`S?` ， `T` ， *-*) = *merge* (`S` ， `T` ， *-*) 
+- *Merge* (`C<S1,...,Sn>` ， `C<T1,...,Tn>` ， *+*) = `C<` *merge* (`S1` ， `T1` ， *d1*) `,...,` *merge* (`Sn` ， `Tn` ， *dn*) `>` ，*其中*
     - `di` = *+* 如果 `i` 的第一个类型参数 `C<...>` 是协变的
     - `di` = *-* 如果的 `i` 第一个类型参数 `C<...>` 为逆变或固定
-- *Merge* (`C<S1,...,Sn>` ， `C<T1,...,Tn>` ， *-* ) = `C<` *merge* (`S1` ， `T1` ， *d1* ) `,...,` *merge* (`Sn` ， `Tn` ， *dn* ) `>` ， *其中*
+- *Merge* (`C<S1,...,Sn>` ， `C<T1,...,Tn>` ， *-*) = `C<` *merge* (`S1` ， `T1` ， *d1*) `,...,` *merge* (`Sn` ， `Tn` ， *dn*) `>` ，*其中*
     - `di` = *-* 如果 `i` 的第一个类型参数 `C<...>` 是协变的
     - `di` = *+* 如果的 `i` 第一个类型参数 `C<...>` 为逆变或固定
-- *Merge* (`(S1 s1,..., Sn sn)` ， `(T1 t1,..., Tn tn)` ， *d* ) = `(` *merge* (`S1` ， `T1` ， *d* ) `n1,...,` *合并* (`Sn` ， `Tn` ， *d* ) `nn)` ， *其中*
+- *Merge* (`(S1 s1,..., Sn sn)` ， `(T1 t1,..., Tn tn)` ， *d*) = `(` *merge* (`S1` ， `T1` ， *d*) `n1,...,` *合并* (`Sn` ， `Tn` ， *d*) `nn)` ，*其中*
     - `ni` 如果 `si` 和 `ti` 不同，或者两者都不存在，则不存在
     - `ni` 是 `si` `si` 和 `ti` 是否相同
 - *Merge* (`object` ， `dynamic`) = *merge* (`dynamic` ， `object`) = `dynamic`
