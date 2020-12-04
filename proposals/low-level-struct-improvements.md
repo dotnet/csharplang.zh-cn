@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 4096cd28e30fdffeac1ee3d8578343e51282f6f1
-ms.sourcegitcommit: 77b2ab88a0091333c11e647d47d5c3c7e94d4e7c
+ms.openlocfilehash: a082598353ede157e6d5b3d219a04a85cbb292bf
+ms.sourcegitcommit: 8cf85e8021b081f3bb2c71dede5e2aee9923bfa4
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 09/29/2020
-ms.locfileid: "91452298"
+ms.lasthandoff: 12/04/2020
+ms.locfileid: "96596364"
 ---
 <a name="low-level-struct-improvements"></a>低级别结构改进
 =====
@@ -343,7 +343,7 @@ ref int Examples()
 > - 如果 `F` 是一个 `ref` 字段，并且 `e` 为 `this` ，则从封闭方法对其进行 *引用安全的转义* 。
 > - 否则，如果 `F` 是 `ref` 字段，它的 *ref 安全到转义* 范围是的 *安全对转义* 范围 `e` 。
 > - 否则 `e` ，如果为引用类型，则它是来自封闭方法的 *引用安全的转义* 。
-> - 否则，将从的*ref 安全到转义*获取其*引用安全的转义* `e` 。
+> - 否则，将从的 *ref 安全到转义* 获取其 *引用安全的转义* `e` 。
 
 这会显式地允许 `ref` `ref` 从（而非普通字段）返回字段， `ref struct` (稍后将介绍) 。 
 
@@ -402,9 +402,9 @@ ref struct RS
 ```
 
 还需要对分配的规则进行调整，以考虑 `ref` 字段。
-此设计仅允许 `ref` `ref` 在对象构造过程中或在已知值引用堆时分配字段。 对象构造包括在声明类型的构造函数中、 `init` 访问器内部和对象初始值设定项表达式内。 `ref`在这种情况下，要分配给字段的更多 `ref` 内容必须具有与字段接收方相同的*ref 安全到转义*： 
+此设计仅允许 `ref` `ref` 在对象构造过程中或在已知值引用堆时分配字段。 对象构造包括在声明类型的构造函数中、 `init` 访问器内部和对象初始值设定项表达式内。 `ref`在这种情况下，要分配给字段的更多 `ref` 内容必须具有与字段接收方相同的 *ref 安全到转义*： 
 
-- 构造函数：值必须在构造函数之外进行*引用安全的转义*
+- 构造函数：值必须在构造函数之外进行 *引用安全的转义*
 - `init` 取值函数：值限制为已知用于引用堆的值，因为访问器不能有 `ref` 参数
 - 对象初始值设定项：值可具有任何 *ref 安全到转义* 值，因为这会将源纳入现有规则来对构造对象 *进行安全转义* 。
 
@@ -476,7 +476,7 @@ S1 local = default;
 local.Value.ToString(); // throws NullReferenceException
 ```
 
-尽管 c # 语言在 `ref` `null` 运行时级别上非常合理，但它具有定义完善的语义。 `ref`向其类型引入字段的开发人员需要了解这种可能性，因此**强烈**建议不要将此详细信息泄漏到使用代码。 相反， `ref` 应使用 [运行时帮助](https://github.com/dotnet/runtime/pull/40008) 器将字段验证为非 null，并在 `struct` 不正确使用未初始化的时引发。
+尽管 c # 语言在 `ref` `null` 运行时级别上非常合理，但它具有定义完善的语义。 `ref`向其类型引入字段的开发人员需要了解这种可能性，因此 **强烈** 建议不要将此详细信息泄漏到使用代码。 相反， `ref` 应使用 [运行时帮助](https://github.com/dotnet/runtime/pull/40008) 器将字段验证为非 null，并在 `struct` 不正确使用未初始化的时引发。
 
 ```cs
 struct S1 
@@ -664,14 +664,19 @@ internal ref char <>DataIndexer(int index) => ...;
 
 此特定问题仍处于活动状态，但预期是此功能的实现将遵循此项讨论。
 
-### <a name="provide-parameter-escape-annotations"></a>提供参数转义批注
-**本部分仍处于开发阶段** 导致低级别代码中的重复摩擦的规则之一是 "方法参数必须匹配" 规则。 该规则指出，如果方法调用至少传递了一个， `ref struct` `ref / out` 则任何其他参数都不能具有比参数窄的 *安全到转义* 值。
-通过扩展，如果有两个这样的参数，则所有参数的 *safe 转义* 都必须相等。
+### <a name="provide-parameter-does-not-escape-annotations"></a>提供参数不转义批注
+低级别代码中重复出现的一种源是在封闭方法体之外 *安全地转义* 的参数的默认转义范围。 这是一个合理的默认值，因为它以 .NET 的编码模式为整体。 在低级别代码中，的使用较大 `ref struct` ，并且此默认作用域可能会使范围安全规则中的其他部分产生摩擦。
+
+之所以出现主要摩擦点，是因为方法调用有以下约束：
+
+> 对于方法调用，如果 ref 结构类型有 ref 或 out 参数 (包括接收方) ，其中包含安全到转义的 E1，则不 (包含) 接收方的参数的安全对转义比 E1 更窄
+
+此规则最常见的方法是使用实例方法， `ref struct` 其中至少有一个参数也是 `ref struct` 。 这是低级别代码中的一种常见模式，其中 `ref struct` 类型常利用 `Span<T>` 其方法中的参数。 考虑使用传递缓冲区的任何生成器或编写器样式对象 `Span<T>` 。
 
 此规则的存在是为了防止出现如下方案：
 
 ```cs
-struct RS
+ref struct RS
 {
     Span<int> _field;
     void Set(Span<int> p)
@@ -683,52 +688,135 @@ struct RS
     {
         Span<int> span = stackalloc int[] { 42 };
 
-        // Error: if allowed this would let the method return a pointer to 
+        // Error: if allowed this would let the method return a reference to 
         // the stack
         p.Set(span);
     }
 }
 ```
 
-此规则存在，因为该语言必须假定这些值可以被转义为允许的最大生存期。 在许多情况下，虽然方法实现不会对这些值进行转义。 因此，不需要这样做。
+实质上存在此规则，因为语言必须假定方法的所有输入都被转义为其最大允许范围。 在上面的示例中，语言必须假定参数换入接收方的字段。
 
-为了消除这种摩擦，语言将提供属性 `[DoesNotEscape]` 。 当应用于参数时，会将参数的 *安全对转义* 范围视为声明方法的顶级范围。 它无法在其外部返回。 同样，特性可应用于实例成员、实例属性或实例访问器，并对参数具有相同的效果 `this` 。
-
-为了对此进行更改，将更新 span 安全文档的 "Parameters" 部分，包括以下内容：
-
-- 如果用标记参数进行标记，则 `[DoesNotEscape]` 它是对包含方法的顶级范围的 *安全转义* 。 由于此值不能从方法中进行转义，因此在计算此方法的返回值时，不会将其视为常规的 *安全到转义* 输入集的一部分。
-
-**上述规则需要使用**
+在实践中，这种方法决不会对参数进行转义。
+它只是在实现中使用的值。 
 
 ```cs
-struct RS
+ref struct JsonReader
 {
-    Span<int> _field;
-    void Set([DoesNotEscape] Span<int> p)
+    Span<char> _buffer;
+    int _position;
+
+    internal bool TextEquals(ReadOnySpan<char> text)
     {
-        // Error: the *safe-to-escape* of p is the top scope of the method while
-        // the *safe-to-escape* of 'this' is outside the method. Hence this is
-        // illegal by the standard assignment rules
-        _field = p; 
+        var current = _buffer.Slice(_position, text.Length);
+        return current == text;
     }
+}
 
-    static RS M(ref RS rs1, [DoesNotEscape]RS rs2)
+class C
+{
+    static void M(ref JsonReader reader)
     {
-        Span<int> span = stackalloc int[] { 42 };
+        Span<char> span = stackalloc char[4];
+        span[0] = 'd';
+        span[1] = 'o';
+        span[2] = 'g';
 
-        // Okay: The parameter here is not a part of the calculated "must match"
-        // set because it can't be returned hence this is legal.
-        rs2.Set(span);
-
-        // Error: the *safe-to-escape* scope of 'rs2' is the top scope of this
-        // method
-        return rs2;
+        // Error: The *safe-to-escape* of `span` is the current method scope 
+        // while `reader` is outside the current method scope hence this fails
+        // by the above rule.
+        if (reader.TextEquals(span)
+        {
+            ...
+        })
     }
 }
 ```
 
+若要解决这种低级别的代码，请在 `unsafe` 编译器的生存期内采取技巧 `ref struct` 。 这可以极大地降低的价值主张， `ref struct` 因为它们应该是在 `unsafe` 继续编写高性能代码时避免的一种方法。
+
+参数默认转义范围导致摩擦的另一个位置是在方法主体中重新分配它们时。 例如，如果方法体决定使用堆栈分配的值有条件地将转义应用于输入。 再次强调，这会出现一些不足之处。
+
+```cs
+void WriteData(ReadOnlySpan<char> data)
+{
+    if (data.Contains(':'))
+    {
+        Span<char> buffer = stackalloc char[256];
+        Escape(data, buffer, out var length);
+
+        // Error: Cannot assign `buffer` to `data` here as the *safe-to-escape*
+        // scope of `buffer` is to the current method scope while `buffer` is
+        // outside the current method scope
+        data = buffer.Slice(0, length);
+    }
+
+    WriteDataCore(data);
+}
+```
+
+此模式在 .NET 代码中比较常见，当不涉及时，此模式将正常运行 `ref struct` 。 一旦用户采用 `ref struct` 这种方式，就会强制用户在此处更改其模式，并且通常只需采取措施来 `unsafe` 解决此处的限制。
+
+为了消除这种摩擦，语言将提供属性 `[DoesNotEscape]` 。 这可应用于在上定义的任何类型或实例成员的参数 `ref struct` 。 当应用于参数时， *安全 to escape* 和 *ref safe 到 escape* 范围将为当前方法作用域。 当应用于具有相同限制的实例成员时， `ref struct` 将应用于该 `this` 参数。
+
+```cs
+class C
+{
+    static Span<int> M1(Span<int> p1, [DoesNotEscape] Span<int> p2)
+    {
+        // Okay: the *safe-to-escape* here is still outside the enclosing scope
+        // of the current method.
+        return p1; 
+
+        // ERROR: the [DoesNotEscape] attribute changes the *safe-to-escape* 
+        // to be limited to the current method scope. Hence it cannot be 
+        // returned
+        return p2; 
+
+        // ERROR: `local` has the same *safe-to-escape* as `p2` hence it cannot
+        // be returned.
+        Span<int> local = p2;
+        return p2; 
+    }
+}
+```
+
+为了对此进行更改，将更新 span 安全文档的 "Parameters" 部分，使其包含以下项目符号：
+
+- 如果用标记参数，则该参数 `[DoesNotEscape]` 是 *安全的转义* ，并对包含方法的作用域进行 *引用安全的转义* 。 
+
+需要注意的是，这自然会阻止此类参数通过存储为字段进行转义。 通过或传递的接收方在 `ref` `this` `ref struct` 当前方法之外具有 *安全的转义* 范围。 因此 `[DoesNotEscape]` ，从参数到此类值的字段的赋值将失败，因为现有字段赋值规则：接收方的作用域大于所赋的值。
+
+```cs
+ref struct S
+{
+    Span<int> _field;
+
+    void M1(Span<int> p1, [DoesNotEscape] Span<int> p2)
+    {
+        // Okay: the *safe-to-escape* here is still outside the enclosing scope
+        // of the current method and hence the same as the receiver.
+        _field = p1;
+
+        // ERROR: the [DoesNotEscape] attribute changes the *safe-to-escape* 
+        // to be limited to the current method scope. Hence it cannot be 
+        // assigned to a receiver than has a *safe-to-escape* scope outside the 
+        // current method.
+        _field = p2;
+    }
+}
+```
+
+如果以这种方式限制了参数，则我们还将更新 "方法调用" 部分以放宽其规则。 在任何情况下，如果它考虑 *引用安全到转义* 或 *安全到转义* 的参数生存期，则该规范将更改为忽略与标记为的参数对齐的参数 `[DoesNotEscape]` 。 因为这些参数不能转义它们的生存期，所以在考虑返回值的生存期时无需考虑这些参数。
+
+例如，计算的返回的 *安全 to 转义* 的最后一行将更改为 
+
+> 包含接收方的所有参数表达式的安全对转义。 **这将排除用标记为 [DoesNotEscape] 的参数对齐的所有参数**
+
 杂项说明：
 - `DoesNotEscapeAttribute`将在命名空间中定义 `System.Runtime.CompilerServices` 。
+- `DoesNotEscapeAttribute`不能与特性结合使用 `[ThisRefEscapes]` ，这样做会导致错误。
+- `DoesNotEscapeAttribute`将作为`modreq`
 
 ## <a name="considerations"></a>注意事项
 
@@ -772,6 +860,42 @@ struct Dimensions
 
 ## <a name="future-considerations"></a>未来的注意事项
 
+### <a name="allowing-attributes-on-locals"></a>允许本地属性
+对于使用的开发人员而言，另一个与之不同的 `ref struct` 是，本地变量可能会受到与参数的相同问题的影响。 比使用在 `ref struct` 多个路径中分配的非常困难，其中至少有一个路径是受限的 *安全到转义* 作用域。 
+
+```cs
+int length = ...;
+Span<byte> span;
+if (length > StackAllocLimit)
+{
+    span = new Span(new byte[length]);
+}
+else
+{
+    // Error: The *safe-to-escape* of `span` was decided to be outside the 
+    // current method scope hence it can't be the target of a stackalloc
+    span = stackalloc byte[length];
+}
+```
+
+`Span<T>`具体来说，开发人员可以通过使用大小为零的本地初始化来解决此情况 `stackalloc` 。 这会将 *安全 to escape* 范围更改为当前方法，并被编译器优化掉。 它实际上是用于进行本地的语法 `[DoesNotEscape]` 。
+
+```cs
+int length = ...;
+Span<byte> span = stackalloc byte[0];
+if (length > StackAllocLimit)
+{
+    span = new Span(new byte[length]);
+}
+else
+{
+    // Okay
+    span = stackalloc byte[length];
+}
+```
+
+这仅适用于 `Span<T>` ，但没有适用于值的通用机制 `ref struct` 。 但是， `[DoesNotEscape]` 属性提供了此处所需的确切语义。 如果我们决定将来允许将特性应用于本地变量，则会为此方案提供立即止裂槽。
+
 ## <a name="related-information"></a>相关信息
 
 ### <a name="issues"></a>问题
@@ -788,6 +912,16 @@ struct Dimensions
 以下建议与此建议相关：
 
 - https://github.com/dotnet/csharplang/blob/725763343ad44a9251b03814e6897d87fe553769/proposals/fixed-sized-buffers.md
+
+### <a name="existing-samples"></a>现有示例
+
+[Utf8JsonReader](https://github.com/dotnet/runtime/blob/f1a7cb3fdd7ffc4ce7d996b7ac6867ffe2c953b9/src/libraries/System.Text.Json/src/System/Text/Json/Reader/Utf8JsonReader.cs#L523-L528)
+
+此特定代码片段要求不安全，因为它在传递时遇到问题， `Span<T>` 可以将其堆栈分配给上的实例方法 `ref struct` 。 即使未捕获此参数，语言也必须假定它是这样的，这样就不会造成不必要的问题。
+
+[Utf8JsonWriter](https://github.com/dotnet/runtime/blob/f1a7cb3fdd7ffc4ce7d996b7ac6867ffe2c953b9/src/libraries/System.Text.Json/src/System/Text/Json/Writer/Utf8JsonWriter.WriteProperties.String.cs#L122-L127)
+
+此代码段要通过对数据的元素进行转义来改变参数。 为了提高效率，可以对转义的数据进行堆栈分配。 即使未对参数进行转义，编译器也会将其分配给封闭方法之外的 *安全取消转义* 范围，因为它是一个参数。 这意味着，若要使用堆栈分配，实现必须使用堆栈分配，以便 `unsafe` 在转义数据后将返回到参数。
 
 ### <a name="fun-samples"></a>趣味示例
 
