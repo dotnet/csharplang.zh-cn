@@ -8,7 +8,7 @@ ms.locfileid: "97502844"
 ---
 # <a name="variance-safety-for-static-interface-members"></a>静态接口成员的差异安全
 
-## <a name="summary"></a>总结
+## <a name="summary"></a>摘要
 
 允许接口中的静态非虚拟成员将其声明中的类型参数视为固定参数，而不考虑它们的声明方差。
 
