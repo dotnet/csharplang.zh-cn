@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 368a2e5c076b1c2c3483b5f09ffafd28da229416
-ms.sourcegitcommit: 84c16c14e06ef8451662d4ffc4bdb8dd3ef1cbd8
+ms.openlocfilehash: f1ab0e063cc8b7a44c70ea1e52027cda30e064b0
+ms.sourcegitcommit: efac0d1e909d222dce5b18b10ae0d0b1d309b757
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/19/2020
-ms.locfileid: "86469140"
+ms.lasthandoff: 12/15/2020
+ms.locfileid: "97502844"
 ---
 # <a name="variance-safety-for-static-interface-members"></a>静态接口成员的差异安全
 
@@ -34,7 +34,7 @@ public interface I<out T>
 
 ## <a name="detailed-design"></a>详细设计
 
-下面是语言规范（的 Vaiance 安全部分的建议内容 https://github.com/dotnet/csharplang/blob/master/spec/interfaces.md#variance-safety) 。
+下面是语言规范 (的 Vaiance 安全部分的建议内容 https://github.com/dotnet/csharplang/blob/master/spec/interfaces.md#variance-safety) 。
 此更改是添加 "*这些限制不适用于静态成员声明中的 ocurrances 类型"。* 部分开头的语句。 
 
 ### <a name="variance-safety"></a>差异安全
@@ -42,27 +42,27 @@ public interface I<out T>
 类型的类型参数列表中的差异批注的出现次数限制了类型在类型声明内可能出现的位置。
 *这些限制不适用于静态成员声明中的 ocurrances 类型。*
 
-`T`如果以下包含其中一项，则类型为***输出不安全***：
+`T`如果以下其中一项为，则类型为 ***output-unsafe** _：
 
-*  `T`是逆变类型参数
-*  `T`是一个带有输出不安全元素类型的数组类型
-*  `T`是从泛型类型构造的接口或委托类型， `S<A1,...,Ak>` `S<X1,...,Xk>` 其中至少 `Ai` 包含以下项之一：
-   * `Xi`是协变或固定，并且 `Ai` 是输出不安全的。
-   * `Xi`为逆变或固定，并且 `Ai` 是输入安全的。
+_  `T` 是逆变类型参数
+*  `T` 是一个带有输出不安全元素类型的数组类型
+*  `T` 是从泛型类型构造的接口或委托类型， `S<A1,...,Ak>` `S<X1,...,Xk>` 其中至少 `Ai` 包含以下项之一：
+   * `Xi` 是协变或固定，并且 `Ai` 是输出不安全的。
+   * `Xi` 为逆变或固定，并且 `Ai` 是输入安全的。
    
-`T`如果包含以下内容之一，则类型为***输入-不安全***：
+`T`如果包含以下内容之一，则类型为 ***输入-不安全** _ _：
 
-*  `T`是协变类型参数
-*  `T`是具有输入不安全元素类型的数组类型
-*  `T`是从泛型类型构造的接口或委托类型， `S<A1,...,Ak>` `S<X1,...,Xk>` 其中至少 `Ai` 包含以下项之一：
-   * `Xi`是协变或固定的，并且 `Ai` 是输入不安全的。
-   * `Xi`为逆变或固定，并且 `Ai` 是输出不安全的。
+_  `T` 是协变类型参数
+*  `T` 是具有输入不安全元素类型的数组类型
+*  `T` 是从泛型类型构造的接口或委托类型， `S<A1,...,Ak>` `S<X1,...,Xk>` 其中至少 `Ai` 包含以下项之一：
+   * `Xi` 是协变或固定的，并且 `Ai` 是输入不安全的。
+   * `Xi` 为逆变或固定，并且 `Ai` 是输出不安全的。
 
 在直观的输出位置中禁止使用不安全的输出类型，在输入位置禁止输入不安全类型。
 
-如果类型不是输出安全类型，则为***输出安全***类型; 如果类型不安全，则为***输入安全***类型。
+如果类型不是输出安全类型，则为 ***输出安全** 的; 如果不是输入安全的，则为 _ *_输入安全_**。
 
 
 ## <a name="other-considerations"></a>其他注意事项
 
-我们还考虑到这是否可能会干扰我们希望对角色、类型类和扩展进行的其他一些改进。 这一切都应该是正确的：我们将无法 retconn 现有静态成员默认为接口的默认值，因为这会最终成为多个级别的重大更改，即使没有更改此处的变化行为也是如此。
+我们还考虑到这是否可能会干扰我们希望对角色、类型类和扩展进行的其他一些改进。 这一切都应该是正确的：我们将无法 retcon 现有静态成员默认为接口的默认值，因为这会最终成为多个级别的重大更改，即使没有更改此处的变化行为也是如此。
