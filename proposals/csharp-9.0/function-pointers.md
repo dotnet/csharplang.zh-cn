@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 6a641cf1b733156ce6ae0ee247c0e5aa7d990d2d
-ms.sourcegitcommit: c3df20406f43fcd460cfedd1cd61b6cc47d27250
+ms.openlocfilehash: 12407795f6df01e9f1a0a4b8200ab78477876fab
+ms.sourcegitcommit: 6c631c0f39bdcacab7743f17d19e82d70b1c04c2
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 09/08/2020
-ms.locfileid: "89554638"
+ms.lasthandoff: 12/16/2020
+ms.locfileid: "97592929"
 ---
 # <a name="function-pointers"></a>函数指针
 
@@ -369,8 +369,8 @@ unsafe class Instance {
 ``` csharp
 unsafe class Instance {
     void Use() {
-        static string toString(Instance i) = i.ToString();
-        delgate*<Instance, string> f = &toString;
+        static string toString(Instance i) => i.ToString();
+        delegate*<Instance, string> f = &toString;
         f(this);
     }
 }
@@ -382,7 +382,7 @@ unsafe class Instance {
 
 这就是设计的最初设计方式。 但产生的语言规则觉得非常笨拙。 这是不可能的，因为这是一个指针值，并且即使不使用关键字，它仍可查看 `unsafe` 。 例如，无法允许转换为， `object` 它不能是等的成员。 `class`C # 设计需要 `unsafe` 使用所有指针，因此这种设计遵循这一设计。
 
-开发人员仍可使用与_safe_ `delegate*` 今天普通指针类型相同的方式在值顶部呈现安全包装。 请注意以下几点：
+开发人员仍可使用与 `delegate*` 今天普通指针类型相同的方式在值顶部呈现安全包装。 请注意以下几点：
 
 ``` csharp
 unsafe struct Action {
