@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 3605661e9c17143c8df5b9b994a1f67800db006f
-ms.sourcegitcommit: 7125a8428a23fadaf4c93b2fc1ec88019876eaa7
+ms.openlocfilehash: c5f9750d07c6324b6db04ab83c95622f7b9a1c13
+ms.sourcegitcommit: a9b70c6ee1117df36eb66cf5b8e45c47e6c4f12e
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 10/31/2020
-ms.locfileid: "93142153"
+ms.lasthandoff: 01/17/2021
+ms.locfileid: "98536225"
 ---
 
 # <a name="records"></a>记录
@@ -220,8 +220,10 @@ bool PrintMembers(System.Text.StringBuilder builder);
 `private`如果记录类型为，则方法为 `sealed` 。 否则，方法为 `virtual` 和 `protected` 。
 
 方法如下：
-1. 对于每个记录的可打印成员 (非静态公共字段和可读属性成员) ，追加该成员的名称后跟 "="，后跟成员的值： `this.member` ，用 "，" 分隔，
+1. 对于每个记录的可打印成员 (非静态公共字段和可读属性成员) ，追加该成员的名称后跟 "="，后跟以 "，" 分隔的成员值，
 2. 如果记录具有可打印成员，则返回 true。
+
+对于具有值类型的成员，我们将使用可用于目标平台的最有效方法将其值转换为字符串表示形式。 目前意味着在 `ToString` 传递到之前调用 `StringBuilder.Append` 。
 
 如果记录类型是从基本记录派生的 `Base` ，则记录包括合成重写等效于声明为的方法：
 ```C#
@@ -271,7 +273,7 @@ class R1 : IEquatable<R1>
     {
         builder.Append(nameof(P1));
         builder.Append(" = ");
-        builder.Append(this.P1); // or builder.Append(this.P1); if P1 has a value type
+        builder.Append(this.P1); // or builder.Append(this.P1.ToString()); if P1 has a value type
         
         return true;
     }
