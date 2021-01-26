@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 12407795f6df01e9f1a0a4b8200ab78477876fab
-ms.sourcegitcommit: 6c631c0f39bdcacab7743f17d19e82d70b1c04c2
+ms.openlocfilehash: 05de92313261e2d0c74de13df5a3c0eb96b49e1e
+ms.sourcegitcommit: 6ab8409a32f1249f9aef618054426acb7bc7b4c1
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 12/16/2020
-ms.locfileid: "97592929"
+ms.lasthandoff: 01/25/2021
+ms.locfileid: "98763660"
 ---
 # <a name="function-pointers"></a>函数指针
 
@@ -258,6 +258,86 @@ unsafe class Util {
 > `delegate*`比`void*`
 
 这意味着，可以在和上重载， `void*` `delegate*` 但仍揭示使用地址运算符。
+
+### <a name="type-inference"></a>类型推断
+
+在不安全代码中，对类型推理算法进行了以下更改：
+
+#### <a name="input-types"></a>输入类型
+
+https://github.com/dotnet/csharplang/blob/master/spec/expressions.md#input-types
+
+添加了以下内容：
+
+> 如果 `E` 是方法组的地址并且 `T` 是函数指针类型，则的所有参数类型 `T` 均为类型为的输入类型 `E` `T` 。
+
+#### <a name="output-types"></a>输出类型
+
+https://github.com/dotnet/csharplang/blob/master/spec/expressions.md#output-types
+
+添加了以下内容：
+
+> 如果 `E` 是方法组地址并且 `T` 是函数指针类型，则的返回类型 `T` 是类型为的输出类型 `E` `T` 。
+
+#### <a name="output-type-inferences"></a>输出类型推断
+
+https://github.com/dotnet/csharplang/blob/master/spec/expressions.md#output-type-inferences
+
+在项目符号2和3之间添加以下项目符号：
+
+> * 如果 `E` 是方法组的地址，并且 `T` 是具有参数类型和返回类型的函数指针类型 `T1...Tk` `Tb` ，且类型为的重载解析 `E` 产生了 `T1..Tk` 返回类型的单个方法 `U` ，则将从到进行 _下限推理_ `U` `Tb` 。
+
+#### <a name="exact-inferences"></a>精确推断
+
+https://github.com/dotnet/csharplang/blob/master/spec/expressions.md#exact-inferences
+
+以下子项目符号将作为方案添加到项目符号2：
+
+> * `V` 是一个函数指针类型 `delegate*<V2..Vk, V1>` `U` ，并且是一个函数指针类型 `delegate*<U2..Uk, U1>` ，的调用约定与 `V` 相同 `U` ，并且的 refness 与 `Vi` 相同 `Ui` 。
+
+#### <a name="lower-bound-inferences"></a>下限推理
+
+https://github.com/dotnet/csharplang/blob/master/spec/expressions.md#lower-bound-inferences
+
+以下事例添加到了项目符号3：
+
+> * `V` 是一个函数指针类型， `delegate*<V2..Vk, V1>` 并且存在与相同的函数指针类型 `delegate*<U2..Uk, U1>` ，的 `U` `delegate*<U2..Uk, U1>` 调用约定与相同，并且的 `V` refness 与 `U` `Vi` 相同 `Ui` 。
+
+将从到的推理的第一个项目符号 `Ui` `Vi` 修改为：
+
+> * 如果不是 `U` 函数指针类型并且 `Ui` 未知是引用类型，或者是 `U` 函数指针类型并且未知的是函数 `Ui` 指针类型或引用类型，则进行 _精确推理_
+
+然后，将从到的推理的第三个项目符号后面添加 `Ui` 到 `Vi` ：
+
+> * 否则，如果 `V` 为， `delegate*<V2..Vk, V1>` 则推理依赖于的第 i 个参数 `delegate*<V2..Vk, V1>` ：
+>    * 如果 V1：
+>        * 如果返回值为，则进行 _下限推理_ 。
+>        * 如果按引用返回，则进行 _精确推理_ 。
+>    * 如果 V2 .。。Vk
+>        * 如果参数的值为，则进行 _上限推理_ 。
+>        * 如果参数是按引用进行的，则进行 _精确推理_ 。
+
+#### <a name="upper-bound-inferences"></a>上限推理
+
+https://github.com/dotnet/csharplang/blob/master/spec/expressions.md#upper-bound-inferences
+
+将以下事例添加到项目符号2：
+
+> * `U` 是一个函数指针类型， `delegate*<U2..Uk, U1>` 并且 `V` 是一个与相同的函数指针类型 `delegate*<V2..Vk, V1>` ，的调用约定与 `U` 相同 `V` ，并且的 refness 与 `Ui` 相同 `Vi` 。
+
+将从到的推理的第一个项目符号 `Ui` `Vi` 修改为：
+
+> * 如果不是 `U` 函数指针类型并且 `Ui` 未知是引用类型，或者是 `U` 函数指针类型并且未知的是函数 `Ui` 指针类型或引用类型，则进行 _精确推理_
+
+然后，将从到的推理的第三个项目符号后面添加 `Ui` 到 `Vi` ：
+
+> * 否则，如果 `U` 为， `delegate*<U2..Uk, U1>` 则推理依赖于的第 i 个参数 `delegate*<U2..Uk, U1>` ：
+>    * 如果 U1：
+>        * 如果返回值为，则进行 _上限推理_ 。
+>        * 如果按引用返回，则进行 _精确推理_ 。
+>    * 如果英式
+>        * 如果参数的值为，则进行 _下限推理_ 。
+>        * 如果参数是按引用进行的，则进行 _精确推理_ 。
 
 ## <a name="metadata-representation-of-in-out-and-ref-readonly-parameters-and-return-types"></a>`in`、 `out` 、 `ref readonly` 参数和返回类型的元数据表示形式
 
