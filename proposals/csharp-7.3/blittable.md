@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: ce51a11bb3370e6ffe68abca9dd81d91aa75bd33
-ms.sourcegitcommit: a7b84ea928eb18908999d442d0547af711362f38
+ms.openlocfilehash: 1785ed77ef6a4a6ab3c9a1eef31a3d255e402f34
+ms.sourcegitcommit: 660f5a2e1c5c6e3b181a82d0b2bdb17821ef9b84
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 08/12/2020
-ms.locfileid: "88140239"
+ms.lasthandoff: 02/14/2021
+ms.locfileid: "100489027"
 ---
 # <a name="unmanaged-type-constraint"></a>非托管类型约束
 
@@ -32,7 +32,7 @@ void Hash<T>(T value) where T : unmanaged
 }
 ```
 
-仅适用于 c # 语言规范中的非托管类型定义的类型只能满足此约束。查看它的另一种方法是，类型满足非托管约束 iff 它也可用作指针。 
+仅适用于 c # 语言规范中的非托管类型定义的类型只能满足此约束。查看它的另一种方法是，如果某一类型还可用作指针，则该类型满足非托管约束。 
 
 ```csharp
 Hash(new Point()); // Okay 
@@ -112,7 +112,7 @@ struct Student
 
 但这些框架通常是大多数 .NET 应用程序的基础。  因此，在此级别上 wins 会对 .NET 生态系统产生波纹效果。  这使得功能更值得考虑，即使是拥有有限的受众。
 
-## <a name="alternatives"></a>备选项
+## <a name="alternatives"></a>备选方法
 [alternatives]: #alternatives
 
 有几种方法可以考虑：
@@ -127,15 +127,15 @@ struct Student
 F # 语言对签名文件中的约束进行编码，这意味着 c # 不能重复使用其表示形式。 需要为此约束选择新属性。 此外，具有此约束的方法必须由 mod 请求保护。
 
 ### <a name="blittable-vs-unmanaged"></a>直接复制和非托管
-F # 语言具有一个非常[类似的功能](https://docs.microsoft.com/dotnet/articles/fsharp/language-reference/generics/constraints)，它使用关键字非托管。 可直接复制的名称来自 Midori 中的使用。  可能想要在此处查看优先级，并改为使用非托管。 
+F # 语言具有一个非常 [类似的功能](https://docs.microsoft.com/dotnet/articles/fsharp/language-reference/generics/constraints) ，它使用关键字非托管。 可直接复制的名称来自 Midori 中的使用。  可能想要在此处查看优先级，并改为使用非托管。 
 
-**解决方法**语言决定使用非托管 
+**解决方法** 语言决定使用非托管 
 
 ### <a name="verifier"></a>符
 
 验证程序/运行时是否需要更新以了解如何使用指向泛型类型参数的指针？  或者，它是否可以正常工作，而无需进行任何更改？
 
-**解决方法**无需更改。 所有指针类型都是不可验证的。 
+**解决方法** 无需更改。 所有指针类型都是不可验证的。 
 
 ## <a name="design-meetings"></a>设计会议
 
