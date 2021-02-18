@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: a62f2efa5b0a38a408fc4aaba2860be22f5d161b
-ms.sourcegitcommit: a9b70c6ee1117df36eb66cf5b8e45c47e6c4f12e
+ms.openlocfilehash: e74c60ac811dbef3768db5c0136ef4888217bc67
+ms.sourcegitcommit: 1f5b1dc19d21038b59bfce169fd49e121a5a1f4e
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 01/17/2021
-ms.locfileid: "98536254"
+ms.lasthandoff: 02/18/2021
+ms.locfileid: "101101693"
 ---
 # <a name="record-structs"></a>记录结构
 
@@ -23,11 +23,9 @@ record_struct_body
 ```
 
 记录结构类型是值类型，如其他结构类型。 它们隐式继承自类 `System.ValueType` 。
-记录结构的修饰符和成员受到的限制与结构 (可访问性的限制相同，成员、无参数实例构造函数、 `base(...)` 实例构造函数初始值设定项、构造函数中的明确赋值、 `this` 析构函数 ) 。
+记录结构的修饰符和成员受到的限制与结构 (可访问性、成员、 `base(...)` 实例构造函数初始值设定项、 `this` 构造函数、析构函数中明确赋值 ) 的限制相同。记录结构还将遵循与无参数实例构造函数和字段初始值设定项的结构相同的规则，但本文档假设我们将对结构的这些限制进行一般的提升。
 
 请参见https://github.com/dotnet/csharplang/blob/master/spec/structs.md
-
-但如果存在主构造函数，则允许记录结构的实例字段声明包含变量初始值设定项。
 
 记录结构不能使用 `ref` 修饰符。
 
@@ -91,7 +89,7 @@ public override int GetHashCode();
 
 如果 `Equals(R)` 和中 `GetHashCode()` 的一个是显式声明的，而另一个方法不是显式的，则会报告警告。
 
-的合成重写 `GetHashCode()` 返回 `int` 一个确定性函数的结果，该函数将 `System.Collections.Generic.EqualityComparer<TN>.Default.GetHashCode(fieldN)` 每个实例字段的值与的类型组合在 `fieldN` 一起 `TN` `fieldN` 。
+的合成重写 `GetHashCode()` 返回 `int` 的结果是 `System.Collections.Generic.EqualityComparer<TN>.Default.GetHashCode(fieldN)` 将每个实例字段的值与的类型组合在 `fieldN` 一起 `TN` `fieldN` 。
 
 例如，请考虑以下 record 结构：
 ```C#
@@ -206,7 +204,9 @@ struct R1 : IEquatable<R1>
 记录结构有一个公共构造函数，该构造函数的签名对应于类型声明的值参数。 这称为类型的主构造函数。 如果结构中已存在具有相同签名的主构造函数和构造函数，则是错误的。
 不允许记录结构声明无参数的主构造函数。
 
-如果存在主构造函数，则允许记录结构的实例字段声明包含变量初始值设定项。 在运行时，主构造函数会执行在记录结构体中显示的实例初始值设定项。
+记录结构的实例字段声明允许包含变量初始值设定项。
+如果没有主构造函数，则实例初始值设定项将作为无参数构造函数的一部分执行。
+否则，在运行时，主构造函数会执行在记录结构体中显示的实例初始值设定项。
 
 如果 record 结构具有主构造函数，则任何用户定义的构造函数（"复制构造函数" 除外）都必须具有显式 `this` 构造函数初始值设定项。
 
@@ -277,15 +277,27 @@ public record Base
 public record Derived(int Field);
 ```
 
+# <a name="allow-parameterless-constructors-and-member-initializers-in-structs"></a>允许在结构中用无参数的构造函数和成员初始值设定项
+
+我们将支持结构中的无参数构造函数和成员初始值设定项。
+这将在更多详细信息中指定。
+
+原始说明：  
+允许在结构上有无参数的 ctor，以及字段初始值设定项 (没有运行时检测)   
+我们将枚举初始值设定项未计算的方案：数组、泛型、默认值 .。。  
+在某些情况下，请考虑使用带有无参数的 ctor 的 struct 的诊断？  
+
 # <a name="open-questions"></a>打开问题
 
 - 是否应禁止使用复制构造函数签名的用户定义的构造函数？
-- 确认是否要将 PrintMembers 设计保留 (单独方法返回 `bool`) 
 - 确认是否要禁止名为 "Clone" 的成员。
-- 为什么在记录的实例字段中不允许安全类型？ 我假设我们还希望在记录结构中禁止。
 - `with` 在泛型上？  (可能会影响记录结构的设计) 
-- 确认不会允许 `record ref struct` (`IEquatable<RefStruct>` 和引用字段的问题) 
-- 确认相等性成员的实现。 替代方法是合成 `bool Equals(R other)` `bool Equals(object? other)` 和运算符，只委托给 `ValueType.Equals` 。
-- 确认是否要在存在主构造函数时允许字段初始值设定项。 我们还想要在) 时，允许无参数结构构造函数 (的激活器问题已明确固定？
-- 我们想要对方法说多少 `Combine` ？
+- 仔细检查合成 `Equals` 逻辑在功能上是否等效于运行时实现 (例如 float。NaN) 
 
+## <a name="answered"></a>答
+
+- 确认是否要将 PrintMembers 设计 (单独方法返回 `bool`)  (答案：是) 
+- 确认不允许 `record ref struct` (问题 `IEquatable<RefStruct>` 和引用字段)  (答案：是) 
+- 确认相等性成员的实现。 替代方法是合成 `bool Equals(R other)` `bool Equals(object? other)` 和运算符，只委托给 `ValueType.Equals` 。  (解答：是) 
+- 确认是否要在存在主构造函数时允许字段初始值设定项。 我们还想要在) 时，允许无参数结构构造函数 (的激活器问题已明确固定？  (解答：是的，应在 LDM 中查看更新的 spec) 
+- 我们想要对方法说多少 `Combine` ？  (答案：尽可能少) 

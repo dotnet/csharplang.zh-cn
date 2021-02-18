@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: c5f9750d07c6324b6db04ab83c95622f7b9a1c13
-ms.sourcegitcommit: a9b70c6ee1117df36eb66cf5b8e45c47e6c4f12e
+ms.openlocfilehash: 7e2d7ff452fdd208ffabbe4037f29bd7eff43196
+ms.sourcegitcommit: 1f5b1dc19d21038b59bfce169fd49e121a5a1f4e
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 01/17/2021
-ms.locfileid: "98536225"
+ms.lasthandoff: 02/18/2021
+ms.locfileid: "101101706"
 ---
 
 # <a name="records"></a>记录
@@ -113,7 +113,7 @@ public override int GetHashCode();
  
 如果 `Equals(R?)` 和中 `GetHashCode()` 的一个是显式声明的，而另一个方法不是显式的，则会报告警告。
 
-的合成重写 `GetHashCode()` 返回将 `int` 以下值组合在一起的确定性函数的结果：
+的合成重写 `GetHashCode()` 返回 `int` 的结果与以下值组合在一起：
 - 对于 `fieldN` 记录类型中不是继承的每个实例字段，其中的值 `System.Collections.Generic.EqualityComparer<TN>.Default.GetHashCode(fieldN)` `TN` 为字段类型，而
 - 如果有基本记录类型，则的值 `base.GetHashCode()` 为; 否则为的值 `System.Collections.Generic.EqualityComparer<System.Type>.Default.GetHashCode(EqualityContract)` 。
 
