@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: e74c60ac811dbef3768db5c0136ef4888217bc67
-ms.sourcegitcommit: 1f5b1dc19d21038b59bfce169fd49e121a5a1f4e
+ms.openlocfilehash: 519d546800218ac49ffdeb2d61cb311bbc57091c
+ms.sourcegitcommit: 224a2ffa412eb2e7890a6b6e2c39d9ae93776a70
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 02/18/2021
-ms.locfileid: "101101693"
+ms.lasthandoff: 02/19/2021
+ms.locfileid: "101103035"
 ---
 # <a name="record-structs"></a>记录结构
 
@@ -293,6 +293,7 @@ public record Derived(int Field);
 - 确认是否要禁止名为 "Clone" 的成员。
 - `with` 在泛型上？  (可能会影响记录结构的设计) 
 - 仔细检查合成 `Equals` 逻辑在功能上是否等效于运行时实现 (例如 float。NaN) 
+- 如何识别元数据中的记录结构？  (我们没有要利用的 unspeakable 克隆方法 ... ) 
 
 ## <a name="answered"></a>答
 
