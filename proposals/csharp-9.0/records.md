@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 7e2d7ff452fdd208ffabbe4037f29bd7eff43196
-ms.sourcegitcommit: 1f5b1dc19d21038b59bfce169fd49e121a5a1f4e
+ms.openlocfilehash: e256fd85a1566810089bd8c88caf179c7bfd1fb1
+ms.sourcegitcommit: f0590512a5b191faa4ae591a89bbdd71cec819a2
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 02/18/2021
-ms.locfileid: "101101706"
+ms.lasthandoff: 02/26/2021
+ms.locfileid: "101635325"
 ---
 
 # <a name="records"></a>记录
@@ -297,7 +297,7 @@ class R2 : R1, IEquatable<R2>
     public T2 P2 { get; init; }
     public T3 P3 { get; init; }
     
-    protected override void PrintMembers(StringBuilder builder)
+    protected override bool PrintMembers(StringBuilder builder)
     {
         if (base.PrintMembers(builder))
             builder.Append(", ");

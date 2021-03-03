@@ -1,17 +1,17 @@
 ---
-ms.openlocfilehash: 22d29c5186db5be559647a0c72cc749de4b7890c
-ms.sourcegitcommit: 1f5b1dc19d21038b59bfce169fd49e121a5a1f4e
+ms.openlocfilehash: e752cfc2356bbbad34f23b48791058cde4968765
+ms.sourcegitcommit: f0590512a5b191faa4ae591a89bbdd71cec819a2
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 02/18/2021
-ms.locfileid: "101101824"
+ms.lasthandoff: 02/26/2021
+ms.locfileid: "101635338"
 ---
 # <a name="global-using-directive"></a>全局 Using 指令
 
-使用 `global` 可以跟在关键字后面的可选关键字扩展 using 指令的语法 `using` ：
+Using 指令的语法用 `global` 可在关键字之前的可选关键字进行扩展 `using` ：
 ```antlr
 using_directive
-  : 'using' 'global'? ('static' | name_equals)? name ';'
+  : 'global'? 'using' ('static' | name_equals)? name ';'
   ;
 ```
 
