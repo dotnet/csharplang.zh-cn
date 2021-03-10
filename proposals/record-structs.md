@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: 519d546800218ac49ffdeb2d61cb311bbc57091c
-ms.sourcegitcommit: 224a2ffa412eb2e7890a6b6e2c39d9ae93776a70
+ms.openlocfilehash: fa26fb116d1efb06a3ba587791026bb46265a0b8
+ms.sourcegitcommit: 003c0606c3494f5920742b3daf548e359ecf60ac
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 02/19/2021
-ms.locfileid: "101103035"
+ms.lasthandoff: 03/10/2021
+ms.locfileid: "102532902"
 ---
 # <a name="record-structs"></a>记录结构
 
@@ -208,7 +208,7 @@ struct R1 : IEquatable<R1>
 如果没有主构造函数，则实例初始值设定项将作为无参数构造函数的一部分执行。
 否则，在运行时，主构造函数会执行在记录结构体中显示的实例初始值设定项。
 
-如果 record 结构具有主构造函数，则任何用户定义的构造函数（"复制构造函数" 除外）都必须具有显式 `this` 构造函数初始值设定项。
+如果 record 结构具有主构造函数，则任何用户定义的构造函数都必须具有显式 `this` 构造函数初始值设定项。
 
 主构造函数的参数以及 record 结构的成员位于实例字段或属性的初始值设定项的范围内。 实例成员将是这些位置中的错误 (类似于当前在常规构造函数初始值设定项的作用域中的方式，但使用) 的错误，但主构造函数的参数将在范围内并且可用，并将隐藏成员。 静态成员也是可用的。
 
