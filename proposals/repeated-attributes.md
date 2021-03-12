@@ -1,10 +1,10 @@
 ---
-ms.openlocfilehash: c40d143a933969b80f8902938a6243c33ca09432
-ms.sourcegitcommit: 9cf2f666477775bacc56ed5915bc00081d4fcb8e
+ms.openlocfilehash: ed534540ecdf8e7301727a190b0afff2496c8549
+ms.sourcegitcommit: ae69a53cf0cd57b3bcd17263a33a317a2c1dd205
 ms.translationtype: MT
 ms.contentlocale: zh-CN
-ms.lasthandoff: 07/09/2020
-ms.locfileid: "86208406"
+ms.lasthandoff: 03/11/2021
+ms.locfileid: "103026051"
 ---
 # <a name="repeated-attributes-in-partial-members"></a>分部成员中重复的属性
 
@@ -62,10 +62,10 @@ public partial bool TryGetValue([NotNullWhen(false)] out object? value) { ... } 
 ### <a name="open-questions"></a>打开问题
 
 1. 是否应在 "partial" 类型声明上允许此类重复，或只允许在非类型成员上使用 (例如) 方法？
-2. 允许符号上的多个*用法允许 "* 选择启用" 以消除特性的等效用法的特性？
+2. 允许符号上的多个 *用法允许 "* 选择启用" 以消除特性的等效用法的特性？
 
 ### <a name="design-meetings"></a>设计会议
-#### <a name="6th-july-2020"></a>[2020年7月6日](/meetings/2020/LDM-2020-07-06.md#repeated-attributes-on-partial-members)
+#### <a name="6th-july-2020"></a>[2020年7月6日](../meetings/2020/LDM-2020-07-06.md#repeated-attributes-on-partial-members)
 已接受该建议。
   - 对于分部类型声明，将允许重复非 AllowMultiple 属性， (打开问题 1) 。
   - 重复应用 AllowMultiple 属性的行为不会改变，并且可能会在将来的建议中考虑使用 "选择加入" 机制来消除重复， (打开问题 2) 。
